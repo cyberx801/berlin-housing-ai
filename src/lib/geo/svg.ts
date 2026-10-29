@@ -20,9 +20,9 @@ export function fitProjection(extent: GeoObject, { width, height, padding = 0 }:
   );
 }
 
-/** SVG path data with coordinates rounded to 0.1 px to keep inline SVG small. */
-export function svgPath(projection: GeoProjection, object: GeoObject): string {
-  return geoPath(projection).digits(1)(object) ?? "";
+/** SVG path data with coordinates rounded (0.1 px by default) to keep inline SVG small. */
+export function svgPath(projection: GeoProjection, object: GeoObject, digits = 1): string {
+  return geoPath(projection).digits(digits)(object) ?? "";
 }
 
 export function projectPoint(projection: GeoProjection, lonLat: [number, number]): [number, number] {

@@ -5,6 +5,7 @@ import {
   formatFloor,
   formatKm2,
   formatPercent,
+  formatRingShare,
   formatRooms,
 } from "@/lib/formatting/number";
 
@@ -33,5 +34,14 @@ describe("number formatting (en-GB)", () => {
     expect(formatFloor(-1)).toBe("Souterrain");
     expect(formatFloor(3, 5)).toBe("Floor 3 of 5");
     expect(formatFloor(3, null)).toBe("Floor 3");
+  });
+
+  it("never rounds a ring share across a status threshold", () => {
+    expect(formatRingShare(0.834)).toBe(`83${NNBSP}%`);
+    expect(formatRingShare(1)).toBe(`100${NNBSP}%`);
+    expect(formatRingShare(0.946)).toBe(`94.6${NNBSP}%`); // partly, not "95 %"
+    expect(formatRingShare(0.95)).toBe(`95${NNBSP}%`);
+    expect(formatRingShare(0.052)).toBe(`5.2${NNBSP}%`); // partly, not "5 %"
+    expect(formatRingShare(0.026)).toBe(`3${NNBSP}%`);
   });
 });

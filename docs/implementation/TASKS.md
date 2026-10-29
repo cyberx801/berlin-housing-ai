@@ -39,10 +39,31 @@ Last updated: 2026-10-29
 ## Slice 2 — App shell and homepage (depends on: 1; design gate)
 - [x] SiteHeader (sticky, current-page state, mobile disclosure nav that closes on route change and Esc), skip link, SiteFooter (sources, licenses)
 - [x] LegendRail + `page-grid` utility (12/8/4 columns, verified in compiled CSS)
-- [ ] RingPlate (SVG, server) + interaction wrapper; ring draw-in respecting reduced motion
-- [ ] AnalysisEntry (Bezirk / area / rooms → `/analyze?…`), tools Ledger, Bezirk small multiples, explorer preview, data-truth ledger
+- [x] RingPlate (SVG, server) + RingPlateExplorer (hover/tap, grouped select, readout, `<use>` highlight layer); ring draw-in once per session, off under reduced motion
+- [x] AnalysisEntry (GET form to `/analyze?bezirk=<slug>&area=&rooms=`, shared Zod messages), tools ledger, Bezirk small multiples on one scale, explorer preview (LocatorPlate), data-truth ledger
 - [x] not-found and error pages
-- [ ] E2E: home renders, entry navigates with params, keyboard path through plate list
+- [x] E2E: `tests/e2e/home.spec.ts` + `tests/e2e/shell.spec.ts` at 375/768/1440 (41 passed, 1 skipped by design: mobile menu at 1440)
+- [x] Geo build: Bezirk borders as a shared-edge mesh (`-innerlines`) and Berlin outline, so each border is stroked once
+
+**Slice 2 checks (2026-10-29):** `npm run typecheck` ✓, `npm run lint` ✓, `npm run test` 84/84 ✓, `npm run build` ✓, `npx playwright test` 41 passed / 1 skipped ✓.
+
+**Payload:** `/` HTML is 266 kB raw / ~63 kB gzip. The Ring Plate is 37 kB of SVG, paid twice (HTML + RSC flight data), so ≈ 75 kB against the 90 kB budget. Silhouettes use whole-pixel coordinates. Possible later cut: draw the home locator as `<use>` of the hero paths.
+
+**Design review findings (screenshots 375/768/1440):**
+- Fixed: `display-1` at 6.5rem set the hero title on five lines and outweighed the plate. Now `clamp(2.5rem, 1.25rem + 3vw, 4rem)` (DESIGN_SYSTEM §3 updated).
+- Fixed: the hero grid split the plate's extra height between both rows, leaving a gap above the entry form (`grid-rows-[auto_1fr]`).
+- Fixed: the licence id broke at its hyphen on mobile (`dl-` / `de/zero-2.0`).
+- Verified: no horizontal scroll at 320, 375, 768 and 1440 px; the highlight overlay registers exactly with the plate.
+- Verified in a browser: `vector-effect: non-scaling-stroke` breaks `pathLength` dashes, so the ring draw-in reveals the ring through a thick scaling mask stroke instead.
+
+**Accessibility review (slice 2):**
+- axe (wcag2a/aa, 2.1, 2.2 tags): 0 violations on `/` and the 404 page at all three widths.
+- Keyboard: skip link first and moves focus to `<main>`; mobile menu has `aria-expanded`, closes on Esc and route change, returns focus; plate keyboard path is the grouped native select (D-031) with a polite live region.
+- 2.4.11 Focus not obscured: fixed with `scroll-padding-top` on `html`; E2E tabs backwards and checks no focused element sits under the sticky header.
+- Forced colors (emulated): fixed the primary button (no outline) and the solid provenance marks (drawn with backgrounds, now borders). The SVG plate keeps its own colors and stays legible.
+- 2.5.8 Target size: small Ortsteil paths on the mobile plate are below 24 px; the equivalent select satisfies the exception.
+- The home entry has 3 fields, so it focuses the first invalid field with inline errors instead of an error summary. The full form on `/analyze` gets the summary (slice 3).
+- [!] Screen-reader smoke test **skipped**: NVDA isn't installed on this machine and Firefox isn't either. To be run in slice 9 or by the owner.
 
 ## Slice 3 — Property analysis and integration boundary (depends on: 1; uses 0 for options)
 - [x] `lib/validation/property.ts` (UI schema + refinements + messages) + tests

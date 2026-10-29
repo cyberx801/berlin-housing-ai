@@ -87,7 +87,7 @@ Major third (1.25) for UI text, with fluid display sizes. Sizes are in rem at 16
 
 | Token | Size | Line height | Family / axes | Use |
 |---|---|---|---|---|
-| `display-1` | `clamp(2.75rem, 1.6rem + 5.2vw, 6.5rem)` | 0.95 | Archivo wdth 125, wght 780, tracking −0.02em | Home hero, neighborhood name |
+| `display-1` | `clamp(2.5rem, 1.25rem + 3vw, 4rem)` (reduced in slice 2: at 6.5rem the hero title took five lines and outweighed the Ring Plate) | 0.95 | Archivo wdth 125, wght 780, tracking −0.02em | Home hero, neighborhood name |
 | `display-2` | `clamp(2rem, 1.4rem + 2.6vw, 3.5rem)` | 1.0 | Archivo wdth 115, wght 720 | Route titles |
 | `title-1` | 1.953rem | 1.1 | Archivo wdth 110, wght 680 | Plate titles (the question a module answers) |
 | `title-2` | 1.563rem | 1.2 | Archivo wdth 100, wght 640 | Section headings, form groups |

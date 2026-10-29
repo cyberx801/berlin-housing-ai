@@ -1,3 +1,5 @@
+import { RING_INSIDE_MIN, RING_OUTSIDE_MAX } from "@/lib/geo/ring";
+
 // One locale everywhere: en-GB gives consistent English conventions (€1,150 · 17.69 · 7.7 km²).
 // en-DE mixes decimal commas with comma-grouped currency (DECISIONS D-023).
 const LOCALE = "en-GB";
@@ -36,6 +38,18 @@ export function formatKm2(value: number): string {
 
 export function formatPercent(share: number): string {
   return `${n0.format(share * 100)}${NNBSP}%`;
+}
+
+/**
+ * Share of an Ortsteil inside the ring. Whole percent, except where rounding would cross a
+ * status threshold (e.g. 94.6 % shown as "95 %" next to "Partly inside").
+ */
+export function formatRingShare(share: number): string {
+  const whole = Math.round(share * 100);
+  const crosses =
+    (share < RING_INSIDE_MIN && whole >= RING_INSIDE_MIN * 100) ||
+    (share > RING_OUTSIDE_MAX && whole <= RING_OUTSIDE_MAX * 100);
+  return `${(crosses ? n1 : n0).format(share * 100)}${NNBSP}%`;
 }
 
 export function formatNumber(value: number, fractionDigits: 0 | 1 | 2 = 0): string {

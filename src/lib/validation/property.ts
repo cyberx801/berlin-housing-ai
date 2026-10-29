@@ -164,6 +164,21 @@ export const roomsField = requiredNumber({
   missing: "Enter the number of rooms, for example 2 or 2.5.",
 });
 
+const BEZIRK_MISSING = "Choose the Bezirk (borough) the flat is in.";
+
+/**
+ * The homepage's short entry (Bezirk, area, rooms). Same rules and messages as `/analyze`;
+ * the Bezirk is a slug because the values go straight into the `/analyze` URL (D-030).
+ */
+export function createAnalysisEntrySchema(bezirke: readonly BezirkOption[]) {
+  const slugs = new Set(bezirke.map((b) => b.slug));
+  return z.object({
+    bezirk: z.string().refine((v) => slugs.has(v), { message: BEZIRK_MISSING }),
+    area: areaField,
+    rooms: roomsField,
+  });
+}
+
 /**
  * Builds the property schema against the real Bezirk/Ortsteil lists, so membership
  * ("Moabit is in Mitte") is validated rather than assumed.
@@ -174,9 +189,7 @@ export function createPropertySchema(bezirke: readonly BezirkOption[], ortsteile
 
   return z
     .object({
-      bezirk: z.string().refine((v) => bezirkByCode.has(v), {
-        message: "Choose the Bezirk (borough) the flat is in.",
-      }),
+      bezirk: z.string().refine((v) => bezirkByCode.has(v), { message: BEZIRK_MISSING }),
       ortsteil: z
         .string()
         .refine((v) => v === "" || ortsteilByCode.has(v), { message: "Choose an Ortsteil from the list." })

@@ -1,5 +1,8 @@
 import { geoArea } from "d3-geo";
+import { RING_INSIDE_MIN as APP_INSIDE_MIN, RING_OUTSIDE_MAX as APP_OUTSIDE_MAX } from "@/lib/geo/ring";
 import {
+  RING_INSIDE_MIN,
+  RING_OUTSIDE_MAX,
   bezirkCodeFromSch,
   ortsteilCodeFromSch,
   pointInGeometry,
@@ -49,6 +52,11 @@ describe("ringStatusFromShare", () => {
     expect(ringStatusFromShare(0.0501)).toBe("partly");
     expect(ringStatusFromShare(0.05)).toBe("outside");
     expect(ringStatusFromShare(0)).toBe("outside");
+  });
+
+  it("uses the same thresholds as the app", () => {
+    expect(APP_INSIDE_MIN).toBe(RING_INSIDE_MIN);
+    expect(APP_OUTSIDE_MAX).toBe(RING_OUTSIDE_MAX);
   });
 
   it("rejects impossible shares", () => {

@@ -194,12 +194,16 @@ async function main() {
 
   // 7. Simplified geometry (topology-preserving: shared arcs simplified once; Bezirke dissolved
   //    from the simplified Ortsteile so their outlines coincide exactly).
-  const simplifyCmd = (level, precision, suffix) =>
+  const simplifyCmd = (level, precision, extraLayers = "") =>
     `-i ortsteile.json snap name=ortsteile -each "code=sch.slice(-4), bezirk=sch.slice(6,8)" -filter-fields code,bezirk ` +
     `-simplify ${level} weighted keep-shapes -dissolve bezirk + name=bezirke ` +
-    `-o target=ortsteile,bezirke format=geojson precision=${precision} ${suffix}`;
-  const plateOut = await ms(simplifyCmd(PLATE_SIMPLIFY, 0.0001, ""), input);
-  const mapOut = await ms(simplifyCmd(MAP_SIMPLIFY, 0.00001, ""), input);
+    (extraLayers
+      ? // Plates stroke Bezirk borders once (shared edges only) and the city outline once.
+        `-innerlines target=bezirke + name=bezirkBorders -dissolve target=ortsteile + name=outline `
+      : "") +
+    `-o target=ortsteile,bezirke${extraLayers} format=geojson precision=${precision}`;
+  const plateOut = await ms(simplifyCmd(PLATE_SIMPLIFY, 0.0001, ",bezirkBorders,outline"), input);
+  const mapOut = await ms(simplifyCmd(MAP_SIMPLIFY, 0.00001), input);
   const ringPlate = await ms(`-i ring.json -simplify 6% keep-shapes -filter-fields -o ring.json format=geojson precision=0.0001`, input);
   const ringMap = await ms(`-i ring.json -simplify 20% keep-shapes -filter-fields -o ring.json format=geojson precision=0.00001`, input);
 
@@ -234,6 +238,24 @@ async function main() {
         geometry: rewindForD3(f.geometry),
       })),
     },
+    outline: {
+      type: "FeatureCollection",
+      features: parse(plateOut, "outline.json").features.map((f) => ({
+        type: "Feature",
+        properties: { name: "Berlin" },
+        geometry: rewindForD3(f.geometry),
+      })),
+    },
+  };
+  // Internal Bezirk borders as lines (no winding to fix; their geoArea is 0).
+  const bezirkBorders = parse(plateOut, "bezirkBorders.json");
+  check(
+    bezirkBorders.features.length > 0 && bezirkBorders.features.every((f) => /LineString$/.test(f.geometry.type)),
+    "plate Bezirk borders missing or not lines",
+  );
+  plates.bezirkBorders = {
+    type: "FeatureCollection",
+    features: bezirkBorders.features.map((f) => ({ type: "Feature", properties: {}, geometry: f.geometry })),
   };
   // A feature read with the wrong winding covers almost the whole sphere (> 2π sr).
   for (const [layer, fc] of Object.entries(plates)) {

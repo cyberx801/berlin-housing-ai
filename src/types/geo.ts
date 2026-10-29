@@ -1,4 +1,21 @@
+import type { FeatureCollection, LineString, MultiLineString, MultiPolygon, Polygon } from "geojson";
+
 export type RingStatus = "inside" | "partly" | "outside";
+
+/** Plate geometry (lon/lat, wound for d3-geo). `code` is the Ortsteil or Bezirk code. */
+export type PlateFeatureCollection = FeatureCollection<Polygon | MultiPolygon, { code?: string; name?: string }>;
+export type PlateLineCollection = FeatureCollection<LineString | MultiLineString>;
+
+export interface Plates {
+  ortsteile: PlateFeatureCollection;
+  bezirke: PlateFeatureCollection;
+  /** Umweltzone: the official area within the S-Bahn ring. */
+  ring: PlateFeatureCollection;
+  /** Berlin's outer boundary. */
+  outline: PlateFeatureCollection;
+  /** Borders shared by two Bezirke, each drawn once. */
+  bezirkBorders: PlateLineCollection;
+}
 
 /** One Ortsteil, derived from official ALKIS geometry by scripts/build-geo.mjs. */
 export interface OrtsteilMeta {
@@ -27,6 +44,18 @@ export interface BezirkMeta {
   labelPoint: [number, number];
   bbox: [number, number, number, number];
   ortsteilCodes: string[];
+}
+
+/** What the plate readout shows for one Ortsteil (passed to the client plate). */
+export interface PlatePlace {
+  code: string;
+  name: string;
+  slug: string;
+  bezirkCode: string;
+  bezirkName: string;
+  areaKm2: number;
+  ringShare: number;
+  ringStatus: RingStatus;
 }
 
 /** Minimal option shapes passed from server pages to client forms. */

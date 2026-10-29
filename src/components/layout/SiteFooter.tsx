@@ -42,20 +42,20 @@ export function SiteFooter() {
 
         <div className="col-span-4 md:col-span-8 lg:col-span-3">
           <h2 className="mb-3 type-small font-[620] text-ink">Project status</h2>
-          <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2 type-small text-ink-2">
-            <dt className="contents">
+          <ul className="flex flex-col gap-2 type-small text-ink-2">
+            <li className="flex items-center gap-3">
               <ProvenanceMark kind="official" />
-            </dt>
-            <dd>Geography: official data</dd>
-            <dt className="contents">
+              Geography: official data
+            </li>
+            <li className="flex items-center gap-3">
               <ProvenanceMark kind="demo" />
-            </dt>
-            <dd>Market figures: demo data</dd>
-            <dt className="contents">
+              Market figures: demo data
+            </li>
+            <li className="flex items-center gap-3">
               <ProvenanceMark kind="not-connected" />
-            </dt>
-            <dd>Rent model: not connected</dd>
-          </dl>
+              Rent model: not connected
+            </li>
+          </ul>
           <p className="mt-4 type-small text-ink-3">No tracking, no cookies. Your entries stay in your browser.</p>
         </div>
       </div>

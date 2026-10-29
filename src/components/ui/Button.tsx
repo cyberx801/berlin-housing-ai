@@ -11,8 +11,9 @@ export function buttonClasses({ variant = "primary", size = "md" }: { variant?: 
     "select-none disabled:cursor-not-allowed aria-disabled:cursor-not-allowed",
     variant !== "quiet" && "rounded-control",
     variant !== "quiet" && (size === "md" ? "min-h-11 px-5 type-body" : "min-h-9 px-3.5 type-small"),
+    // The transparent border becomes the button outline in forced-colors mode.
     variant === "primary" &&
-      "bg-ink text-on-ink hover:bg-ink-hover active:translate-y-px aria-disabled:bg-ink-3",
+      "border border-transparent bg-ink text-on-ink hover:bg-ink-hover active:translate-y-px aria-disabled:bg-ink-3",
     variant === "secondary" &&
       "border border-ink bg-transparent text-ink hover:bg-sheet hover:shadow-[inset_0_0_0_1px_var(--color-ink)] active:translate-y-px",
     variant === "quiet" &&

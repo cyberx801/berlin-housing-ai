@@ -22,7 +22,14 @@ export function ProvenanceLabel({
         <ProvenanceMark kind={provenance.kind} className="shrink-0" />
         {copy.label}
       </span>
-      {detail ? <span>{detail}</span> : null}
+      {provenance.kind === "official" && showDetail ? (
+        // The licence id must not break at its hyphens on narrow screens.
+        <span>
+          {provenance.label}, <span className="whitespace-nowrap">{provenance.license}</span>
+        </span>
+      ) : detail ? (
+        <span>{detail}</span>
+      ) : null}
       <Link href={copy.href} className="underline decoration-line-strong underline-offset-4 hover:decoration-ink">
         How we label data
       </Link>

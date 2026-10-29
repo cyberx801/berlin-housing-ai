@@ -8,8 +8,9 @@ export function ProvenanceMark({ kind, className }: { kind: ProvenanceKind; clas
       <span
         className={cx(
           "block w-full",
-          (kind === "official" || kind === "model") && "h-1 bg-ink",
-          (kind === "user" || kind === "research") && "h-1 bg-ink-2",
+          // Borders, not backgrounds: they survive forced-colors mode.
+          (kind === "official" || kind === "model") && "border-t-4 border-ink",
+          (kind === "user" || kind === "research") && "border-t-4 border-ink-2",
           kind === "demo" && "band-hatch h-3 border border-line-strong",
           kind === "not-connected" && "h-3 border-[1.5px] border-dashed border-line-strong",
           kind === "pending" && "h-3 border border-rule bg-paper",

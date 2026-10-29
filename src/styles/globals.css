@@ -91,6 +91,8 @@
     font-size: 100%;
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
+    /* Keeps focused and anchored elements clear of the sticky header (WCAG 2.4.11). */
+    scroll-padding-top: calc(var(--header-height) + 1rem);
   }
   body {
     background: var(--color-paper);
@@ -129,7 +131,7 @@
 
 /* ---------- Type scale (DESIGN_SYSTEM §3.2). Width axis carries the identity. ---------- */
 @utility type-display-1 {
-  font-size: clamp(2.75rem, 1.6rem + 5.2vw, 6.5rem);
+  font-size: clamp(2.5rem, 1.25rem + 3vw, 4rem);
   line-height: 0.95;
   font-stretch: 125%;
   font-weight: 780;
@@ -199,11 +201,25 @@
 @utility stretch-condensed {
   font-stretch: 75%;
 }
+/* Map labels: a 1.5 px sheet halo keeps them legible over boundaries (DESIGN_SYSTEM §11). */
+@utility label-halo {
+  text-shadow:
+    1px 0 0 var(--color-sheet),
+    -1px 0 0 var(--color-sheet),
+    0 1px 0 var(--color-sheet),
+    0 -1px 0 var(--color-sheet),
+    0 0 1.5px var(--color-sheet);
+}
 @utility tabular {
   font-variant-numeric: tabular-nums;
 }
 
 /* ---------- Layout ---------- */
+/* The one deliberate grid break (DESIGN_SYSTEM §4): the home plate runs to the viewport edge.
+   Use at lg+ only (page-grid padding is 2rem there); the parent clips with overflow-x: clip. */
+@utility bleed-right {
+  margin-right: calc(-1 * (2rem + max(0px, (100vw - 90rem) / 2)));
+}
 @utility page-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -270,10 +286,18 @@
     stroke-dashoffset: 0;
   }
 }
-.ring-draw {
+/* Drawn once per session: after the first draw, <html data-ring-drawn> switches this off,
+   including when a hidden route is shown again or the page is reloaded (see RingDrawScript). */
+:root:not([data-ring-drawn]) .ring-draw {
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
   animation: ring-draw 900ms ease-out 150ms both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ring-draw {
+    animation: none !important;
+    stroke-dasharray: none !important;
+  }
 }
 
 /* Forced colors: keep borders, focus and chart texture visible (DESIGN_SYSTEM §8.5). */
