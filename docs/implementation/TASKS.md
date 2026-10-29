@@ -219,6 +219,8 @@ Last updated: 2026-10-29
   - all 97 profiles at 375 px: 200, h1 = name, no horizontal scroll
 - [ ] `/methodology#ring`, the "How this is calculated" target on profiles, returns 404 until slice 8 (like `#market-data`).
 - [ ] Pre-hydration: a filtered link shows all 97 rows until hydration applies the filters (as on `/explore`). Slice 9.
+- [ ] On the unknown-slug 404 the `<title>` ("Page not found") arrives in the streamed metadata after hydration, not in the static `<head>`. The page is still answered with status 404.
+- [ ] Profile HTML is about 95–105 kB each (locator paths plus the RSC payload). To be weighed in the slice 9 performance pass.
 
 **Slice 6 checks (2026-10-29):**
 - `npm run typecheck` ✓
@@ -231,6 +233,21 @@ Last updated: 2026-10-29
   - **Run 1:** 115 passed / 3 skipped / **2 failed**. Both were the homepage A3 test (375, 1440), which raced `/analyze` removing its prefill query. Repeated 3× it failed 1 in 9. That test is from slice 2 and the race isn't caused by this slice. **Fixed the test**: it now checks the prefilled form instead of the transient URL, and passed 15/15 repeated.
   - **Run 2:** 115 passed / 3 skipped / **2 failed**. Both were 30 s timeouts (`/analyze` Flow 1 at 768, `/explore` map click at 1440), with the dev server still running alongside. `--last-failed` then passed both (18.7 s).
   - **Run 3:** 117 passed / 3 skipped ✓, after stopping the dev server. The skips are the mobile menu at 1440, by design, and the 97-profile walk, which runs only at 375.
+  - **After the search-flush fix** (below) and a rebuild: 120 passed / 3 skipped ✓, including the new "typed just before leaving" test at all three widths.
+- frontend-quality gate, re-run after the fix:
+  - typecheck ✓ and lint ✓ (the gate caught a broken regex in the new E2E test first)
+  - `npm run test` 236/236 ✓
+  - build ✓
+  - Boundaries: no server marker (geo build messages, `ortsteilCodes`, `AX_KommunalesGebiet`, `demo-market-v1`, `yearly`) in any client chunk. The only client component is the directory, and profiles ship no new client code.
+- First-load JS (gzip, module scripts in the prerendered HTML, `noModule` polyfills left out), against the 150 kB budget (ARCH §10):
+
+  | Route | JS (gzip) |
+  |---|---|
+  | `/neighborhoods` | 147.3 kB ✓ |
+  | `/neighborhoods/moabit` | 140.3 kB ✓ |
+
+  MapLibre is in neither route.
+- [!] **First measurement of the older routes:** they are already over the 150 kB budget (`/` 177.8 kB, `/analyze` 202.9 kB, `/market` 195.6 kB, `/explore` 151.7 kB). The shared baseline (React, the Next runtime and the shell) is about 140 kB: a profile page, which adds no client code, measures 140.3 kB. This predates slice 6 and goes to the slice 9 performance pass.
 
 **Bugs found while testing (fixed):**
 - Köpenick's locator labels overlapped at 375 px, and long labels near the edge ran off the plate. They are now placed (D-046).
@@ -239,6 +256,7 @@ Last updated: 2026-10-29
 - The Remove buttons' hidden text lost its leading space ("Removethe …") in the accessible name. They use `aria-label` now, starting with the visible word (2.5.3).
 - Areas in tables mixed one and two decimals ("7.7" over "10.58"). Tables use two fixed decimals.
 - "S-Bahn" broke at its hyphen in the ring hint (directory and `/explore`).
+- A search typed and left within 400 ms, by Enter on a single match or a click on a row, was lost on Back: the delayed URL write was cleared when the route hid. The pending write is now flushed before Enter navigates and on any click inside the directory. Component and E2E tests cover it.
 
 **Design review (screenshots 375/768/1440: directory default, filtered and empty; profiles Moabit, Mitte, Köpenick, Blankenfelde, Hansaviertel, Alt-Hohenschönhausen, Märkisches Viertel):**
 - One bold element per screen: the profile name in Archivo display, or the directory title. Modules are plates with bands. There is no card grid and no rating.
@@ -278,7 +296,7 @@ Last updated: 2026-10-29
 - [ ] Dark mode: ship only if every token check passes; otherwise force light (D-020)
 - [ ] Optional: "Show demo layer" choropleth on `/explore` (PRD C6), default off, hatched and labelled
 - [ ] Chart texture channel for forced colors / print / "patterns" setting (DESIGN_SYSTEM §8.5)
-- [ ] Performance budgets checked (Lighthouse mobile)
+- [ ] Performance budgets checked (Lighthouse mobile). First-load JS is already over 150 kB on `/`, `/analyze`, `/market` and `/explore` (measured in slice 6).
 - [ ] Final QA report: commands run, results, known gaps
 
 ## Blocked / external

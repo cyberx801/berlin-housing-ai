@@ -236,6 +236,7 @@ Verified on 2026-10-29 with Node 22.16 / npm 10.9:
   - Writing: `placeFilterQuery`, a wrapper over `exploreQuery` that leaves out the selection.
   - URL state follows the D-037 pattern (Suspense reader, `history.replaceState` from handlers only, echo suppression, search written after 400 ms).
 → **Count.** A polite live region announces it, 800 ms after typing stops. Enter in the search field opens the profile when exactly one Ortsteil matches.
+→ **Leaving mid-delay.** A search still waiting on its 400 ms write is flushed before Enter navigates and on any click inside the directory (`onClickCapture`). Otherwise the route-hide cleanup would drop it, and Back would return without the search.
 → **No results.** The empty state lists each active filter with its own Remove button and offers "Clear all filters". The buttons vanish once results return, so focus moves to the control that changed: the search field, the Bezirk select or the "Any" radio.
 → **Known gap.** A link with filters shows all 97 rows until hydration applies them. This is the same pre-hydration issue as `/explore`, listed for slice 9.
 
