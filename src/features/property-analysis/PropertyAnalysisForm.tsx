@@ -13,35 +13,13 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import { Controller, useForm, useWatch, type Resolver } from "react-hook-form";
-import { FloorIndicator } from "@/components/property/FloorIndicator";
+import { useForm, useWatch, type Resolver } from "react-hook-form";
 import { ProvenanceLabel } from "@/components/provenance/ProvenanceLabel";
 import { ProvenanceMark } from "@/components/provenance/ProvenanceMark";
 import { Button } from "@/components/ui/Button";
-import { ChoiceGroup } from "@/components/ui/ChoiceGroup";
 import { Dialog } from "@/components/ui/Dialog";
-import { Field, inputClasses } from "@/components/ui/Field";
-import { Select } from "@/components/ui/Select";
 import { createTransport, PropertyAnalysisService, type PreparedRequest } from "@/lib/api/prediction/service";
 import type { FieldIssue, RentEstimateOutcome } from "@/lib/api/prediction/types";
-import {
-  BUILDING_ERAS,
-  CONDITIONS,
-  ENERGY_CLASSES,
-  FURNISHINGS,
-  LIMITS,
-  PROPERTY_TYPES,
-  TRI_STATES,
-  UNKNOWN,
-} from "@/lib/property/enums";
-import {
-  BUILDING_ERA_LABELS,
-  CONDITION_LABELS,
-  ENERGY_CLASS_LABELS,
-  FURNISHING_LABELS,
-  PROPERTY_TYPE_LABELS,
-  TRI_STATE_LABELS,
-} from "@/lib/property/labels";
 import { SearchParamsReader } from "@/lib/url-state/SearchParamsReader";
 import { PREFILL_LABELS, readAnalyzePrefill, type PrefillField } from "@/lib/validation/prefill";
 import {
@@ -49,7 +27,6 @@ import {
   EMPTY_PROPERTY_FORM,
   FIELD_GROUPS,
   isAnswered,
-  parseDecimal,
   REQUIRED_FIELDS,
   type FieldGroup,
   type PropertyFormValues,
@@ -64,12 +41,12 @@ import {
   fieldId,
   fingerprint,
   formFieldForWire,
-  RADIO_FIELDS,
   SECTIONS,
   sectionId,
   type FormField,
 } from "./fields";
 import type { ResultPlace } from "./InputSummary";
+import { focusPropertyField, PropertyFields } from "./PropertyFields";
 import { ResultPanel } from "./ResultPanel";
 
 const FORM_ID = `${ANALYZE_ID}-form`;
@@ -89,40 +66,13 @@ interface Analysis {
   attempt: number;
 }
 
-const options = <V extends string>(values: readonly V[], labels: Record<V, string>) =>
-  values.map((value) => ({ value, label: labels[value] }));
-
-const TYPE_OPTIONS = options(PROPERTY_TYPES, PROPERTY_TYPE_LABELS);
-const ERA_OPTIONS = options([UNKNOWN, ...BUILDING_ERAS], BUILDING_ERA_LABELS);
-const ENERGY_OPTIONS = options([UNKNOWN, ...ENERGY_CLASSES], ENERGY_CLASS_LABELS);
-const CONDITION_OPTIONS = options([...CONDITIONS, UNKNOWN], CONDITION_LABELS);
-const TRI_OPTIONS = options(TRI_STATES, TRI_STATE_LABELS);
-const FURNISHING_OPTIONS = options([...FURNISHINGS, UNKNOWN], FURNISHING_LABELS);
-
 const linkClass = "underline decoration-line-strong underline-offset-4 hover:decoration-ink";
-
-/** A whole number inside the limits, or null; the floor indicator only draws valid input. */
-function wholeNumber(raw: string, { min, max }: { min: number; max: number }) {
-  const n = parseDecimal(raw);
-  return Number.isInteger(n) && n >= min && n <= max ? n : null;
-}
 
 const subscribeNothing = () => () => {};
 
 const listLabels = (fields: PrefillField[]) => fields.map((f) => PREFILL_LABELS[f]).join(", ");
 
-/** Moves focus to a field and scrolls its label (or legend) into view, clear of sticky bars. */
-function focusField(field: FormField) {
-  const el = document.getElementById(fieldId(field));
-  if (!el) return;
-  const isGroup = RADIO_FIELDS.has(field);
-  const target = isGroup
-    ? (el.querySelector<HTMLInputElement>("input:checked") ?? el.querySelector<HTMLInputElement>("input"))
-    : el;
-  const anchor = isGroup ? el : (document.querySelector(`label[for="${el.id}"]`) ?? el);
-  anchor.scrollIntoView({ block: "start" });
-  target?.focus({ preventScroll: true });
-}
+const focusField = (field: FormField) => focusPropertyField(field, fieldId);
 
 /**
  * The full property form (PRD B1–B7). Validates with the shared Zod schema, keeps a session
@@ -227,7 +177,8 @@ export function PropertyAnalysisForm({
       const firstEmpty = REQUIRED_FIELDS.find((f) => !isAnswered(f, getValues()));
       if (firstEmpty) focusField(firstEmpty);
     },
-    [announce, bezirke, getValues, ortsteile, reset],
+    // setNotice is a stable setter; the React Compiler infers it as a dependency, so it is listed.
+    [announce, bezirke, getValues, ortsteile, reset, setNotice],
   );
 
   // ---- Session draft: written on every change once the entry step has run ----
@@ -253,27 +204,6 @@ export function PropertyAnalysisForm({
     lastSubmit.current = submitCount;
     if (showSummary) summaryRef.current?.focus();
   }, [submitCount, showSummary]);
-
-  // ---- Bezirk ↔ Ortsteil (PRD B3) ----
-  function onBezirkChange(code: string) {
-    const current = getValues("ortsteil");
-    const ortsteil = current ? ortsteilByCode.get(current) : undefined;
-    if (ortsteil && code && ortsteil.bezirkCode !== code) {
-      setValue("ortsteil", "", { shouldDirty: true, shouldValidate: isSubmitted });
-      announce(`Ortsteil cleared: ${ortsteil.name} is not in ${bezirkByCode.get(code)?.name ?? "this Bezirk"}.`);
-    }
-  }
-
-  function onOrtsteilChange(code: string) {
-    const ortsteil = ortsteilByCode.get(code);
-    if (ortsteil && getValues("bezirk") !== ortsteil.bezirkCode) {
-      setValue("bezirk", ortsteil.bezirkCode, {
-        shouldDirty: true,
-        shouldValidate: isSubmitted || Boolean(errors.bezirk),
-      });
-      announce(`Bezirk set to ${bezirkByCode.get(ortsteil.bezirkCode)?.name ?? ortsteil.bezirkCode}.`);
-    }
-  }
 
   // ---- Submit ----
   const inFlight = useRef(false);
@@ -355,9 +285,6 @@ export function PropertyAnalysisForm({
     serverErrorCount > 0
       ? `The rent model could not use ${serverErrorCount === 1 ? "1 value" : `${serverErrorCount} values`}`
       : `Fix ${errorList.length === 1 ? "1 field" : `${errorList.length} fields`} to prepare the analysis`;
-
-  const selectedBezirk = values.bezirk ? bezirkByCode.get(values.bezirk) : undefined;
-  const ortsteilChoices = selectedBezirk ? ortsteile.filter((o) => o.bezirkCode === selectedBezirk.code) : [];
 
   const submitButton = (size?: "sm") => (
     <Button type="submit" form={FORM_ID} size={size} aria-busy={isSubmitting || undefined}>
@@ -492,288 +419,18 @@ export function PropertyAnalysisForm({
               </h2>
             </div>
 
-            <FormSection group="location" answered={answeredIn("location")}>
-              <Controller
-                name="bezirk"
-                control={control}
-                rules={{ deps: ["ortsteil"] }}
-                render={({ field }) => (
-                  <Field id={fieldId("bezirk")} label={FIELD_LABELS.bezirk} required error={errors.bezirk?.message}>
-                    {(c) => (
-                      <Select
-                        {...c}
-                        name={field.name}
-                        ref={field.ref}
-                        value={field.value}
-                        onBlur={field.onBlur}
-                        onChange={(event) => {
-                          field.onChange(event.target.value);
-                          onBezirkChange(event.target.value);
-                        }}
-                      >
-                        <option value="">Choose a Bezirk</option>
-                        {bezirke.map((b) => (
-                          <option key={b.code} value={b.code}>
-                            {b.name}
-                          </option>
-                        ))}
-                      </Select>
-                    )}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="ortsteil"
-                control={control}
-                render={({ field }) => (
-                  <Field
-                    id={fieldId("ortsteil")}
-                    label={FIELD_LABELS.ortsteil}
-                    hint={
-                      selectedBezirk
-                        ? `${ortsteilChoices.length} Ortsteile in ${selectedBezirk.name}.`
-                        : "Choosing one also fills in its Bezirk."
-                    }
-                    error={errors.ortsteil?.message}
-                  >
-                    {(c) => (
-                      <Select
-                        {...c}
-                        name={field.name}
-                        ref={field.ref}
-                        value={field.value}
-                        onBlur={field.onBlur}
-                        onChange={(event) => {
-                          field.onChange(event.target.value);
-                          onOrtsteilChange(event.target.value);
-                        }}
-                      >
-                        <option value="">Choose an Ortsteil</option>
-                        {selectedBezirk
-                          ? ortsteilChoices.map((o) => (
-                              <option key={o.code} value={o.code}>
-                                {o.name}
-                              </option>
-                            ))
-                          : bezirke.map((b) => (
-                              <optgroup key={b.code} label={b.name}>
-                                {ortsteile
-                                  .filter((o) => o.bezirkCode === b.code)
-                                  .map((o) => (
-                                    <option key={o.code} value={o.code}>
-                                      {o.name}
-                                    </option>
-                                  ))}
-                              </optgroup>
-                            ))}
-                      </Select>
-                    )}
-                  </Field>
-                )}
-              />
-              <Field
-                id={fieldId("address")}
-                label={FIELD_LABELS.address}
-                hint="For your own reference. It isn't sent to the model or looked up on a map."
-                error={errors.address?.message}
-              >
-                {(c) => <input type="text" autoComplete="off" className={inputClasses} {...c} {...register("address")} />}
-              </Field>
-            </FormSection>
-
-            <FormSection group="flat" answered={answeredIn("flat")}>
-              {/* Controlled: an uncontrolled radio group with nothing checked reports null on blur,
-                  which would also corrupt the session draft. */}
-              <Controller
-                name="propertyType"
-                control={control}
-                render={({ field }) => (
-                  <ChoiceGroup
-                    id={fieldId("propertyType")}
-                    name={field.name}
-                    legend={FIELD_LABELS.propertyType}
-                    options={TYPE_OPTIONS}
-                    required
-                    error={errors.propertyType?.message}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    inputProps={{ onBlur: field.onBlur }}
-                  />
-                )}
-              />
-              <div className="grid gap-5 md:grid-cols-2">
-                <Field
-                  id={fieldId("area")}
-                  label={FIELD_LABELS.area}
-                  required
-                  unit="m²"
-                  hint={`Square metres, between ${LIMITS.areaM2.min} and ${LIMITS.areaM2.max}`}
-                  error={errors.area?.message}
-                >
-                  {(c) => (
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      autoComplete="off"
-                      className={inputClasses}
-                      {...c}
-                      {...register("area")}
-                    />
-                  )}
-                </Field>
-                <Field
-                  id={fieldId("rooms")}
-                  label={FIELD_LABELS.rooms}
-                  required
-                  hint="Half rooms are fine, e.g. 2.5"
-                  error={errors.rooms?.message}
-                >
-                  {(c) => (
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      autoComplete="off"
-                      className={inputClasses}
-                      {...c}
-                      {...register("rooms")}
-                    />
-                  )}
-                </Field>
-              </div>
-              <div className="flex items-start gap-5">
-                <div className="grid min-w-0 flex-1 gap-5 md:grid-cols-2">
-                  <Field
-                    id={fieldId("floor")}
-                    label={FIELD_LABELS.floor}
-                    hint="Ground floor is 0, souterrain −1"
-                    error={errors.floor?.message}
-                  >
-                    {(c) => (
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        autoComplete="off"
-                        className={inputClasses}
-                        {...c}
-                        {...register("floor")}
-                      />
-                    )}
-                  </Field>
-                  <Field
-                    id={fieldId("totalFloors")}
-                    label={FIELD_LABELS.totalFloors}
-                    hint="The number of the top floor"
-                    error={errors.totalFloors?.message}
-                  >
-                    {(c) => (
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        autoComplete="off"
-                        className={inputClasses}
-                        {...c}
-                        {...register("totalFloors", { deps: ["floor"] })}
-                      />
-                    )}
-                  </Field>
-                </div>
-                <div className="pt-8 empty:hidden">
-                  <FloorIndicator
-                    floor={wholeNumber(values.floor, LIMITS.floor)}
-                    totalFloors={wholeNumber(values.totalFloors, LIMITS.totalFloors)}
-                  />
-                </div>
-              </div>
-            </FormSection>
-
-            <FormSection group="building" answered={answeredIn("building")}>
-              <div className="grid gap-5 md:grid-cols-2">
-                <Field id={fieldId("buildingEra")} label={FIELD_LABELS.buildingEra} error={errors.buildingEra?.message}>
-                  {(c) => (
-                    <Select {...c} {...register("buildingEra")}>
-                      {ERA_OPTIONS.map((o) => (
-                        <option key={o.value} value={o.value}>
-                          {o.label}
-                        </option>
-                      ))}
-                    </Select>
-                  )}
-                </Field>
-                <Field
-                  id={fieldId("energyClass")}
-                  label={FIELD_LABELS.energyClass}
-                  hint="From the Energieausweis (energy certificate)"
-                  error={errors.energyClass?.message}
-                >
-                  {(c) => (
-                    <Select {...c} {...register("energyClass")}>
-                      {ENERGY_OPTIONS.map((o) => (
-                        <option key={o.value} value={o.value}>
-                          {o.label}
-                        </option>
-                      ))}
-                    </Select>
-                  )}
-                </Field>
-              </div>
-              <ChoiceGroup
-                id={fieldId("condition")}
-                name="condition"
-                legend={FIELD_LABELS.condition}
-                options={CONDITION_OPTIONS}
-                error={errors.condition?.message}
-                inputProps={register("condition")}
-              />
-              <ChoiceGroup
-                id={fieldId("lift")}
-                name="lift"
-                legend={FIELD_LABELS.lift}
-                options={TRI_OPTIONS}
-                error={errors.lift?.message}
-                inputProps={register("lift")}
-              />
-            </FormSection>
-
-            <FormSection group="features" answered={answeredIn("features")}>
-              <ChoiceGroup
-                id={fieldId("balcony")}
-                name="balcony"
-                legend={FIELD_LABELS.balcony}
-                options={TRI_OPTIONS}
-                error={errors.balcony?.message}
-                inputProps={register("balcony")}
-              />
-              <ChoiceGroup
-                id={fieldId("furnishing")}
-                name="furnishing"
-                legend={FIELD_LABELS.furnishing}
-                options={FURNISHING_OPTIONS}
-                error={errors.furnishing?.message}
-                inputProps={register("furnishing")}
-              />
-            </FormSection>
-
-            <FormSection group="surroundings" answered={answeredIn("surroundings")}>
-              <Field
-                id={fieldId("transitMinutes")}
-                label={FIELD_LABELS.transitMinutes}
-                unit="min"
-                hint={`Your own estimate in minutes, ${LIMITS.transitMinutes.min} to ${LIMITS.transitMinutes.max}`}
-                error={errors.transitMinutes?.message}
-                className="md:max-w-[50%]"
-              >
-                {(c) => (
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="off"
-                    className={inputClasses}
-                    {...c}
-                    {...register("transitMinutes")}
-                  />
-                )}
-              </Field>
-            </FormSection>
+            <PropertyFields
+              form={{ control, register, setValue, getValues }}
+              idOf={fieldId}
+              bezirke={bezirke}
+              ortsteile={ortsteile}
+              announce={announce}
+              renderSection={(group, children) => (
+                <FormSection group={group} answered={answeredIn(group)}>
+                  {children}
+                </FormSection>
+              )}
+            />
 
             <div className="flex flex-wrap items-center gap-4 border-t border-rule pt-6">
               {submitButton()}
