@@ -50,7 +50,8 @@ berlin-housing-ai/
 │  │  ├─ layout.tsx  page.tsx  not-found.tsx  error.tsx  global-error.tsx
 │  │  ├─ analyze/  explore/  market/  compare/  methodology/
 │  │  ├─ neighborhoods/page.tsx  neighborhoods/[slug]/page.tsx
-│  │  └─ api/predictions/rent/route.ts      proxy (disabled unless configured)
+│  │  ├─ api/predictions/rent/route.ts      proxy (disabled unless configured)
+│  │  └─ api/market/*/route.ts               one GET per MarketDataSource method (D-022)
 │  ├─ components/                   presentational, no data access
 │  │  ├─ ui/          Button Field Select ChoiceGroup Dialog Disclosure StatusPanel
 │  │  ├─ layout/      SiteHeader (incl. mobile nav) SiteFooter LegendRail nav-items; skip link + page-grid utility in the root layout/CSS
@@ -64,7 +65,8 @@ berlin-housing-ai/
 │  │  ├─ contracts/rent-prediction.v1.ts     Zod: request, response, error (DRAFT)
 │  │  ├─ api/prediction/                     service, transports/{disabled,http}, config, errors
 │  │  ├─ data/geo/                           typed accessors + generated/ (server-only)
-│  │  ├─ data/market/                        MarketDataSource interface, demo-source, index
+│  │  ├─ data/market/                        MarketDataSource interface, demo-source, index, http (server-only)
+│  │  ├─ market/                             filter parsing (URL and API) and response schemas (client-safe)
 │  │  ├─ fixtures/demo/                      ONLY imported by data/market/demo-source.ts
 │  │  ├─ validation/                         property input schema, messages
 │  │  ├─ formatting/                         numbers, currency, units, slugs
@@ -93,12 +95,13 @@ tests/contracts/fixtures/** ◀── ONLY tests/**
 | `/` | Static | geo meta + SVG plate paths | Ring Plate interaction, AnalysisEntry | — |
 | `/analyze` | Static shell | Bezirk → Ortsteil options | PropertyAnalysisForm, ResultPanel | prefill only: `bezirk, ortsteil, type, area, rooms` |
 | `/explore` | Static shell; `ExploreMap` via `next/dynamic` (`ssr: false`) | Ortsteil list (SSR, usable before the map loads) | map, list, panel, filters | `o, bezirk, ring, q` (`history.replaceState` from user actions, D-037) |
-| `/market` | Static; the demo dataset is small and passed as props | `MarketDataSource` (demo) | filter bar, chart modules | `bezirke, from, to, type` |
+| `/market` | Static shell with the default view prerendered; other filters fetched per module from `/api/market/*` (D-022) | `MarketDataSource` (demo), default filters only | filter rail, four chart modules | `bezirke, from, to, type` (`history.replaceState` from user actions, D-040) |
 | `/neighborhoods` | Static | all 97 meta rows | filter + search | `bezirk, ring, q` |
 | `/neighborhoods/[slug]` | SSG, `generateStaticParams` (97), `dynamicParams = false` | one Ortsteil + neighbors + locator paths | none required (links only) | — |
 | `/compare` | Static shell | Bezirk/Ortsteil options | comparison store, dialogs | — (storage) |
 | `/methodology` | Static | dataset registry | none | anchors |
 | `POST /api/predictions/rent` | Route handler (Node), dynamic | — | — | — |
+| `GET /api/market/{rent-trend,districts,distribution,property-types}` | Route handlers, dynamic, `no-store` | one `MarketDataSource` call each, returning `{ provenance, data }` | — | strict query: `bezirke` (codes), `from`, `to`, `type`; 400 with a reason |
 
 Client components that read `useSearchParams` are wrapped in `<Suspense>` with a static fallback, so the pages stay statically rendered.
 
@@ -106,7 +109,8 @@ Client components that read `useSearchParams` are wrapped in `<Suspense>` with a
 
 | State | Lives in | Mechanism |
 |---|---|---|
-| Static reference data (geo, demo market) | Build output | Server components → props |
+| Static reference data (geo; demo market for the default view) | Build output | Server components → props |
+| Market answers for other filters | Module state on `/market` | `fetch` to `/api/market/*`, Zod-parsed, aborted when stale (D-022) |
 | Shareable view state (filters, selection) | URL | `lib/url-state` typed parsers (Zod `safeParse` on read; invalid → default plus a notice) |
 | Form state | React Hook Form | The `propertyInputSchema` resolver |
 | Analysis draft | `sessionStorage` (`bhai.analyze.draft.v1`) | Written on every change once it has been read (D-034), Zod-validated read |
@@ -163,10 +167,14 @@ The optional basemap (OpenFreeMap) is behind `NEXT_PUBLIC_ENABLE_BASEMAP`, which
 
 ## 7. Charts
 
-- Each chart is a client component with props `{ data, provenance, title, question, unit }`. The `provenance` prop is **required by type**. A chart cannot render without declaring its data origin.
-- Implementation: d3-scale/d3-shape for geometry, our own SVG for axes, marks and tooltips, sized by a `ResizeObserver` hook. Colors are CSS variables (`var(--color-series-1)`), never hard-coded hex.
-- Keyboard: the chart is focusable, and the arrow keys move a crosshair or mark focus. The tooltip content is mirrored in an `aria-live="polite"` region.
-- `TableView` renders the same data as a `<table>` with a caption, units and the provenance line.
+- `components/charts/`: `LineChart`, `BarChart`, `Histogram` and `DotPlot` on a shared `ChartFrame`, plus `TableView` and `ChartLegend`. Each chart is a client component. It takes its data, a required `provenance`, an accessible `label` and its formatters, so a chart cannot render without declaring its data origin. The module around it (a `Plate`) carries the question title, the band and the method note.
+- Implementation:
+  - d3-scale/d3-shape compute the geometry. Our own SVG draws the axes and marks.
+  - `ChartFrame` measures its box (`ResizeObserver`) and draws only once measured. The server-rendered box already has its final size.
+  - Colors are token utilities (`stroke-series-1`, `fill-seq-2`), never hard-coded hex.
+  - A demo source draws its label inside the SVG (`ProvenanceStamp`).
+- Keyboard: one `role="slider"` per chart. The arrow keys move a crosshair (time, bins) or the row focus (bars, dots), and `aria-valuetext` carries the readout. The visual tooltip is `aria-hidden`, and Esc dismisses it (D-042).
+- `TableView` renders the same data as a `<table>` with a caption (scope and provenance words) and units, inside a native "Show table" disclosure that works before JavaScript.
 
 ## 8. Prediction integration (summary; the contract is in [PREDICTION_API.md](../contracts/PREDICTION_API.md))
 

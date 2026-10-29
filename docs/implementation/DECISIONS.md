@@ -75,10 +75,24 @@ Evidence (2026-10-29): `gdf` ≈ the computed area for single-part features (med
 ### D-020 · Dark mode is secondary · Accepted
 → Tokens are defined and validated (DESIGN_SYSTEM §2.3, §8). It ships in slice 9 only after full QA. Otherwise `color-scheme: light`.
 
-### D-022 · `/market` data loading model · Open (resolve in slice 5)
-ARCH §3 renders `/market` statically, passes the whole (small) demo dataset as props and filters it client-side. DATA_BOUNDARIES §5 defines `MarketDataSource` as async and per-query. Those fit the demo fixtures, but a real backend source will not suit the "pass everything as props" model.
-→ In slice 5, choose either (a) server components that read `searchParams` (dynamic rendering, per-query calls), or (b) a client fetch through a route handler. Keep the `MarketDataSource` interface either way, so swapping the source doesn't touch the UI.
-→ Note (slice 1): the root layout sets `ensureStatic = "navigation"` (D-027), so option (a) would mean relaxing that for `/market` only. Option (b) keeps the route static.
+### D-022 · `/market` data loading model: route handlers per module · Accepted (slice 5)
+The question was how `/market` loads its data. The options were (a) server components reading `searchParams`, which would relax `ensureStatic` (D-027), or (b) a client fetch through route handlers. Either way the `MarketDataSource` interface had to stay.
+→ **Option (b).** The page stays static.
+  - At build time it asks the source for the default filters. It renders all four modules and their tables into the HTML.
+  - Any other filter set is fetched by the client from one GET route per `MarketDataSource` method: `/api/market/rent-trend`, `/districts`, `/distribution` and `/property-types`.
+  - Each route returns `{ provenance, data }`, so the bands and the in-SVG label follow the source.
+→ **Why not props with client-side filtering.** Client components may not import `@/lib/data/*` (boundary test), so that approach would have put the query logic outside the interface.
+→ **Where things live.** Shared types are in `src/types/market.ts`. Query parsing and the Zod response schemas are in `src/lib/market/`.
+→ **Validation and errors.**
+  - The handlers parse the query strictly (`parseApiQuery`). Bad input gets a 400 `INVALID_QUERY` with a reason.
+  - A source failure gets a generic 500 `SOURCE_FAILED`. Responses are `no-store`.
+  - The client parses every response. One that doesn't parse counts as a failed module.
+→ **Fetching.**
+  - Each module fetches only the fields it uses, so a Bezirk change doesn't refetch the district comparison.
+  - Stale requests are aborted. A query that is already loaded is never refetched, even though Activity re-runs effects.
+  - On refetch the previous chart stays on screen, dimmed and `aria-busy`, with no skeleton.
+  - A failed module shows its own error with "Try again". A render error is caught by a per-module boundary.
+→ **Real source.** One that does I/O will need `"use cache"` (or a Suspense boundary) for the build-time default view. The demo source resolves synchronously.
 
 ### D-021 · Chart series caps from palette validation · Accepted
 → All-pairs forms (maps, scatter, small multiples) are capped at 3 colored series, and trend lines at 4 Bezirke. The district comparison uses one hue with outline selection. Source: `validate_palette.js` runs on 2026-10-29 (DESIGN_SYSTEM §8.1).
@@ -149,8 +163,50 @@ Verified on 2026-10-29 with Node 22.16 / npm 10.9:
 → Sources use `promoteId: "code"`. The GeoJSON `id` is numeric, so "0102" would become 102 and Bezirk "01" would become 1. Selection, hover and filter dimming are feature-state.
 → There is no glyph server, so there are no symbol layers. Labels are `aria-hidden` HTML spans placed greedily by priority (selected first, then larger areas), skipped where they collide or fall under the details panel. Zoom buttons and the attribution line are our own components. Colours are read from the CSS tokens at runtime.
 → MapLibre's stylesheet is unlayered and beats Tailwind's layered utilities (`.maplibregl-map { position: relative }`), so the map container fills a positioned wrapper instead of positioning itself.
-→ The demo choropleth toggle (PRD C6) waits for the slice 5 fixtures.
+→ The demo choropleth toggle (PRD C6) is optional. The fixtures exist since slice 5. It is scheduled for slice 9, behind an explicit, default-off toggle with hatched labelling.
 
 ### D-039 · `/explore` layout: one DOM, two arrangements · Accepted
 → From `lg`, the list and filters form the left rail (3 of 12 columns), which scrolls on its own. The details panel docks over the map's right edge, and camera fits and label placement leave that strip free. The whole explorer is sized to fit under the page title, so the attribution is visible without scrolling.
 → Below `lg`, the map takes the top 55 % of the viewport above a tablist (List / Details) and a sheet that scrolls on its own, as USER_FLOWS Flow 3 asks. The sheet is a region, not a modal. Selecting switches to Details, and focus follows only if it was in the list that just hid. Short viewports (under 34rem, such as landscape phones or page zoom) drop the split and let the page scroll. Tab roles are set only below `lg`.
+
+### D-040 · `/market` filter scope per module · Accepted
+→ One filter set applies to the whole page: Bezirke (at most 4), a period in whole years, and a property type. Each module states its own scope in a sentence under its title, so no chart silently disagrees with the filters.
+  - **Rent trend:** one line per chosen Bezirk, colored by slot. With no Bezirk chosen, one all-Berlin line. Type and period apply.
+  - **District comparison:** always all 12 Bezirke in one hue. Chosen Bezirke get an ink outline, a bold name and the word "selected". Type and period apply.
+  - **Price distribution:** the chosen Bezirke combined, or all of Berlin if none. Type and period apply.
+  - **Property types:** the chosen Bezirke combined, or all of Berlin if none. It shows every type and outlines the chosen one instead of filtering.
+→ The `MarketDataSource` signatures follow from this:
+  - The distribution and the type comparison take `bezirke: BezirkCode[]`, combined. The first draft of DATA_BOUNDARIES §5 had a single optional Bezirk.
+  - Every method takes the period as whole years (`from`, `to`).
+→ Color follows the entity (dataviz rule):
+  - A Bezirk keeps its slot while it is chosen. Removing one frees its slot, and a newly chosen Bezirk takes the lowest free slot.
+  - The URL lists Bezirke in slot order, so a reload keeps the colors unless a slot was left empty.
+→ A fifth Bezirk is refused, with the reason in a status line. The other boxes stay operable (`aria-disabled` plus a description), because native `disabled` would drop them from the tab order and hide why.
+→ URL parameters: `bezirke` (slugs), `from`, `to`, `type`.
+  - They are written with `history.replaceState`, from user actions only (the D-037 pattern).
+  - Unusable parts of a link are dropped, the link is rewritten and the reader is told. That covers unknown Bezirke, more than four, an invalid period and an unknown type.
+
+### D-041 · Demo market fixture model · Accepted (implements D-014)
+→ **What is stored.** The generator simulates listings and keeps only aggregates:
+  - monthly medians and counts per Bezirk (and all of Berlin) × type (and all types)
+  - yearly 1 € histograms per Bezirk × type
+
+  Any combination of Bezirke, years and types can be summed from the histograms. Medians and quartiles for a combination are read from the bins by linear interpolation.
+→ **No real-world ordering.** Anything that could look like a claim is a seeded random draw: the Bezirk levels (€9–18 /m², drawn in code order), volumes, type multipliers and type shares. The result follows no real ranking. In the committed fixture, for example, Spandau sits above Charlottenburg-Wilmersdorf.
+→ **Deliberate gaps.** For each non-apartment type, one Bezirk picked by the seed has no listings, so the "No demo series for this combination" state can be reached. The empty state says the gap is deliberate and says nothing about which homes exist where.
+→ **Determinism.** A unit test rebuilds the fixture and compares it byte for byte. `npm run fixtures:build -- --check` does the same outside the tests.
+
+### D-042 · Chart interaction: one slider per chart · Accepted
+→ **The slider.** Each chart has one focusable element with `role="slider"` over the plot.
+  - Left/Right move the cursor for time and bins, Up/Down for rows. Home/End jump to the ends, and the Page keys step a sixth of the way.
+  - Its `aria-valuetext` is the readout, e.g. "March 2024: Mitte €14.20 /m², …".
+  - Why a slider: it puts screen readers into focus mode, so the arrow keys reach the chart. A focusable group wouldn't do that.
+→ **What screen readers get.** The SVG itself is `aria-hidden`. The "Show table" disclosure is a native `<details>` that works before JavaScript, and it carries every value.
+→ **Pointer and tooltip.**
+  - Pointer and keyboard drive the same cursor.
+  - The visual tooltip is `aria-hidden`, and Esc dismisses it (WCAG 1.4.13).
+  - A tap keeps its readout until focus moves on.
+→ **Rendering.**
+  - Charts draw only after measuring their box. The server-rendered box already has its final size, so nothing shifts on hydration.
+  - After a filter change, the previous render stays dimmed until the new answer arrives.
+→ **Contrast.** The dot plot's interquartile band uses the sequential step `seq-2`, at 3.3:1 on the sheet. A translucent series color measured 1.6:1, which fails WCAG 1.4.11.

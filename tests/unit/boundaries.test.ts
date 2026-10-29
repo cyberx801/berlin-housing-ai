@@ -34,6 +34,13 @@ describe("data boundaries", () => {
     }
   });
 
+  it("reaches the demo market source only through src/lib/data/market", () => {
+    for (const f of files) {
+      if (f.rel.startsWith("src/lib/data/market/")) continue;
+      for (const spec of importsOf(f.text)) expect(spec, f.rel).not.toMatch(/demo-source/);
+    }
+  });
+
   it("keeps generated geodata behind src/lib/data/geo", () => {
     for (const f of files) {
       if (f.rel.startsWith("src/lib/data/geo/")) continue;

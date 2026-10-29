@@ -36,8 +36,8 @@ export function formatKm2(value: number): string {
   return `${n2.format(value)}${NNBSP}km²`;
 }
 
-export function formatPercent(share: number): string {
-  return `${n0.format(share * 100)}${NNBSP}%`;
+export function formatPercent(share: number, fractionDigits: 0 | 1 = 0): string {
+  return `${(fractionDigits === 0 ? n0 : n1).format(share * 100)}${NNBSP}%`;
 }
 
 /**

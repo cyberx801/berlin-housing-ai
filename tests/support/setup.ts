@@ -43,6 +43,14 @@ if (hasDom) {
     } as MediaQueryList;
   };
 
+  // jsdom has no layout, so nothing ever resizes. Charts measure once on mount; tests that need
+  // them drawn give elements a size with a getBoundingClientRect spy.
+  window.ResizeObserver ??= class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+
   // jsdom can't draw; without this stub it logs "Not implemented" for every canvas probe.
   // Returning null is what a browser without WebGL2 does, so the map's fallback path runs.
   HTMLCanvasElement.prototype.getContext = (() => null) as typeof HTMLCanvasElement.prototype.getContext;

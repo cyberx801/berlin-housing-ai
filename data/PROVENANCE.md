@@ -57,3 +57,14 @@ Every dataset in this repository has an entry here before any code reads it. Rul
 | Expected files | `raw/kaggle/rentals.csv`, `secondary_sales.csv`, `new_construction.csv`, `kiez_prices_monthly.csv`, `transit_stations.csv` |
 | Status | Not in repository as of 2026-10-29. Kaggle URL, license and author unknown. |
 | Next step | Owner adds the files and the Kaggle URL, then the intake protocol in DATA_BOUNDARIES §4 runs. |
+
+## demo-market-v1 — DEMO, not a dataset
+
+| | |
+|---|---|
+| Kind | `demo` (synthetic). **Not Berlin market statistics.** |
+| File | `src/lib/fixtures/demo/market-v1.json` (about 111 kB). Generated, never hand-edited. |
+| Generator | `scripts/build-demo-fixtures.mjs` → `scripts/lib/demo-market.mjs`, seed `20261029`, version 1 |
+| Method | Simulated listings per month (2020–2025), stored only as monthly medians and counts plus yearly 1 € histograms. Bezirk levels, volumes, type multipliers and the four empty Bezirk × type combinations are random draws from the seed, with no real-world ordering. Details: `src/lib/fixtures/demo/README.md`. |
+| Check | `npm run fixtures:build -- --check`. `tests/unit/demo-market.test.ts` rebuilds it and compares. |
+| Use | `/market` only, through `src/lib/data/market/demo-source.ts`. Replaced by a validated source in `src/lib/data/market/index.ts` (DATA_BOUNDARIES §5). |

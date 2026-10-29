@@ -34,7 +34,7 @@ Every data-bearing component takes `provenance` as a required prop. The TypeScri
 | `alkis-ortsteile` | ALKIS Berlin Ortsteile (97) | official | **Retrieved 2026-10-29** |
 | `umweltzone` | Umweltzone Berlin (area inside the S-Bahn ring) | official | **Retrieved 2026-10-29** |
 | `kaggle-berlin-5csv` | Kaggle: `rentals`, `secondary_sales`, `new_construction`, `kiez_prices_monthly`, `transit_stations` | research | **Not in repository.** Validation not started. |
-| `demo-market-v1` | Synthetic market fixtures for UI development | demo | To be generated in slice 5 |
+| `demo-market-v1` | Synthetic market fixtures for UI development | demo | **Generated in slice 5** (seed `20261029`, D-041) |
 
 Full details (URLs, license text, checksums, CRS, quality notes) are in `data/PROVENANCE.md`.
 
@@ -79,15 +79,19 @@ The files go in `data/raw/kaggle/`, which is gitignored until the license allows
 - The real-data swap: a `MarketDataSource` implementation backed by a validated dataset replaces `demo-source` in `src/lib/data/market/index.ts`. Its `provenance` changes, and the UI labels follow automatically.
 
 ```ts
-// src/lib/data/market/source.ts (planned)
+// src/lib/data/market/source.ts (types in src/types/market.ts; scope per module: D-040)
 export interface MarketDataSource {
   readonly provenance: Provenance;
-  rentTrend(q: { bezirke: BezirkCode[]; from: YearMonth; to: YearMonth; type?: PropertyType }): Promise<Series[]>;
-  districtComparison(q: { period: YearMonth; type?: PropertyType }): Promise<DistrictValue[]>;
-  priceDistribution(q: { bezirk?: BezirkCode; type?: PropertyType }): Promise<Histogram>;
-  propertyTypeComparison(q: { bezirk?: BezirkCode }): Promise<TypeValue[]>;
+  readonly coverage: MarketCoverage;               // { firstYear, lastYear, types }
+  // Periods are whole years, both ends included. `bezirke: []` means all of Berlin.
+  rentTrend(q: { bezirke: BezirkCode[]; from: number; to: number; type: MarketTypeFilter }): Promise<TrendResult>;
+  districtComparison(q: { from: number; to: number; type: MarketTypeFilter }): Promise<DistrictValue[]>;
+  priceDistribution(q: { bezirke: BezirkCode[]; from: number; to: number; type: MarketTypeFilter }): Promise<PriceHistogram>;
+  propertyTypeComparison(q: { bezirke: BezirkCode[]; from: number; to: number }): Promise<TypeValue[]>;
 }
 ```
+
+The dashboard reaches the source through `GET /api/market/*` (one route per method, returning `{ provenance, data }`) and, for the default view, at build time (D-022). Client code never imports `src/lib/data/market`.
 
 ## 6. Geo derivation rules (implemented in `scripts/build-geo.mjs`)
 
