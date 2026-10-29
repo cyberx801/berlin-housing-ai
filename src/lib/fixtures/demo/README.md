@@ -20,11 +20,12 @@ The generator simulates synthetic listings month by month from January 2020 to D
 - `monthly[area][type]`: the median €/m² and the listing count for every month, for each Bezirk code and for `berlin`, per property type and for `all` types. A month with no simulated listings has a `null` median.
 - `yearly[bezirk][type][year]`: listing counts in 1 € bins from €5 to €45 /m². The demo source sums these for any combination of Bezirke, years and types, and reads medians and quartiles from the bins by linear interpolation.
 
-Everything that could look like a statement about Berlin is drawn from the seed:
+What is random and what is fixed:
 
 - Each Bezirk's base level (uniform €9–18 /m²) and monthly listing volume (uniform 30–90) are random draws in code order. **They follow no real ranking of Bezirke.**
 - Each non-apartment property type gets a random multiplier (0.9–1.4) and a random share of listings.
 - One Bezirk per non-apartment type, picked by the seed, has no listings of that type (`gaps`). This exists only so the "No demo series for this combination" state can be seen and tested. It says nothing about which homes exist where.
-- Prices move with a shared random walk (about +0.3 % a month on average) and a small mean-reverting deviation per Bezirk. Individual listings scatter around that level with a log-normal spread of 0.2, clamped into €5–45 /m².
+- **The one fixed shape is an upward drift.** All prices share a drift of +0.3 % a month, a design constant chosen so the trend lines have a slope to read. That is why "All of Berlin" climbs from about €14 to €17 /m² over 2020–2025. Only the noise around the drift is seeded, plus a small mean-reverting deviation per Bezirk. **The rise is not an observation about Berlin.**
+- Individual listings scatter around that level with a log-normal spread of 0.2, clamped into €5–45 /m².
 
 Plausible shapes (euros per m², monthly series, sparse rare types) are a design-testing aid, not a claim.

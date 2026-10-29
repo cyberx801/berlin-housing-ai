@@ -192,7 +192,8 @@ Verified on 2026-10-29 with Node 22.16 / npm 10.9:
   - yearly 1 € histograms per Bezirk × type
 
   Any combination of Bezirke, years and types can be summed from the histograms. Medians and quartiles for a combination are read from the bins by linear interpolation.
-→ **No real-world ordering.** Anything that could look like a claim is a seeded random draw: the Bezirk levels (€9–18 /m², drawn in code order), volumes, type multipliers and type shares. The result follows no real ranking. In the committed fixture, for example, Spandau sits above Charlottenburg-Wilmersdorf.
+→ **No real-world ordering.** The Bezirk levels (€9–18 /m², drawn in code order), volumes, type multipliers and type shares are seeded random draws. The result follows no real ranking. In the committed fixture, for example, Spandau sits above Charlottenburg-Wilmersdorf.
+→ **The one fixed shape.** A city-wide drift of +0.3 % a month is a design constant, chosen so the trend lines have a slope to read. Only its noise is seeded. It makes the all-Berlin line rise from about €14 to €17 /m², the most claim-shaped thing on the page. The README and the module labels say it is synthetic, and the README names the drift as a constant.
 → **Deliberate gaps.** For each non-apartment type, one Bezirk picked by the seed has no listings, so the "No demo series for this combination" state can be reached. The empty state says the gap is deliberate and says nothing about which homes exist where.
 → **Determinism.** A unit test rebuilds the fixture and compares it byte for byte. `npm run fixtures:build -- --check` does the same outside the tests.
 
