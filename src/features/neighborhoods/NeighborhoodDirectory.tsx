@@ -2,7 +2,16 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type KeyboardEvent,
+} from "react";
 import { Plate } from "@/components/provenance/Plate";
 import { Button } from "@/components/ui/Button";
 import { ChoiceGroup } from "@/components/ui/ChoiceGroup";
@@ -28,6 +37,7 @@ import type { Provenance } from "@/types/provenance";
 
 const ID = "directory";
 export const DIRECTORY_IDS = {
+  root: ID,
   filters: `${ID}-filters`,
   search: `${ID}-q`,
   bezirk: `${ID}-bezirk`,
@@ -36,6 +46,8 @@ export const DIRECTORY_IDS = {
   results: `${ID}-results`,
 } as const;
 const IDS = DIRECTORY_IDS;
+
+const subscribeNothing = () => () => {};
 
 const RING_OPTIONS = [
   { value: "any", label: "Any" },
@@ -203,9 +215,12 @@ export function NeighborhoodDirectory({ places, bezirke, provenance }: Neighborh
     query !== "" && { key: "q" as const, label: "Name contains", name: "name search", value: `“${query}”` },
   ].filter((item) => item !== false);
 
+  // Typing before hydration is lost (the slice 9 pre-hydration item); tests wait for this.
+  const hydrated = useSyncExternalStore(subscribeNothing, () => true, () => false);
+
   return (
     <>
-      <div className="page-grid gap-y-8 pb-16" onClickCapture={flushUrl}>
+      <div id={IDS.root} data-hydrated={hydrated ? "" : undefined} className="page-grid gap-y-8 pb-16" onClickCapture={flushUrl}>
         <div className="col-span-4 md:col-span-8 lg:col-span-3">
           <div
             id={IDS.filters}

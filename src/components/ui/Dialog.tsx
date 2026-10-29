@@ -33,12 +33,23 @@ export function Dialog({ open, onClose, title, description, children, id, size =
     if (!open && dialog.open) dialog.close();
   }, [open]);
 
-  // Routes stay mounted (hidden) after navigation; never leave a modal open behind.
+  // Routes stay mounted (hidden) after navigation; never leave a modal open behind. The owner
+  // hears about it a task later, so a cleanup that is set up again at once (StrictMode in
+  // development) doesn't close a dialog that was mounted open.
+  const pendingClose = useRef<number | null>(null);
   useLayoutEffect(() => {
     const dialog = ref.current;
+    if (pendingClose.current !== null) {
+      window.clearTimeout(pendingClose.current);
+      pendingClose.current = null;
+    }
     return () => {
-      if (dialog?.open) dialog.close();
-      onCloseRef.current();
+      if (!dialog?.open) return;
+      dialog.close();
+      pendingClose.current = window.setTimeout(() => {
+        pendingClose.current = null;
+        onCloseRef.current();
+      }, 0);
     };
   }, []);
 
@@ -48,7 +59,10 @@ export function Dialog({ open, onClose, title, description, children, id, size =
       id={id}
       aria-labelledby={`${id}-title`}
       aria-describedby={description ? `${id}-description` : undefined}
-      onClose={() => onCloseRef.current()}
+      // A close queued by that cleanup can arrive after the dialog was shown again.
+      onClose={() => {
+        if (!ref.current?.open) onCloseRef.current();
+      }}
       onCancel={(event) => {
         event.preventDefault();
         onCloseRef.current();

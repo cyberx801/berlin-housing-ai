@@ -5,6 +5,7 @@ import {
   COMPARE_KEY,
   getCompareSnapshot,
   removeCompareItem,
+  replaceCompareItem,
   resetCompareCacheForTests,
   subscribeCompare,
   type NewCompareItem,
@@ -75,6 +76,22 @@ describe("comparison store (bhai.compare.v1)", () => {
     expect(window.localStorage.getItem(COMPARE_KEY)).toBeNull();
     acknowledgeCompareDiscard();
     expect(getCompareSnapshot().discarded).toBe(false);
+  });
+
+  it("replaces in place, and reports an item that is gone instead of writing", () => {
+    const first = addCompareItem(item("A"), new Date("2026-10-29T10:00:00Z"));
+    addCompareItem(item("B"));
+    if (!first.ok) throw new Error("expected the first add to succeed");
+    expect(replaceCompareItem(first.id, { ...item("A2"), askingColdRent: 1150 })).toBe(true);
+    expect(getCompareSnapshot().items[0]).toMatchObject({
+      id: first.id,
+      label: "A2",
+      askingColdRent: 1150,
+      addedAt: "2026-10-29T10:00:00.000Z",
+    });
+    const before = window.localStorage.getItem(COMPARE_KEY);
+    expect(replaceCompareItem("removed-in-another-tab", item("C"))).toBe(false);
+    expect(window.localStorage.getItem(COMPARE_KEY)).toBe(before);
   });
 
   it("rejects unsafe listing links", () => {

@@ -259,6 +259,16 @@
   }
 }
 
+/* Dialogs scroll on their own under a sticky title bar; focused fields must clear it (WCAG 2.4.11). */
+dialog :where(label, legend, input, select, textarea, button, a, h3, [id]) {
+  scroll-margin-top: 7.5rem;
+}
+
+/* /compare: the property names stick under the header, up to three lines tall on phones. */
+[data-sticky-thead] :where(tbody a, tbody button) {
+  scroll-margin-top: calc(var(--header-height) + 7rem);
+}
+
 /* /explore (D-039): one DOM, two arrangements. Below lg the map fills the top 55 % of the
    viewport above a tabbed sheet that scrolls on its own; short viewports (landscape phones,
    page zoom) drop the split and let the page scroll. From lg the list is the left rail (it

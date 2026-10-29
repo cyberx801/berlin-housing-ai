@@ -247,3 +247,37 @@ Verified on 2026-10-29 with Node 22.16 / npm 10.9:
   - A label is dropped when it collides with one already placed or runs off the plate.
 → It runs twice. The first pass assumes a 288 px plate, a phone. The second assumes 448 px, the `@md` container width, and starts from the first pass's set, so the wider set always contains the narrower one. Labels that fit only the wider plate are `hidden @md:inline` on the plate's container. Dropped names are still in the borders list and the SVG description.
 → The caption mentions the ring only when its line crosses the frame (`locatorShowsRing`). Blankenfelde's plate, for example, says the ring lies outside the view.
+
+### D-047 · `/compare` table: one table, two arrangements · Accepted
+→ **Shape.** One `<table>`: each column is a property, each row one attribute (PRD F2). From `md` the attribute names are row headers. Below `md` they move to a label row above each value row, so three properties keep a third of the width each, and 360 px has no horizontal scroll (F5). Only `display` changes between the two: every value cell lists its column, row header and label row in `headers`, so both arrangements read the same to assistive tech.
+→ **Header.** The property names stick under the site header (`thead` cells, up to three lines). The Edit / Remove row below them doesn't stick. Focusable cells keep a scroll margin clear of both (2.4.11).
+→ **Rows.** Ortsteil, Bezirk, type, area, rooms; then the rent block (asking cold rent, €/m², predicted rent); then floor, total floors, building, features, transit, the user's note and the listing link. Empty and "Not sure" answers read "Missing" in text (F3); a missing rent adds "Add the asking rent", which opens the editor on that field. The note and link read "No note" / "No link".
+→ **€/m²** is the asking cold rent divided by the living area, both from the user's entries, shown only when a rent was entered. The row says "from your entries", the plate band is "From your entries", and the caption says nothing on the page is a market estimate. It is arithmetic on the user's own numbers, not a prediction or a reference rent.
+→ **Predicted rent** is one cell spanning all columns: "Model not connected", linked to the methodology. No column is ranked, highlighted or called a better deal.
+→ **Departure from the wireframe:** no empty "Add a property" column. Its cells would be read as blank values; "Add a property" sits in the plate header instead.
+
+### D-048 · Compare dialog: the `/analyze` fields plus three listing fields · Accepted
+→ **Same fields.** `PropertyFields` was extracted from `/analyze` (its server-rendered `<main>` is byte-identical before and after). The dialog uses it with the `compare-editor-` id prefix, the same schema and the same messages. Two React Hook Form instances (property and listing) are validated together on save, with one error summary that takes focus.
+→ **Listing fields**, all optional:
+  - *Name*, up to 60 characters. Empty means `{Ortsteil or Bezirk}, {area}`. A name the dialog made up shows as empty when editing, so it follows a changed place or area.
+  - *Asking cold rent*, €1 to €100,000. `parseEuroAmount` reads German and English input: one separator followed by exactly three digits groups thousands (`1.150`, `1,150`); followed by one or two digits it is the decimal mark (`950,50`); with both, the last one is the decimal mark (`1.150,50`, `1,150.50`). Anything else gets a message naming the fix.
+  - *Link*, http or https only, through the same `listingUrlSchema` the stored comparison uses, so a saved item always reads back. Nothing is guessed: `www.example.org/…` is rejected with "starting with https://". The table shows the host and opens the link in a new tab (`rel="noreferrer"`), saying "(new tab)".
+→ **Full comparison.** "Add a property" stays available; the dialog then requires choosing which property the new one replaces, in that column's place (USER_FLOWS Flow 5).
+→ **Redundant entry (3.3.7).** If this tab has an `/analyze` draft, the add dialog offers "Fill in from your analysis" and saves the item with `source: "analysis"`. It reads the draft with `peekDraft`, which never removes a broken one: telling the user about that is `/analyze`'s job.
+→ **No lost input.** Closing an add dialog keeps its entries in memory until the user leaves the page, and the next add offers them back with "Start with an empty form". Cancel on an edit discards the changes; the stored property is unchanged.
+→ **Other tabs.** An edited property removed elsewhere: the dialog says so and the next save adds the entries as a new property. A comparison filled up elsewhere: the replace choice appears with an error.
+→ **Loading.** The dialog is a `next/dynamic` chunk, fetched once the page is interactive. `/compare` first-load JS is 183.5 kB instead of 201.7 kB.
+
+### D-049 · `Dialog` closes on unmount a task later · Accepted
+→ The unmount cleanup (D-027: routes hidden by Activity close their dialogs) called `onClose` at once. The compare editor is mounted already open, and React StrictMode's development-only effect re-run closed it immediately. `onClose` now runs a task later, and a cleanup that is set up again straight away cancels it. A `close` event queued by that cleanup is ignored while the dialog is open. Hidden routes still close their dialogs and tell the owner.
+
+### D-050 · `/compare` focus, announcements and first paint · Accepted
+→ **Focus after a dialog closes:**
+  - Add or replace: the property's column header.
+  - "Add the asking rent": the column header, since the button is gone once a rent is set.
+  - A plain edit: back to its Edit button (the native dialog's own return).
+  - Remove: the comparison heading, or the empty state's heading if it was the last one.
+  - Clear all: the empty state's heading.
+→ **Announcements** go to a polite live region, written after the dialog has closed: while a modal is open the rest of the page is inert, and a message written there would not be read. Inside the dialog, its own live region carries the Bezirk/Ortsteil sync messages.
+→ **Before hydration** the saved comparison can't be read, so the page shows "Reading the comparison saved in this browser." instead of an empty state, with a `<noscript>` note that the comparison needs JavaScript. `data-hydrated` on `#compare-view` marks the live page.
+→ **Remove and Clear all** each ask in a small dialog that names what is deleted and says it can't be brought back.

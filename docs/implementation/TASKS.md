@@ -281,10 +281,65 @@ Last updated: 2026-10-29
 - [!] Screen-reader smoke test **skipped**: NVDA and Firefox are still not installed.
 
 ## Slice 7 — Compare (depends on: 3)
-- [x] Versioned storage + external store + cross-tab sync + corrupt-data handling (built in slice 3: `features/property-comparison/store.ts`, `tests/unit/compare-store.test.ts`)
-- [~] Add-from-analysis (the action on `/analyze` is built; the asking-rent prompt on `/compare` is not)
-- [ ] Add/replace/remove/clear (confirm), comparison table (desktop + mobile), €/m² from user data
-- [ ] E2E Flow 5 (persist across reload)
+- [x] Versioned storage + external store + cross-tab sync + corrupt-data handling (built in slice 3: `features/property-comparison/store.ts`, `tests/unit/compare-store.test.ts`). `replaceCompareItem` now reports an item that is gone instead of writing, and the store shares the dialog's rent and link rules.
+- [x] Refactor first, as its own commit (`d688bae`): `PropertyFields` extracted from `/analyze`. Its server-rendered `<main>` is byte-identical before and after, and the analyze and home E2E specs passed unchanged (48/48).
+- [x] `/compare` page (D-047, D-050):
+  - Empty state ("Add a property", "Start from an analysis"); a neutral "reading" state until hydration, with a `<noscript>` note
+  - One comparison table: row headers from `md`, label rows below it, `headers` on every value cell, sticky property names
+  - "Missing" in text (F3); a missing asking rent offers "Add the asking rent", which opens the editor on that field
+  - €/m² from the user's own rent and area only, labelled "from your entries"; predicted rent always "Model not connected", one cell across all columns; no ranking
+  - Listing links by host, new tab, `rel="noreferrer"`, "(new tab)" in the text
+  - Notices for dropped (corrupt or old-version) data, with Dismiss, and for blocked storage
+- [x] Add / edit / replace dialog (D-048): the `/analyze` field set plus name, asking cold rent (German and English number formats) and link (http/https only). A fourth property must replace one. "Fill in from your analysis" from the tab's draft (3.3.7). Closing an add keeps its entries until the user leaves the page. Edits of a property removed in another tab are kept and saved as a new one. Loaded on demand (`next/dynamic`), fetched after hydration.
+- [x] Remove and Clear all ask first; focus and a polite announcement follow every change (D-050).
+- [x] `Dialog` is StrictMode-safe when mounted open (D-049).
+- [x] E2E Flow 5: `tests/e2e/compare.spec.ts`. It covers:
+  - from `/analyze` with the rent flagged, adding the rent, €/m², a reload
+  - two adds by hand, a fourth that must replace one, remove (with Keep it first) and clear, with focus checked after each
+  - `javascript:`, `ftp:` and scheme-less links rejected; rents that aren't amounts; `1,150.50` saved as 1150.5
+  - the add dialog closed and reopened with its entries; "Fill in from your analysis"
+  - corrupt JSON, an old version and an invalid item: dropped, with the notice
+  - axe empty, full and with the dialog's error summary; three properties at an explicit 360 px with no horizontal scroll
+- [ ] `/methodology#your-data` (the "From your entries" band link) and `#in-development` return 404 until slice 8.
+- [ ] Before hydration the page shows the "reading" state, so a saved comparison is never in the static HTML (it can't be: it lives in the browser).
+- [ ] At 375 px a long property name is clamped to three lines in the sticky header; the full name is in the accessible name and the edit dialog.
+
+**Slice 7 checks (2026-10-29):**
+- `npm run typecheck` ✓
+- `npm run lint` ✓ (0 problems). One React Compiler finding during the refactor: it inferred `setNotice` as a dependency of `/analyze`'s `onSearch`; the stable setter is now listed.
+- `npx vitest run` 287/287 ✓ (24 files). New: `compare-validation` (euro parsing, listing fields, every accepted value also accepted by the stored comparison), `compare-rows` (row values, €/m², labels, hosts), `compare-view` (9 component tests), and a store test for replacing a removed item.
+- `npm run build` ✓: `/compare` static.
+- `npx playwright test`, four full runs on the final code or close to it:
+  - **Run 1:** 135 passed / 3 skipped / **3 failed**, all 30 s timeouts at 1440 (compare Flow 5, compare axe, `/explore` map click). `--last-failed` passed all three (9–10 s each). The two compare tests now have 60 s: about 10 s alone, with four adds or three axe scans.
+  - **Run 2:** 127 passed / 3 skipped / **11 failed**: 10 timeouts and one URL mismatch, all at 375, across analyze, explore, neighborhoods and compare. `--last-failed` passed all 11 (24.2 s).
+  - **Run 3:** 137 passed / 3 skipped / **1 failed**: the slice 6 test "a search typed just before leaving" got `q=oa`. It typed before the directory had hydrated and the first key was dropped. The directory now sets `data-hydrated` and the test waits for it.
+  - **Run 4:** 138 passed / 3 skipped ✓, after a rebuild. The skips are the mobile menu at 1440, by design, and the 97-profile walk, which runs only at 375.
+- frontend-quality gate:
+  - Boundaries: no server marker in any client chunk. The compare page gets Bezirk and Ortsteil options as props; it imports no geo data module. No fixture import, no third-party fetch.
+  - Provenance: the table sits in a Plate with `user` provenance ("From your entries"). The only money figures are the user's own asking rents and €/m² worked out from them, which DATA_BOUNDARIES §1 allows "as the user's own claim". No model number, no formula beyond rent ÷ area.
+- First-load JS (gzip, module scripts, `noModule` left out): `/compare` **183.5 kB**, over the 150 kB budget (201.7 kB before the dialog was split out). The rest is the shared ~140 kB baseline plus Zod for validating stored data on read (PRD F4). For slice 9: Zod Mini for the store would be the next cut.
+
+**Bugs found while testing (fixed):**
+- The add dialog closed as soon as it opened in development: StrictMode's extra effect run reached `Dialog`'s unmount cleanup, which called `onClose` (D-049).
+- The dialog had two buttons named "Close" (the header's ✕ and the footer). The footer now says "Close and keep my entries".
+- Reading the `/analyze` draft from the dialog would have removed a broken draft before `/analyze` could say so. The dialog uses `peekDraft`, which never removes.
+- A seeded E2E comparison was consumed by the page's first read when written before hydration; the tests wait for `#compare-view[data-hydrated]` (`/analyze` stays mounted with its own marker, so the bare attribute matched twice).
+
+**Design review (screenshots 375/768/1440: empty, add dialog, dialog errors with the replace choice, three properties, sticky header mid-scroll, forced colors):**
+- One bold element: the property names over the table. The page is a plate with the "From your entries" band, a legend rail and a caption. No cards, no ranking, no colour used for "better".
+- Rows align on the first baseline across columns. Rule weights group the rows: place and size, the rent block, details, note and link.
+- At 375 px, German names hyphenate (`lang="de"`): "Gesundbrun-nen", "Charlotten-burg". User-typed names break anywhere if they must ("Turmstra-ße").
+- Forced colors: rules, the not-connected mark and the dialog border stay visible.
+- Departure from the wireframe: no empty "Add" column (D-047).
+
+**Accessibility review (slice 7: table, dialog, confirm dialogs, notices):**
+- axe (wcag2a/aa, 2.1, 2.2): 0 violations at 375, 768 and 1440 px: empty, three properties, and the open dialog with its error summary.
+- Keyboard (scripted Tab walk at 1440 and 375 px with three properties: 28 and 23 stops): every stop has the 2 px outline. None is under the site header or the sticky names. The legend rail comes after the table in the DOM, so its link is reached after the table's, though the rail is drawn on the left from `lg`. On phones it follows the table.
+- Dialogs: Esc closes and focus returns to the opener. After a save, remove or clear, focus goes where D-050 says, checked in component and E2E tests. Back and Forward with the add dialog open (Activity): no dialog left open on either page, and the entries are offered on the next add (checked by script).
+- Errors: the dialog's summary takes focus and links to each field, including the replace choice. Messages name the fix.
+- Table: real `<table>` with a hidden caption, column headers, row headers from `md` and explicit `headers` below it. The link says "(new tab)" in text.
+- Announcements: add, replace, edit, remove and clear, in the page's polite region, after the dialog closes. The dialog has its own region for the Bezirk/Ortsteil sync.
+- [!] Screen-reader smoke test **skipped**: NVDA and Firefox are still not installed. The two table arrangements rely on `headers`, so this is the first thing to check with a real reader.
 
 ## Slice 8 — Methodology (depends on: 0, 3, 5)
 - [ ] Sections mirroring the PRD §3 truth table; dataset registry rendered from `data/PROVENANCE` metadata; ring/area/adjacency method; uncertainty explainer
@@ -296,7 +351,7 @@ Last updated: 2026-10-29
 - [ ] Dark mode: ship only if every token check passes; otherwise force light (D-020)
 - [ ] Optional: "Show demo layer" choropleth on `/explore` (PRD C6), default off, hatched and labelled
 - [ ] Chart texture channel for forced colors / print / "patterns" setting (DESIGN_SYSTEM §8.5)
-- [ ] Performance budgets checked (Lighthouse mobile). First-load JS is already over 150 kB on `/`, `/analyze`, `/market` and `/explore` (measured in slice 6).
+- [ ] Performance budgets checked (Lighthouse mobile). First-load JS is already over 150 kB on `/`, `/analyze`, `/market` and `/explore` (measured in slice 6), and on `/compare` (183.5 kB, slice 7).
 - [ ] Final QA report: commands run, results, known gaps
 
 ## Blocked / external

@@ -102,6 +102,8 @@ test.describe("/neighborhoods", () => {
 
   test("a search typed just before leaving is still there on Back", async ({ page }) => {
     await page.goto("/neighborhoods");
+    // Keys pressed before hydration are dropped (slice 9 pre-hydration item).
+    await page.locator("#directory[data-hydrated]").waitFor();
     const box = page.getByRole("searchbox", { name: "Search by name" });
     // Faster than the 400 ms delay on writing the search to the URL.
     await box.pressSequentially("moa");

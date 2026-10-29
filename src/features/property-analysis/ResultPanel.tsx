@@ -6,12 +6,13 @@ import { useEffect, useRef, useState } from "react";
 import { ProvenanceLabel } from "@/components/provenance/ProvenanceLabel";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { Disclosure } from "@/components/ui/Disclosure";
+import { defaultCompareLabel } from "@/features/property-comparison/rows";
 import { addCompareItem, MAX_COMPARE_ITEMS, useCompareSnapshot } from "@/features/property-comparison/store";
 import type { RentEstimateOutcome } from "@/lib/api/prediction/types";
 import type { RentPredictionRequestV1, RentPredictionResponseV1 } from "@/lib/contracts/rent-prediction.v1";
 import { cx } from "@/lib/cx";
 import { formatIsoDate } from "@/lib/formatting/date";
-import { formatAreaM2, formatEUR, formatEURPerM2, formatPercent } from "@/lib/formatting/number";
+import { formatEUR, formatEURPerM2, formatPercent } from "@/lib/formatting/number";
 import type { PropertyInput } from "@/lib/validation/property";
 import { FIELD_LABELS, formFieldForWire } from "./fields";
 import { InputSummary, type ResultPlace } from "./InputSummary";
@@ -263,7 +264,7 @@ function Actions({ input, place }: { input: PropertyInput; place: ResultPlace })
   function add() {
     if (status === "added") return;
     const result = addCompareItem({
-      label: `${place.ortsteilName ?? place.bezirkName}, ${formatAreaM2(input.areaM2)}`,
+      label: defaultCompareLabel(place.ortsteilName ?? place.bezirkName, input.areaM2),
       property: input,
       askingColdRent: null,
       listingUrl: null,
@@ -298,7 +299,7 @@ function Actions({ input, place }: { input: PropertyInput; place: ResultPlace })
           </>
         ) : status === "full" ? (
           <>
-            The comparison already holds {MAX_COMPARE_ITEMS} flats.{" "}
+            The comparison already holds {MAX_COMPARE_ITEMS} properties.{" "}
             <Link href="/compare" className={linkClass}>
               Remove one in the comparison
             </Link>

@@ -2,6 +2,7 @@ import { useSyncExternalStore } from "react";
 import { z } from "zod";
 import { randomId } from "@/lib/id";
 import { getStorage, readVersioned, writeVersioned } from "@/lib/storage/versioned";
+import { COMPARE_LIMITS, listingUrlSchema } from "@/lib/validation/compare";
 import { storedPropertySchema } from "@/lib/validation/property";
 
 // The comparison lives only in this browser (PRD F4, DATA_BOUNDARIES: user data).
@@ -10,11 +11,11 @@ export const MAX_COMPARE_ITEMS = 3;
 
 export const compareItemSchema = z.object({
   id: z.string().min(1).max(64),
-  label: z.string().trim().min(1).max(60),
+  label: z.string().trim().min(1).max(COMPARE_LIMITS.label.max),
   property: storedPropertySchema,
   /** Entered by the user from a listing. Never estimated. */
-  askingColdRent: z.number().positive().max(100_000).nullable(),
-  listingUrl: z.url({ protocol: /^https?$/ }).max(500).nullable(),
+  askingColdRent: z.number().min(COMPARE_LIMITS.askingColdRent.min).max(COMPARE_LIMITS.askingColdRent.max).nullable(),
+  listingUrl: listingUrlSchema.nullable(),
   source: z.enum(["manual", "analysis"]),
   addedAt: z.string(),
 });
@@ -90,13 +91,16 @@ export function addCompareItem(item: NewCompareItem, now = new Date()): AddResul
   return { ok: true, id };
 }
 
-export function replaceCompareItem(id: string, item: NewCompareItem) {
+/** Returns false when the item is gone (e.g. removed in another tab); nothing is written then. */
+export function replaceCompareItem(id: string, item: NewCompareItem): boolean {
   const { items } = getCompareSnapshot();
+  if (!items.some((existing) => existing.id === id)) return false;
   commit(
     items.map((existing) =>
       existing.id === id ? compareItemSchema.parse({ ...item, id, addedAt: existing.addedAt }) : existing,
     ),
   );
+  return true;
 }
 
 export function removeCompareItem(id: string) {

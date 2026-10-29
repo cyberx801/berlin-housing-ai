@@ -98,7 +98,7 @@ tests/contracts/fixtures/** ◀── ONLY tests/**
 | `/market` | Static shell with the default view prerendered; other filters fetched per module from `/api/market/*` (D-022) | `MarketDataSource` (demo), default filters only | filter rail, four chart modules | `bezirke, from, to, type` (`history.replaceState` from user actions, D-040) |
 | `/neighborhoods` | Static (all 97 rows in the HTML) | all 97 meta rows | filter rail + A–Z table | `bezirk, ring, q` (`history.replaceState` from user actions, D-037, D-045) |
 | `/neighborhoods/[slug]` | SSG, `generateStaticParams` (97). `dynamicParams` isn't available with Cache Components, so other slugs render on request and call `notFound()` (D-043) | one Ortsteil + neighbors + locator paths; market provenance for the demo module | none (links only) | — |
-| `/compare` | Static shell | Bezirk/Ortsteil options | comparison store, dialogs | — (storage) |
+| `/compare` | Static shell. The table renders after hydration from `localStorage`, with a neutral "reading" state until then (D-050) | Bezirk/Ortsteil options | `CompareView` (store, table, confirm dialogs); `CompareEditor`, loaded on demand, shares `PropertyFields` with `/analyze` (D-048) | — (storage) |
 | `/methodology` | Static | dataset registry | none | anchors |
 | `POST /api/predictions/rent` | Route handler (Node), dynamic | — | — | — |
 | `GET /api/market/{rent-trend,districts,distribution,property-types}` | Route handlers, dynamic, `no-store` | one `MarketDataSource` call each, returning `{ provenance, data }` | — | strict query: `bezirke` (codes), `from`, `to`, `type`; 400 with a reason |
