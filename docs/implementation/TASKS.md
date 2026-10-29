@@ -431,7 +431,7 @@ Findings:
 - [x] Slice 7 and 8 follow-ups: the compare rail order (D-053), the opaque header, and the 404 console filters removed from four specs.
 
 **Slice 9 fixes:**
-- **Forced colors, charts** (WCAG 1.4.3, 1.4.11; severity high). Browsers leave SVG paint alone under forced colors, so the Bezirk labels stayed dark ink on the system's black Canvas, close to invisible, and the lines kept their token colours. Charts now paint in system colors, with dashes and hatching (D-054). Checked by an E2E test and by screenshots.
+- **Forced colors, charts** (WCAG 1.4.3, 1.4.11; severity high). Chromium leaves SVG paint alone under forced colors (other browsers not checked), so the Bezirk labels stayed dark ink on the system's black Canvas, close to invisible, and the lines kept their token colours. Charts now paint in system colors, with dashes and hatching (D-054). Checked by an E2E test and by screenshots.
 - **Chart focus outline** (WCAG 2.4.7; high). The four chart sliders showed no outline when reached by Tab. In Tailwind 4, `outline-none` also sets the outline style variable to none, so `focus-visible:outline-2` drew nothing. The base `:focus-visible` rule now applies. An E2E assertion was added.
 - **Dialogs in Safari** (WCAG 2.4.3; medium). A click in WebKit focuses the nearest focusable ancestor (`<main tabindex=-1>`), not the button, so a closed dialog returned focus to `<main>`. The dialog now records the pressed control and returns focus to it.
 - **`/analyze` progress strip in WebKit** (WCAG 2.4.11; medium). WebKit ignores `scroll-margin` when focus moves, so a field could land under the sticky strip. The form scrolls it clear.
@@ -447,7 +447,7 @@ Findings:
   - `mobile-375`: 54/54 ✓.
   - `tablet-768`: 53 passed, 1 skipped (the 97-profile walk, phone only) ✓.
   - `desktop-1440`: 52 passed, 2 skipped (the mobile menu; the profile walk) ✓.
-  - `webkit-375` (new, opt-in with `QA_WEBKIT=1`): 44 passed, 2 skipped, 8 failed. All 8 were timeouts waiting for hydration or a navigation. With `--last-failed`, 7 passed; the eighth (`methodology.spec.ts` "its ids stay unique…") failed 1 of 3 with `--repeat-each=3`. The first footer click from `/` sometimes doesn't navigate within 5 s in WebKit. **Flaky, not diagnosed.**
+  - `webkit-375` (new, opt-in with `QA_WEBKIT=1`): 44 passed, 2 skipped, 8 failed. All 8 were timeouts waiting for hydration or a navigation. With `--last-failed`, 7 passed; the eighth (`methodology.spec.ts` "its ids stay unique…") failed 1 of 3 with `--repeat-each=3`. The first footer click from `/` sometimes doesn't navigate within the 5 s limit. A scratch loop (10 fresh pages, click at once, 20 s ceiling) navigated every time, in 0.7–11.4 s: **slow navigation under load, not a lost click.**
   - The skip-link test is skipped in WebKit: links aren't Tab stops there unless "Press Tab to highlight each item" is on (Safari's default), and Playwright's WebKit has no Option+Tab on Windows.
 - Tab walk (scripted, every route at 1440 and 375, up to the footer): every stop shows the 2 px outline and none is under the header or the strip, after the chart fix. Before it, the chart sliders were the only failure.
 - Screenshot sweep: 15 states × 3 widths, full page, plus close-ups:
@@ -463,7 +463,7 @@ Findings:
   - Simulated: `/` LCP 8.0 s, TBT 1,780 ms, score 0.41. `/analyze` LCP 6.6 s, TBT 730 ms. `/methodology`, which ships no code of its own, LCP 6.3 s, TBT 1,080 ms.
   - Unthrottled (`--throttling-method=provided`): `/` and `/methodology` both LCP 1.4 s, TBT 0 ms.
   - Even the baseline-only page is far from 2.5 s under simulation. The loaded machine dominates these numbers, so they neither confirm nor refute the LCP budget. The relative signal: `/` adds about 700 ms of blocking time over the baseline page.
-  - LCP is text (the home h1, a prose paragraph elsewhere), and 94 % of it is render delay behind script work.
+  - LCP is text (the home h1, a prose paragraph elsewhere). On `/` 94 % of it is render delay; the cause isn't established, since `/methodology` shows the same pattern without route code.
 - Options for the owner: (a) restate the budget as baseline plus a route allowance; (b) move client validation to `zod/mini`; (c) both. Re-measure on an idle machine either way.
 
 **Known gaps, decided:**

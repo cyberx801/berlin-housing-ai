@@ -314,7 +314,7 @@ Verified on 2026-10-29 with Node 22.16 / npm 10.9:
   - Bars and histogram columns get a 45° line fill from one `<pattern>` (`#chart-texture-45`), rendered once by `/market`, so its id stays unique while other routes are mounted.
   - Dots keep their fill: each is one series, labelled by its row.
   - The 135° fill isn't needed: no chart in this phase has two filled series.
-→ **Forced colors.** Browsers don't adjust SVG paint, so the Bezirk labels (ink on the system's dark Canvas) were close to invisible. Charts now opt out (`forced-color-adjust: none`) and paint themselves in system colors: text and marks in `CanvasText`, gridlines in `GrayText`, the selected Bezirke in `Highlight`.
+→ **Forced colors.** Chromium doesn't adjust SVG paint (other browsers not checked), so the Bezirk labels (ink on the system's dark Canvas) were close to invisible. Charts now opt out (`forced-color-adjust: none`) and paint themselves in system colors: text and marks in `CanvasText`, gridlines in `GrayText`, the selected Bezirke in `Highlight`.
 → **The setting** is kept in this browser (`localStorage` `bhai.chartPatterns.v1`). An inline head script sets `<html data-chart-patterns>` before first paint, so there is no flash in colour alone. If storage is blocked the setting still applies until reload, and the hint says it can't be kept.
 
 ### D-055 · Dark mode is not shipped in this phase · Accepted (slice 9)
