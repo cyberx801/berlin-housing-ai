@@ -23,6 +23,8 @@ interface ChoiceGroupProps<V extends string> {
   onValueChange?: (value: V) => void;
   className?: string;
   size?: "md" | "sm";
+  /** Filters aren't form questions, so they can drop the Required/Optional marker. */
+  showRequirement?: boolean;
 }
 
 /**
@@ -42,6 +44,7 @@ export function ChoiceGroup<V extends string>({
   onValueChange,
   className,
   size = "md",
+  showRequirement = true,
 }: ChoiceGroupProps<V>) {
   const hintId = hint ? `${baseId}-hint` : undefined;
   const errorId = error ? `${baseId}-error` : undefined;
@@ -56,7 +59,9 @@ export function ChoiceGroup<V extends string>({
     >
       <legend className="mb-1.5 flex flex-wrap items-baseline gap-x-2 type-body font-[600]">
         <span>{legend}</span>
-        <span className="type-small font-[450] text-ink-3">{required ? "Required" : "Optional"}</span>
+        {showRequirement ? (
+          <span className="type-small font-[450] text-ink-3">{required ? "Required" : "Optional"}</span>
+        ) : null}
       </legend>
       {hint ? (
         <p id={hintId} className="-mt-1 type-small text-ink-2">

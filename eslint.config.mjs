@@ -82,6 +82,8 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     "test-results/**",
     "public/geo/**",
+    // Third-party build output copied from node_modules (scripts/copy-maplibre-worker.mjs).
+    "public/vendor/**",
   ]),
 ]);
 

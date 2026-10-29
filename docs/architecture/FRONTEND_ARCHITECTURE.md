@@ -92,7 +92,7 @@ tests/contracts/fixtures/** ◀── ONLY tests/**
 |---|---|---|---|---|
 | `/` | Static | geo meta + SVG plate paths | Ring Plate interaction, AnalysisEntry | — |
 | `/analyze` | Static shell | Bezirk → Ortsteil options | PropertyAnalysisForm, ResultPanel | prefill only: `bezirk, ortsteil, type, area, rooms` |
-| `/explore` | Static shell; `ExploreMap` via `next/dynamic` (`ssr: false`) | Ortsteil list (SSR, usable before the map loads) | map, list, panel, filters | `o, bezirk, ring, q` (`router.replace`) |
+| `/explore` | Static shell; `ExploreMap` via `next/dynamic` (`ssr: false`) | Ortsteil list (SSR, usable before the map loads) | map, list, panel, filters | `o, bezirk, ring, q` (`history.replaceState` from user actions, D-037) |
 | `/market` | Static; the demo dataset is small and passed as props | `MarketDataSource` (demo) | filter bar, chart modules | `bezirke, from, to, type` |
 | `/neighborhoods` | Static | all 97 meta rows | filter + search | `bezirk, ring, q` |
 | `/neighborhoods/[slug]` | SSG, `generateStaticParams` (97), `dynamicParams = false` | one Ortsteil + neighbors + locator paths | none required (links only) | — |
@@ -154,10 +154,10 @@ Derivation rules are specified in DATA_BOUNDARIES §6.
 **SVG plates** (`RingPlate`, `LocatorPlate`, `BezirkSilhouette`) are server components. They project with `d3-geo` (`geoMercator().fitSize`, a conformal projection that is fine at city scale) and emit plain `<path>` elements. Interactivity is a thin client wrapper that handles hover, focus, the tooltip and selection via event delegation on `data-code` attributes. Each Ortsteil path is focusable only in the hero's "explore the plate" mode, so the page doesn't become 97 tab stops. Otherwise the linked list is the keyboard path.
 
 **MapLibre** runs on `/explore` only:
-- an inline style object with no remote style and no glyph server, labels via HTML overlays or the list
+- an inline style object with no remote style and no glyph server; labels are `aria-hidden` HTML overlays (D-038)
 - data loaded from `/geo/*.geojson` after first paint
 - `feature-state` for hover and selection
-- a WebGL check, with the SVG `RingPlate` and the list as the fallback
+- a WebGL2 check before the module is requested, with the SVG `RingPlate` and the list as the fallback; the worker is served from `/vendor` (D-038)
 
 The optional basemap (OpenFreeMap) is behind `NEXT_PUBLIC_ENABLE_BASEMAP`, which is off by default, and its terms are reviewed before it's enabled.
 

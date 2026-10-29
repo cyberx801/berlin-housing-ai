@@ -42,6 +42,7 @@ import {
   PROPERTY_TYPE_LABELS,
   TRI_STATE_LABELS,
 } from "@/lib/property/labels";
+import { SearchParamsReader } from "@/lib/url-state/SearchParamsReader";
 import { PREFILL_LABELS, readAnalyzePrefill, type PrefillField } from "@/lib/validation/prefill";
 import {
   createPropertySchema,
@@ -69,7 +70,6 @@ import {
   type FormField,
 } from "./fields";
 import type { ResultPlace } from "./InputSummary";
-import { PrefillReader } from "./PrefillReader";
 import { ResultPanel } from "./ResultPanel";
 
 const FORM_ID = `${ANALYZE_ID}-form`;
@@ -805,7 +805,7 @@ export function PropertyAnalysisForm({
         {announcement}
       </p>
       <Suspense fallback={null}>
-        <PrefillReader onSearch={onSearch} />
+        <SearchParamsReader onSearch={onSearch} />
       </Suspense>
     </div>
   );

@@ -1,6 +1,15 @@
 import "server-only";
 import { z } from "zod";
-import type { BezirkMeta, BezirkOption, OrtsteilMeta, OrtsteilOption, PlatePlace, Plates } from "@/types/geo";
+import type {
+  BezirkMeta,
+  BezirkOption,
+  ExploreBezirk,
+  ExplorePlace,
+  OrtsteilMeta,
+  OrtsteilOption,
+  PlatePlace,
+  Plates,
+} from "@/types/geo";
 import type { Provenance } from "@/types/provenance";
 import bezirkeJson from "./generated/bezirke.meta.json";
 import ortsteileJson from "./generated/ortsteile.meta.json";
@@ -100,6 +109,35 @@ export function getPlatePlaces(): PlatePlace[] {
     ringShare: o.ringShare,
     ringStatus: o.ringStatus,
   })).sort((a, b) => a.name.localeCompare(b.name, "de"));
+}
+
+export function getExplorePlaces(): ExplorePlace[] {
+  return getPlatePlaces().map((place) => {
+    const meta = ortsteilByCode.get(place.code)!;
+    return {
+      ...place,
+      bezirkSlug: bezirkByCode.get(place.bezirkCode)?.slug ?? "",
+      neighbors: meta.neighbors,
+      labelPoint: meta.labelPoint,
+      bbox: meta.bbox,
+    };
+  });
+}
+
+export function getExploreBezirke(): ExploreBezirk[] {
+  return BEZIRKE.map(({ code, name, slug, labelPoint, bbox }) => ({ code, name, slug, labelPoint, bbox })).sort(
+    (a, b) => a.name.localeCompare(b.name, "de"),
+  );
+}
+
+/** [west, south, east, north] around all of Berlin. */
+export function getBerlinBbox(): [number, number, number, number] {
+  return [
+    Math.min(...BEZIRKE.map((b) => b.bbox[0])),
+    Math.min(...BEZIRKE.map((b) => b.bbox[1])),
+    Math.max(...BEZIRKE.map((b) => b.bbox[2])),
+    Math.max(...BEZIRKE.map((b) => b.bbox[3])),
+  ];
 }
 
 export function getBezirkOptions(): BezirkOption[] {

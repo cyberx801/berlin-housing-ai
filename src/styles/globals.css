@@ -259,6 +259,33 @@
   }
 }
 
+/* /explore (D-039): one DOM, two arrangements. Below lg the map fills the top 55 % of the
+   viewport above a tabbed sheet that scrolls on its own; short viewports (landscape phones,
+   page zoom) drop the split and let the page scroll. From lg the list is the left rail (it
+   scrolls on its own) and the details panel docks over the map's right edge. */
+@utility explore-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 18rem auto auto;
+  grid-template-areas: "map" "tabs" "sheet";
+  @media (height >= 34rem) {
+    height: calc(100svh - var(--header-height));
+    grid-template-rows: 55% auto minmax(0, 1fr);
+  }
+  /* From lg the whole explorer, map attribution included, fits under the page title. */
+  @variant lg {
+    height: max(32rem, calc(100svh - var(--header-height) - 11.5rem));
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-areas: "sheet map";
+    column-gap: 1.5rem;
+  }
+}
+/* The map container clips overflow, so the canvas focus ring is drawn inside it. */
+[data-explore-map] .maplibregl-canvas:focus-visible {
+  outline-offset: -2px;
+}
+
 /* ---------- Provenance notation (DESIGN_SYSTEM §7) ---------- */
 @utility band-official {
   border-top: 3px solid var(--color-ink);

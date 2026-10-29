@@ -17,6 +17,7 @@ interface RingPlateProps {
   description: string;
   /** Draw the ring in once per session (homepage hero only). */
   drawRing?: boolean;
+  className?: string;
 }
 
 /**
@@ -24,7 +25,14 @@ interface RingPlateProps {
  * projected on the server. Ortsteil paths carry `data-code` for the client interaction layer.
  * Styles are inline (not classes) so `<use>` clones in the highlight layer look identical.
  */
-export function RingPlate({ idPrefix, plates, title, description, drawRing = false }: RingPlateProps) {
+export function RingPlate({
+  idPrefix,
+  plates,
+  title,
+  description,
+  drawRing = false,
+  className = "block h-auto w-full",
+}: RingPlateProps) {
   const ids = plateIds(idPrefix);
   const { width, height } = ringPlateViewBox(plates);
   const projection = fitProjection(plates.outline, { width, height, padding: PADDING });
@@ -36,7 +44,7 @@ export function RingPlate({ idPrefix, plates, title, description, drawRing = fal
       role="img"
       aria-labelledby={ids.title}
       aria-describedby={ids.desc}
-      className="block h-auto w-full"
+      className={className}
     >
       <title id={ids.title}>{title}</title>
       <desc id={ids.desc}>{description}</desc>

@@ -99,10 +99,41 @@ Last updated: 2026-10-29
 - [!] Screen-reader smoke test of Flow 1 **skipped**: NVDA and Firefox are still not installed.
 
 ## Slice 4 — Market explorer `/explore` (depends on: 0, 1)
-- [ ] ExploreMap (MapLibre, dynamic, inline style, feature-state), WebGL fallback
-- [ ] Filter rail, synced list (listbox semantics), search field filtering the list, info panel, URL state
-- [ ] Mobile bottom sheet (List / Details)
-- [ ] E2E Flow 3 (selection via list and keyboard; URL deep link)
+- [x] ExploreMap: MapLibre via `next/dynamic` after a WebGL2 check, inline style, `promoteId: "code"`, feature-state for selection, hover and filter dimming, HTML labels, own zoom buttons and attribution (D-038)
+- [x] WebGL2 fallback: the server-rendered plate, with an explanation and pointer selection; the plate also stands in while the map loads
+- [x] Filter rail (search, Bezirk, ring status), listbox with `aria-activedescendant` grouped by Bezirk, details panel (facts, bordering Ortsteile, Analyze and profile links, Esc), URL state `o`/`bezirk`/`ring`/`q` (D-037)
+- [x] Below `lg`: map at 55 % above a List / Details tablist and a self-scrolling sheet (D-039)
+- [x] E2E Flow 3: `tests/e2e/explore.spec.ts` (search and keyboard selection, shared link and reload, unknown slug, map click, filters and URL, forced fallback without the map module, leave and return with one canvas, axe)
+- [ ] Demo choropleth behind "Show demo layer" (PRD C6): waits for the slice 5 fixtures
+- [ ] "Open the … profile" links to `/neighborhoods/<slug>`, which returns 404 until slice 6 (as on the homepage)
+
+**Slice 4 checks (2026-10-29):** `npm run typecheck` ✓, `npm run lint` ✓ (0 problems), `npm run test` 182/182 ✓ (15 files; new: `explore-filters`, `explore-view`), `npm run build` ✓ (`/explore` static), `npx playwright test` 83 passed / 1 skipped ✓ (skip: mobile menu at 1440, by design). In the browser: worker and the three GeoJSON files load with 200, no console errors; the static HTML has all 97 options and no MapLibre reference.
+
+**Bugs found while testing (fixed):**
+- The map drew nothing. MapLibre's unlayered `.maplibregl-map { position: relative }` beat Tailwind's layered `absolute`, so the container had no height. It now fills a positioned wrapper (D-038).
+- With an `error` listener attached, MapLibre stops logging, and a later `idle` turned a failed source into "ready". Errors are now logged, and a failed source stays failed.
+- "Clear filters" waited 400 ms to update the URL, because it also clears the query. Only typing in the search field is delayed now.
+- `npm run lint` linted the copied MapLibre worker (1103 warnings). `public/vendor/**` is now ignored.
+
+**Design review findings (screenshots 375/768/1024/1440):**
+- Fixed: a selected Ortsteil filled the whole map and its neighbours disappeared. Fits now keep 15 % of the map as surroundings, up to zoom 13.
+- Fixed: at `lg` the explorer was viewport-tall below the title, so the map's bottom and the attribution needed a scroll. It now fits under the title.
+- Fixed: labels were cut off under the details panel and the attribution line. Both strips now count as off-map for labels.
+- Verified: no horizontal scroll at any width, one bold element per screen (the marker-filled selection), and the official band on the map frame and the details panel.
+
+**Accessibility review (slice 4: list, filters, details, tabs, map):**
+- axe (wcag2a/aa, 2.1, 2.2): 0 violations after a keyboard selection, after a map click, and in the WebGL2 fallback, at 375, 768 and 1440 px.
+- Keyboard:
+  - Search, then ArrowDown into the list. Arrow keys, Home, End and Page keys move the active option, and Enter or Space selects. Selection does not follow focus.
+  - Esc closes the details, and focus returns to the list if it was in the panel. A bordering-Ortsteil button moves focus to the new heading.
+  - Below `lg`, arrow keys switch tabs, and focus follows a selection into Details only when the list hides.
+- The map is never the only path: the list and the details panel carry everything the map shows. Map labels are `aria-hidden`. The canvas is labelled, and its focus ring is drawn inside it.
+- Live region: selection, cleared selection and filter result counts (search counts after a pause).
+- Forced colors (emulated): the selected option paints itself in Highlight / HighlightText with "Selected" in text. The active option's focus ring stays visible.
+- 2.4.11: the active option at 375 px sits between the map and the bottom edge, clear of the header (checked in the browser).
+- Targets: options and tabs are 44 px, map buttons 36 px, and bordering-Ortsteil links at least 24 px.
+- [!] The map canvas keeps its token colours under forced colors (canvas isn't adjusted). The plate and the list follow system colours.
+- [!] Screen-reader smoke test of Flow 3 **skipped**: NVDA and Firefox are still not installed.
 
 ## Slice 5 — Market intelligence `/market` (depends on: 1)
 - [ ] `scripts/build-demo-fixtures.mjs` (seeded) + `fixtures/demo/README.md`

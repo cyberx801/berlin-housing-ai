@@ -58,6 +58,23 @@ export interface PlatePlace {
   ringStatus: RingStatus;
 }
 
+/** One Ortsteil as `/explore` needs it: list row, details panel, map label and camera target. */
+export interface ExplorePlace extends PlatePlace {
+  bezirkSlug: string;
+  /** Codes of adjacent Ortsteile. */
+  neighbors: string[];
+  labelPoint: [number, number];
+  bbox: [number, number, number, number];
+}
+
+export interface ExploreBezirk {
+  code: string;
+  name: string;
+  slug: string;
+  labelPoint: [number, number];
+  bbox: [number, number, number, number];
+}
+
 /** Minimal option shapes passed from server pages to client forms. */
 export interface BezirkOption {
   code: string;
