@@ -1,0 +1,4 @@
+{
+  "api_version": "1.0",
+  "error": { "code": "PREDICTION_ENGINE_NOT_CONFIGURED", "message": "No prediction service is connected.", "retryable": false }
+}

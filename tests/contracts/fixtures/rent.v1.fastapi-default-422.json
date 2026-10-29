@@ -1,0 +1,6 @@
+{
+  "detail": [
+    { "loc": ["body", "area_m2"], "msg": "Input should be greater than or equal to 10", "type": "greater_than_equal" },
+    { "loc": ["body", "rooms"], "msg": "Input should be a multiple of 0.5", "type": "multiple_of" }
+  ]
+}

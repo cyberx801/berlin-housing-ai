@@ -1,0 +1,2541 @@
+[
+ {
+  "code": "0101",
+  "name": "Mitte",
+  "slug": "mitte",
+  "bezirkCode": "01",
+  "areaKm2": 10.66,
+  "ringShare": 1,
+  "ringStatus": "inside",
+  "neighbors": [
+   "0102",
+   "0104",
+   "0105",
+   "0106",
+   "0201",
+   "0202",
+   "0301"
+  ],
+  "labelPoint": [
+   13.39707,
+   52.52104
+  ],
+  "bbox": [
+   13.36586,
+   52.50404,
+   13.4294,
+   52.5404
+  ]
+ },
+ {
+  "code": "0102",
+  "name": "Moabit",
+  "slug": "moabit",
+  "bezirkCode": "01",
+  "areaKm2": 7.7,
+  "ringShare": 0.834,
+  "ringStatus": "partly",
+  "neighbors": [
+   "0101",
+   "0103",
+   "0104",
+   "0105",
+   "0401",
+   "0406"
+  ],
+  "labelPoint": [
+   13.3365,
+   52.53067
+  ],
+  "bbox": [
+   13.31141,
+   52.51667,
+   13.37384,
+   52.54143
+  ]
+ },
+ {
+  "code": "0103",
+  "name": "Hansaviertel",
+  "slug": "hansaviertel",
+  "bezirkCode": "01",
+  "areaKm2": 0.53,
+  "ringShare": 1,
+  "ringStatus": "inside",
+  "neighbors": [
+   "0102",
+   "0104",
+   "0401"
+  ],
+  "labelPoint": [
+   13.34179,
+   52.51854
+  ],
+  "bbox": [
+   13.33421,
+   52.51379,
+   13.35042,
+   52.52267
+  ]
+ },
+ {
+  "code": "0104",
+  "name": "Tiergarten",
+  "slug": "tiergarten",
+  "bezirkCode": "01",
+  "areaKm2": 5.18,
+  "ringShare": 1,
+  "ringStatus": "inside",
+  "neighbors": [
+   "0101",
+   "0102",
+   "0103",
+   "0202",
+   "0401",
+   "0701"
+  ],
+  "labelPoint": [
+   13.36194,
+   52.50898
+  ],
+  "bbox": [
+   13.33004,
+   52.49871,
+   13.37765,
+   52.52279
+  ]
+ },
+ {
+  "code": "0105",
+  "name": "Wedding",
+  "slug": "wedding",
+  "bezirkCode": "01",
+  "areaKm2": 9.23,
+  "ringShare": 0.026,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0101",
+   "0102",
+   "0106",
+   "0406",
+   "1201",
+   "1202"
+  ],
+  "labelPoint": [
+   13.34155,
+   52.55086
+  ],
+  "bbox": [
+   13.30153,
+   52.53566,
+   13.37493,
+   52.56446
+  ]
+ },
+ {
+  "code": "0106",
+  "name": "Gesundbrunnen",
+  "slug": "gesundbrunnen",
+  "bezirkCode": "01",
+  "areaKm2": 6.05,
+  "ringShare": 0.401,
+  "ringStatus": "partly",
+  "neighbors": [
+   "0101",
+   "0105",
+   "0301",
+   "0307",
+   "1201"
+  ],
+  "labelPoint": [
+   13.3843,
+   52.55071
+  ],
+  "bbox": [
+   13.36589,
+   52.53314,
+   13.40353,
+   52.56774
+  ]
+ },
+ {
+  "code": "0201",
+  "name": "Friedrichshain",
+  "slug": "friedrichshain",
+  "bezirkCode": "02",
+  "areaKm2": 9.93,
+  "ringShare": 0.852,
+  "ringStatus": "partly",
+  "neighbors": [
+   "0101",
+   "0202",
+   "0301",
+   "0901",
+   "0902",
+   "1103",
+   "1112"
+  ],
+  "labelPoint": [
+   13.45221,
+   52.51081
+  ],
+  "bbox": [
+   13.41975,
+   52.48605,
+   13.49145,
+   52.53103
+  ]
+ },
+ {
+  "code": "0202",
+  "name": "Kreuzberg",
+  "slug": "kreuzberg",
+  "bezirkCode": "02",
+  "areaKm2": 10.43,
+  "ringShare": 1,
+  "ringStatus": "inside",
+  "neighbors": [
+   "0101",
+   "0104",
+   "0201",
+   "0701",
+   "0703",
+   "0801",
+   "0901"
+  ],
+  "labelPoint": [
+   13.40201,
+   52.49753
+  ],
+  "bbox": [
+   13.36822,
+   52.48277,
+   13.45335,
+   52.50938
+  ]
+ },
+ {
+  "code": "0301",
+  "name": "Prenzlauer Berg",
+  "slug": "prenzlauer-berg",
+  "bezirkCode": "03",
+  "areaKm2": 11.06,
+  "ringShare": 0.576,
+  "ringStatus": "partly",
+  "neighbors": [
+   "0101",
+   "0106",
+   "0201",
+   "0302",
+   "0307",
+   "1103",
+   "1111"
+  ],
+  "labelPoint": [
+   13.42731,
+   52.54018
+  ],
+  "bbox": [
+   13.39685,
+   52.51993,
+   13.47211,
+   52.55859
+  ]
+ },
+ {
+  "code": "0302",
+  "name": "Weißensee",
+  "slug": "weissensee",
+  "bezirkCode": "03",
+  "areaKm2": 7.92,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0301",
+   "0304",
+   "0306",
+   "0307",
+   "1109",
+   "1110",
+   "1111"
+  ],
+  "labelPoint": [
+   13.46095,
+   52.55654
+  ],
+  "bbox": [
+   13.42896,
+   52.5385,
+   13.49568,
+   52.56741
+  ]
+ },
+ {
+  "code": "0303",
+  "name": "Blankenburg",
+  "slug": "blankenburg",
+  "bezirkCode": "03",
+  "areaKm2": 6.05,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0304",
+   "0305",
+   "0306",
+   "0307",
+   "0310"
+  ],
+  "labelPoint": [
+   13.45624,
+   52.59297
+  ],
+  "bbox": [
+   13.43089,
+   52.57558,
+   13.48354,
+   52.61231
+  ]
+ },
+ {
+  "code": "0304",
+  "name": "Heinersdorf",
+  "slug": "heinersdorf",
+  "bezirkCode": "03",
+  "areaKm2": 3.85,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0302",
+   "0303",
+   "0306",
+   "0307"
+  ],
+  "labelPoint": [
+   13.4409,
+   52.57095
+  ],
+  "bbox": [
+   13.42721,
+   52.55671,
+   13.45829,
+   52.58296
+  ]
+ },
+ {
+  "code": "0305",
+  "name": "Karow",
+  "slug": "karow",
+  "bezirkCode": "03",
+  "areaKm2": 6.6,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0303",
+   "0306",
+   "0309",
+   "0310"
+  ],
+  "labelPoint": [
+   13.4796,
+   52.61217
+  ],
+  "bbox": [
+   13.45295,
+   52.59849,
+   13.50506,
+   52.62587
+  ]
+ },
+ {
+  "code": "0306",
+  "name": "Stadtrandsiedlung Malchow",
+  "slug": "stadtrandsiedlung-malchow",
+  "bezirkCode": "03",
+  "areaKm2": 5.7,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0302",
+   "0303",
+   "0304",
+   "0305",
+   "1106",
+   "1107",
+   "1109"
+  ],
+  "labelPoint": [
+   13.47178,
+   52.58101
+  ],
+  "bbox": [
+   13.45735,
+   52.56443,
+   13.50518,
+   52.60516
+  ]
+ },
+ {
+  "code": "0307",
+  "name": "Pankow",
+  "slug": "pankow",
+  "bezirkCode": "03",
+  "areaKm2": 5.65,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0106",
+   "0301",
+   "0302",
+   "0303",
+   "0304",
+   "0310",
+   "0311",
+   "1201"
+  ],
+  "labelPoint": [
+   13.41456,
+   52.56714
+  ],
+  "bbox": [
+   13.38838,
+   52.55154,
+   13.4339,
+   52.58291
+  ]
+ },
+ {
+  "code": "0308",
+  "name": "Blankenfelde",
+  "slug": "blankenfelde",
+  "bezirkCode": "03",
+  "areaKm2": 13.25,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0309",
+   "0310",
+   "0312",
+   "1208"
+  ],
+  "labelPoint": [
+   13.39857,
+   52.62347
+  ],
+  "bbox": [
+   13.36691,
+   52.60006,
+   13.43293,
+   52.64829
+  ]
+ },
+ {
+  "code": "0309",
+  "name": "Buch",
+  "slug": "buch",
+  "bezirkCode": "03",
+  "areaKm2": 18.21,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0305",
+   "0308",
+   "0310"
+  ],
+  "labelPoint": [
+   13.47942,
+   52.64119
+  ],
+  "bbox": [
+   13.42003,
+   52.61956,
+   13.52302,
+   52.67551
+  ]
+ },
+ {
+  "code": "0310",
+  "name": "Französisch Buchholz",
+  "slug": "franzoesisch-buchholz",
+  "bezirkCode": "03",
+  "areaKm2": 12.01,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0303",
+   "0305",
+   "0307",
+   "0308",
+   "0309",
+   "0311",
+   "0312"
+  ],
+  "labelPoint": [
+   13.43472,
+   52.60747
+  ],
+  "bbox": [
+   13.41198,
+   52.58215,
+   13.46896,
+   52.64042
+  ]
+ },
+ {
+  "code": "0311",
+  "name": "Niederschönhausen",
+  "slug": "niederschoenhausen",
+  "bezirkCode": "03",
+  "areaKm2": 6.47,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0307",
+   "0310",
+   "0312",
+   "0313",
+   "1201"
+  ],
+  "labelPoint": [
+   13.39792,
+   52.58169
+  ],
+  "bbox": [
+   13.3662,
+   52.56824,
+   13.42837,
+   52.59458
+  ]
+ },
+ {
+  "code": "0312",
+  "name": "Rosenthal",
+  "slug": "rosenthal",
+  "bezirkCode": "03",
+  "areaKm2": 4.91,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0308",
+   "0310",
+   "0311",
+   "0313",
+   "1208",
+   "1210"
+  ],
+  "labelPoint": [
+   13.38458,
+   52.59633
+  ],
+  "bbox": [
+   13.36065,
+   52.5849,
+   13.41935,
+   52.60702
+  ]
+ },
+ {
+  "code": "0313",
+  "name": "Wilhelmsruh",
+  "slug": "wilhelmsruh",
+  "bezirkCode": "03",
+  "areaKm2": 1.36,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0311",
+   "0312",
+   "1201",
+   "1210"
+  ],
+  "labelPoint": [
+   13.36365,
+   52.58714
+  ],
+  "bbox": [
+   13.34756,
+   52.58003,
+   13.37486,
+   52.59331
+  ]
+ },
+ {
+  "code": "0401",
+  "name": "Charlottenburg",
+  "slug": "charlottenburg",
+  "bezirkCode": "04",
+  "areaKm2": 10.58,
+  "ringShare": 0.959,
+  "ringStatus": "inside",
+  "neighbors": [
+   "0102",
+   "0103",
+   "0104",
+   "0402",
+   "0404",
+   "0405",
+   "0406",
+   "0407",
+   "0701"
+  ],
+  "labelPoint": [
+   13.30613,
+   52.51316
+  ],
+  "bbox": [
+   13.28068,
+   52.4988,
+   13.34142,
+   52.53238
+  ]
+ },
+ {
+  "code": "0402",
+  "name": "Wilmersdorf",
+  "slug": "wilmersdorf",
+  "bezirkCode": "04",
+  "areaKm2": 7.15,
+  "ringShare": 0.745,
+  "ringStatus": "partly",
+  "neighbors": [
+   "0401",
+   "0403",
+   "0407",
+   "0601",
+   "0605",
+   "0701",
+   "0702"
+  ],
+  "labelPoint": [
+   13.3183,
+   52.4873
+  ],
+  "bbox": [
+   13.29785,
+   52.4669,
+   13.33899,
+   52.50118
+  ]
+ },
+ {
+  "code": "0403",
+  "name": "Schmargendorf",
+  "slug": "schmargendorf",
+  "bezirkCode": "04",
+  "areaKm2": 3.58,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0402",
+   "0404",
+   "0407",
+   "0605"
+  ],
+  "labelPoint": [
+   13.29231,
+   52.47746
+  ],
+  "bbox": [
+   13.27246,
+   52.46795,
+   13.31148,
+   52.49405
+  ]
+ },
+ {
+  "code": "0404",
+  "name": "Grunewald",
+  "slug": "grunewald",
+  "bezirkCode": "04",
+  "areaKm2": 22.32,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0401",
+   "0403",
+   "0405",
+   "0407",
+   "0505",
+   "0509",
+   "0604",
+   "0605",
+   "0606"
+  ],
+  "labelPoint": [
+   13.23552,
+   52.4858
+  ],
+  "bbox": [
+   13.1866,
+   52.4665,
+   13.29085,
+   52.50521
+  ]
+ },
+ {
+  "code": "0405",
+  "name": "Westend",
+  "slug": "westend",
+  "bezirkCode": "04",
+  "areaKm2": 13.5,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0401",
+   "0404",
+   "0406",
+   "0501",
+   "0503",
+   "0509"
+  ],
+  "labelPoint": [
+   13.26526,
+   52.51427
+  ],
+  "bbox": [
+   13.20876,
+   52.48892,
+   13.28538,
+   52.53049
+  ]
+ },
+ {
+  "code": "0406",
+  "name": "Charlottenburg-Nord",
+  "slug": "charlottenburg-nord",
+  "bezirkCode": "04",
+  "areaKm2": 6.19,
+  "ringShare": 0.011,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0102",
+   "0105",
+   "0401",
+   "0405",
+   "0503",
+   "1202"
+  ],
+  "labelPoint": [
+   13.2975,
+   52.54041
+  ],
+  "bbox": [
+   13.26997,
+   52.52959,
+   13.32913,
+   52.54943
+  ]
+ },
+ {
+  "code": "0407",
+  "name": "Halensee",
+  "slug": "halensee",
+  "bezirkCode": "04",
+  "areaKm2": 1.26,
+  "ringShare": 0.787,
+  "ringStatus": "partly",
+  "neighbors": [
+   "0401",
+   "0402",
+   "0403",
+   "0404"
+  ],
+  "labelPoint": [
+   13.29353,
+   52.49743
+  ],
+  "bbox": [
+   13.28135,
+   52.48804,
+   13.30197,
+   52.50332
+  ]
+ },
+ {
+  "code": "0501",
+  "name": "Spandau",
+  "slug": "spandau",
+  "bezirkCode": "05",
+  "areaKm2": 8.22,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0405",
+   "0502",
+   "0503",
+   "0504",
+   "0507",
+   "0508",
+   "0509"
+  ],
+  "labelPoint": [
+   13.19996,
+   52.537
+  ],
+  "bbox": [
+   13.16235,
+   52.51749,
+   13.2477,
+   52.55547
+  ]
+ },
+ {
+  "code": "0502",
+  "name": "Haselhorst",
+  "slug": "haselhorst",
+  "bezirkCode": "05",
+  "areaKm2": 4.51,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0501",
+   "0503",
+   "0507",
+   "1202"
+  ],
+  "labelPoint": [
+   13.22972,
+   52.54505
+  ],
+  "bbox": [
+   13.20822,
+   52.53436,
+   13.24825,
+   52.56341
+  ]
+ },
+ {
+  "code": "0503",
+  "name": "Siemensstadt",
+  "slug": "siemensstadt",
+  "bezirkCode": "05",
+  "areaKm2": 5.65,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0405",
+   "0406",
+   "0501",
+   "0502",
+   "1202"
+  ],
+  "labelPoint": [
+   13.25797,
+   52.53916
+  ],
+  "bbox": [
+   13.23159,
+   52.52705,
+   13.28218,
+   52.55739
+  ]
+ },
+ {
+  "code": "0504",
+  "name": "Staaken",
+  "slug": "staaken",
+  "bezirkCode": "05",
+  "areaKm2": 10.87,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0501",
+   "0508",
+   "0509"
+  ],
+  "labelPoint": [
+   13.14367,
+   52.53305
+  ],
+  "bbox": [
+   13.11738,
+   52.51294,
+   13.17578,
+   52.55601
+  ]
+ },
+ {
+  "code": "0505",
+  "name": "Gatow",
+  "slug": "gatow",
+  "bezirkCode": "05",
+  "areaKm2": 10.09,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0404",
+   "0506",
+   "0509",
+   "0606"
+  ],
+  "labelPoint": [
+   13.16722,
+   52.48508
+  ],
+  "bbox": [
+   13.13555,
+   52.46655,
+   13.1917,
+   52.50162
+  ]
+ },
+ {
+  "code": "0506",
+  "name": "Kladow",
+  "slug": "kladow",
+  "bezirkCode": "05",
+  "areaKm2": 14.75,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0505",
+   "0606",
+   "0607"
+  ],
+  "labelPoint": [
+   13.14094,
+   52.46077
+  ],
+  "bbox": [
+   13.1093,
+   52.43962,
+   13.18663,
+   52.48541
+  ]
+ },
+ {
+  "code": "0507",
+  "name": "Hakenfelde",
+  "slug": "hakenfelde",
+  "bezirkCode": "05",
+  "areaKm2": 20.35,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0501",
+   "0502",
+   "0508",
+   "1202",
+   "1203"
+  ],
+  "labelPoint": [
+   13.18584,
+   52.57438
+  ],
+  "bbox": [
+   13.12796,
+   52.54356,
+   13.22871,
+   52.5988
+  ]
+ },
+ {
+  "code": "0508",
+  "name": "Falkenhagener Feld",
+  "slug": "falkenhagener-feld",
+  "bezirkCode": "05",
+  "areaKm2": 6.86,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0501",
+   "0504",
+   "0507"
+  ],
+  "labelPoint": [
+   13.16801,
+   52.55192
+  ],
+  "bbox": [
+   13.14345,
+   52.53725,
+   13.19627,
+   52.56771
+  ]
+ },
+ {
+  "code": "0509",
+  "name": "Wilhelmstadt",
+  "slug": "wilhelmstadt",
+  "bezirkCode": "05",
+  "areaKm2": 10.4,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0404",
+   "0405",
+   "0501",
+   "0504",
+   "0505"
+  ],
+  "labelPoint": [
+   13.19011,
+   52.51455
+  ],
+  "bbox": [
+   13.15724,
+   52.49868,
+   13.22271,
+   52.53092
+  ]
+ },
+ {
+  "code": "0601",
+  "name": "Steglitz",
+  "slug": "steglitz",
+  "bezirkCode": "06",
+  "areaKm2": 6.77,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0402",
+   "0602",
+   "0603",
+   "0605",
+   "0701",
+   "0702",
+   "0703"
+  ],
+  "labelPoint": [
+   13.33245,
+   52.45521
+  ],
+  "bbox": [
+   13.30414,
+   52.44297,
+   13.36238,
+   52.46742
+  ]
+ },
+ {
+  "code": "0602",
+  "name": "Lichterfelde",
+  "slug": "lichterfelde",
+  "bezirkCode": "06",
+  "areaKm2": 18.19,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0601",
+   "0603",
+   "0604",
+   "0605",
+   "0705"
+  ],
+  "labelPoint": [
+   13.30887,
+   52.4289
+  ],
+  "bbox": [
+   13.26749,
+   52.39911,
+   13.34553,
+   52.45915
+  ]
+ },
+ {
+  "code": "0603",
+  "name": "Lankwitz",
+  "slug": "lankwitz",
+  "bezirkCode": "06",
+  "areaKm2": 6.98,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0601",
+   "0602",
+   "0703",
+   "0704",
+   "0705"
+  ],
+  "labelPoint": [
+   13.34838,
+   52.4317
+  ],
+  "bbox": [
+   13.32708,
+   52.41519,
+   13.3716,
+   52.4456
+  ]
+ },
+ {
+  "code": "0604",
+  "name": "Zehlendorf",
+  "slug": "zehlendorf",
+  "bezirkCode": "06",
+  "areaKm2": 16.13,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0404",
+   "0602",
+   "0605",
+   "0606",
+   "0608"
+  ],
+  "labelPoint": [
+   13.25484,
+   52.43665
+  ],
+  "bbox": [
+   13.21806,
+   52.40424,
+   13.28312,
+   52.46919
+  ]
+ },
+ {
+  "code": "0605",
+  "name": "Dahlem",
+  "slug": "dahlem",
+  "bezirkCode": "06",
+  "areaKm2": 8.38,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0402",
+   "0403",
+   "0404",
+   "0601",
+   "0602",
+   "0604"
+  ],
+  "labelPoint": [
+   13.27838,
+   52.45654
+  ],
+  "bbox": [
+   13.24742,
+   52.44169,
+   13.30994,
+   52.47053
+  ]
+ },
+ {
+  "code": "0606",
+  "name": "Nikolassee",
+  "slug": "nikolassee",
+  "bezirkCode": "06",
+  "areaKm2": 18.18,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0404",
+   "0505",
+   "0506",
+   "0604",
+   "0607",
+   "0608"
+  ],
+  "labelPoint": [
+   13.19269,
+   52.44963
+  ],
+  "bbox": [
+   13.16186,
+   52.4115,
+   13.23914,
+   52.47184
+  ]
+ },
+ {
+  "code": "0607",
+  "name": "Wannsee",
+  "slug": "wannsee",
+  "bezirkCode": "06",
+  "areaKm2": 23.69,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0506",
+   "0606"
+  ],
+  "labelPoint": [
+   13.14123,
+   52.41984
+  ],
+  "bbox": [
+   13.08835,
+   52.38723,
+   13.18691,
+   52.45219
+  ]
+ },
+ {
+  "code": "0608",
+  "name": "Schlachtensee",
+  "slug": "schlachtensee",
+  "bezirkCode": "06",
+  "areaKm2": 4.06,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0604",
+   "0606"
+  ],
+  "labelPoint": [
+   13.21887,
+   52.44006
+  ],
+  "bbox": [
+   13.19728,
+   52.42763,
+   13.2403,
+   52.45299
+  ]
+ },
+ {
+  "code": "0701",
+  "name": "Schöneberg",
+  "slug": "schoeneberg",
+  "bezirkCode": "07",
+  "areaKm2": 10.62,
+  "ringShare": 0.556,
+  "ringStatus": "partly",
+  "neighbors": [
+   "0104",
+   "0202",
+   "0401",
+   "0402",
+   "0601",
+   "0702",
+   "0703"
+  ],
+  "labelPoint": [
+   13.35562,
+   52.48352
+  ],
+  "bbox": [
+   13.33627,
+   52.45462,
+   13.37643,
+   52.50487
+  ]
+ },
+ {
+  "code": "0702",
+  "name": "Friedenau",
+  "slug": "friedenau",
+  "bezirkCode": "07",
+  "areaKm2": 1.65,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0402",
+   "0601",
+   "0701"
+  ],
+  "labelPoint": [
+   13.32971,
+   52.47188
+  ],
+  "bbox": [
+   13.31998,
+   52.46433,
+   13.34382,
+   52.47859
+  ]
+ },
+ {
+  "code": "0703",
+  "name": "Tempelhof",
+  "slug": "tempelhof",
+  "bezirkCode": "07",
+  "areaKm2": 12.16,
+  "ringShare": 0.437,
+  "ringStatus": "partly",
+  "neighbors": [
+   "0202",
+   "0601",
+   "0603",
+   "0701",
+   "0704",
+   "0801",
+   "0802"
+  ],
+  "labelPoint": [
+   13.39044,
+   52.46762
+  ],
+  "bbox": [
+   13.3557,
+   52.44415,
+   13.42657,
+   52.48583
+  ]
+ },
+ {
+  "code": "0704",
+  "name": "Mariendorf",
+  "slug": "mariendorf",
+  "bezirkCode": "07",
+  "areaKm2": 9.36,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0603",
+   "0703",
+   "0705",
+   "0706",
+   "0802",
+   "0803"
+  ],
+  "labelPoint": [
+   13.39138,
+   52.43962
+  ],
+  "bbox": [
+   13.36264,
+   52.41663,
+   13.41684,
+   52.45339
+  ]
+ },
+ {
+  "code": "0705",
+  "name": "Marienfelde",
+  "slug": "marienfelde",
+  "bezirkCode": "07",
+  "areaKm2": 9.13,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0602",
+   "0603",
+   "0704",
+   "0706"
+  ],
+  "labelPoint": [
+   13.37077,
+   52.41008
+  ],
+  "bbox": [
+   13.34274,
+   52.38815,
+   13.39631,
+   52.42919
+  ]
+ },
+ {
+  "code": "0706",
+  "name": "Lichtenrade",
+  "slug": "lichtenrade",
+  "bezirkCode": "07",
+  "areaKm2": 10.03,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0704",
+   "0705",
+   "0803"
+  ],
+  "labelPoint": [
+   13.40448,
+   52.39449
+  ],
+  "bbox": [
+   13.37982,
+   52.37614,
+   13.42746,
+   52.41813
+  ]
+ },
+ {
+  "code": "0801",
+  "name": "Neukölln",
+  "slug": "neukoelln",
+  "bezirkCode": "08",
+  "areaKm2": 11.68,
+  "ringShare": 0.627,
+  "ringStatus": "partly",
+  "neighbors": [
+   "0202",
+   "0703",
+   "0802",
+   "0901",
+   "0902",
+   "0903"
+  ],
+  "labelPoint": [
+   13.43969,
+   52.47583
+  ],
+  "bbox": [
+   13.40606,
+   52.45876,
+   13.47855,
+   52.49586
+  ]
+ },
+ {
+  "code": "0802",
+  "name": "Britz",
+  "slug": "britz",
+  "bezirkCode": "08",
+  "areaKm2": 12.37,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0703",
+   "0704",
+   "0801",
+   "0803",
+   "0804",
+   "0805",
+   "0903"
+  ],
+  "labelPoint": [
+   13.43673,
+   52.44395
+  ],
+  "bbox": [
+   13.40624,
+   52.42287,
+   13.47869,
+   52.46514
+  ]
+ },
+ {
+  "code": "0803",
+  "name": "Buckow",
+  "slug": "buckow",
+  "bezirkCode": "08",
+  "areaKm2": 6.34,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0704",
+   "0706",
+   "0802",
+   "0804",
+   "0805"
+  ],
+  "labelPoint": [
+   13.42673,
+   52.41863
+  ],
+  "bbox": [
+   13.3995,
+   52.41018,
+   13.4794,
+   52.44451
+  ]
+ },
+ {
+  "code": "0804",
+  "name": "Rudow",
+  "slug": "rudow",
+  "bezirkCode": "08",
+  "areaKm2": 11.8,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0802",
+   "0803",
+   "0805",
+   "0903",
+   "0904",
+   "0906",
+   "0907"
+  ],
+  "labelPoint": [
+   13.49696,
+   52.41578
+  ],
+  "bbox": [
+   13.468,
+   52.39595,
+   13.52406,
+   52.44274
+  ]
+ },
+ {
+  "code": "0805",
+  "name": "Gropiusstadt",
+  "slug": "gropiusstadt",
+  "bezirkCode": "08",
+  "areaKm2": 2.66,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0802",
+   "0803",
+   "0804"
+  ],
+  "labelPoint": [
+   13.46208,
+   52.42575
+  ],
+  "bbox": [
+   13.44592,
+   52.41959,
+   13.48508,
+   52.43669
+  ]
+ },
+ {
+  "code": "0901",
+  "name": "Alt-Treptow",
+  "slug": "alt-treptow",
+  "bezirkCode": "09",
+  "areaKm2": 2.31,
+  "ringShare": 0.475,
+  "ringStatus": "partly",
+  "neighbors": [
+   "0201",
+   "0202",
+   "0801",
+   "0902"
+  ],
+  "labelPoint": [
+   13.45321,
+   52.49195
+  ],
+  "bbox": [
+   13.43966,
+   52.48155,
+   13.48296,
+   52.49758
+  ]
+ },
+ {
+  "code": "0902",
+  "name": "Plänterwald",
+  "slug": "plaenterwald",
+  "bezirkCode": "09",
+  "areaKm2": 3.01,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0201",
+   "0801",
+   "0901",
+   "0903",
+   "0909",
+   "1112"
+  ],
+  "labelPoint": [
+   13.48,
+   52.47875
+  ],
+  "bbox": [
+   13.4574,
+   52.47014,
+   13.49562,
+   52.49083
+  ]
+ },
+ {
+  "code": "0903",
+  "name": "Baumschulenweg",
+  "slug": "baumschulenweg",
+  "bezirkCode": "09",
+  "areaKm2": 4.82,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0801",
+   "0802",
+   "0804",
+   "0902",
+   "0904",
+   "0905",
+   "0909"
+  ],
+  "labelPoint": [
+   13.48749,
+   52.46584
+  ],
+  "bbox": [
+   13.45697,
+   52.44006,
+   13.50056,
+   52.47571
+  ]
+ },
+ {
+  "code": "0904",
+  "name": "Johannisthal",
+  "slug": "johannisthal",
+  "bezirkCode": "09",
+  "areaKm2": 6.96,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0804",
+   "0903",
+   "0905",
+   "0907"
+  ],
+  "labelPoint": [
+   13.50666,
+   52.44304
+  ],
+  "bbox": [
+   13.47563,
+   52.42673,
+   13.53242,
+   52.46019
+  ]
+ },
+ {
+  "code": "0905",
+  "name": "Niederschöneweide",
+  "slug": "niederschoeneweide",
+  "bezirkCode": "09",
+  "areaKm2": 3.02,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0903",
+   "0904",
+   "0907",
+   "0909",
+   "0910"
+  ],
+  "labelPoint": [
+   13.52878,
+   52.44861
+  ],
+  "bbox": [
+   13.49353,
+   52.44214,
+   13.55851,
+   52.46911
+  ]
+ },
+ {
+  "code": "0906",
+  "name": "Altglienicke",
+  "slug": "altglienicke",
+  "bezirkCode": "09",
+  "areaKm2": 7.86,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0804",
+   "0907",
+   "0908",
+   "0913"
+  ],
+  "labelPoint": [
+   13.54057,
+   52.41259
+  ],
+  "bbox": [
+   13.51598,
+   52.39502,
+   13.56867,
+   52.42624
+  ]
+ },
+ {
+  "code": "0907",
+  "name": "Adlershof",
+  "slug": "adlershof",
+  "bezirkCode": "09",
+  "areaKm2": 6.14,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0804",
+   "0904",
+   "0905",
+   "0906",
+   "0910",
+   "0913"
+  ],
+  "labelPoint": [
+   13.54382,
+   52.43588
+  ],
+  "bbox": [
+   13.51797,
+   52.42477,
+   13.56369,
+   52.45083
+  ]
+ },
+ {
+  "code": "0908",
+  "name": "Bohnsdorf",
+  "slug": "bohnsdorf",
+  "bezirkCode": "09",
+  "areaKm2": 6.51,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0906",
+   "0913"
+  ],
+  "labelPoint": [
+   13.56484,
+   52.39839
+  ],
+  "bbox": [
+   13.53482,
+   52.38813,
+   13.59326,
+   52.41573
+  ]
+ },
+ {
+  "code": "0909",
+  "name": "Oberschöneweide",
+  "slug": "oberschoeneweide",
+  "bezirkCode": "09",
+  "areaKm2": 8.18,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0902",
+   "0903",
+   "0905",
+   "0910",
+   "1102",
+   "1112"
+  ],
+  "labelPoint": [
+   13.53922,
+   52.46393
+  ],
+  "bbox": [
+   13.49418,
+   52.45268,
+   13.56664,
+   52.48332
+  ]
+ },
+ {
+  "code": "0910",
+  "name": "Köpenick",
+  "slug": "koepenick",
+  "bezirkCode": "09",
+  "areaKm2": 34.81,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0905",
+   "0907",
+   "0909",
+   "0911",
+   "0912",
+   "0913",
+   "0914",
+   "1002",
+   "1003",
+   "1004",
+   "1102"
+  ],
+  "labelPoint": [
+   13.60266,
+   52.43189
+  ],
+  "bbox": [
+   13.54799,
+   52.40184,
+   13.67803,
+   52.48112
+  ]
+ },
+ {
+  "code": "0911",
+  "name": "Friedrichshagen",
+  "slug": "friedrichshagen",
+  "bezirkCode": "09",
+  "areaKm2": 14.01,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0910",
+   "0912"
+  ],
+  "labelPoint": [
+   13.63928,
+   52.45885
+  ],
+  "bbox": [
+   13.59426,
+   52.43744,
+   13.66946,
+   52.47923
+  ]
+ },
+ {
+  "code": "0912",
+  "name": "Rahnsdorf",
+  "slug": "rahnsdorf",
+  "bezirkCode": "09",
+  "areaKm2": 21.41,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0910",
+   "0911",
+   "0914"
+  ],
+  "labelPoint": [
+   13.68729,
+   52.44489
+  ],
+  "bbox": [
+   13.65675,
+   52.41638,
+   13.76116,
+   52.47328
+  ]
+ },
+ {
+  "code": "0913",
+  "name": "Grünau",
+  "slug": "gruenau",
+  "bezirkCode": "09",
+  "areaKm2": 9.13,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0906",
+   "0907",
+   "0908",
+   "0910",
+   "0914",
+   "0915"
+  ],
+  "labelPoint": [
+   13.60293,
+   52.40071
+  ],
+  "bbox": [
+   13.55436,
+   52.37912,
+   13.63312,
+   52.42838
+  ]
+ },
+ {
+  "code": "0914",
+  "name": "Müggelheim",
+  "slug": "mueggelheim",
+  "bezirkCode": "09",
+  "areaKm2": 22.18,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0910",
+   "0912",
+   "0913",
+   "0915"
+  ],
+  "labelPoint": [
+   13.68301,
+   52.40873
+  ],
+  "bbox": [
+   13.6314,
+   52.38048,
+   13.73903,
+   52.43005
+  ]
+ },
+ {
+  "code": "0915",
+  "name": "Schmöckwitz",
+  "slug": "schmoeckwitz",
+  "bezirkCode": "09",
+  "areaKm2": 17.1,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0913",
+   "0914"
+  ],
+  "labelPoint": [
+   13.65695,
+   52.37053
+  ],
+  "bbox": [
+   13.60547,
+   52.33825,
+   13.70985,
+   52.40099
+  ]
+ },
+ {
+  "code": "1001",
+  "name": "Marzahn",
+  "slug": "marzahn",
+  "bezirkCode": "10",
+  "areaKm2": 19.52,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "1002",
+   "1005",
+   "1101",
+   "1103",
+   "1104",
+   "1109",
+   "1110"
+  ],
+  "labelPoint": [
+   13.55185,
+   52.55031
+  ],
+  "bbox": [
+   13.51688,
+   52.50963,
+   13.58778,
+   52.57451
+  ]
+ },
+ {
+  "code": "1002",
+  "name": "Biesdorf",
+  "slug": "biesdorf",
+  "bezirkCode": "10",
+  "areaKm2": 12.42,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0910",
+   "1001",
+   "1003",
+   "1005",
+   "1101",
+   "1102"
+  ],
+  "labelPoint": [
+   13.55937,
+   52.50733
+  ],
+  "bbox": [
+   13.53519,
+   52.47324,
+   13.58461,
+   52.53513
+  ]
+ },
+ {
+  "code": "1003",
+  "name": "Kaulsdorf",
+  "slug": "kaulsdorf",
+  "bezirkCode": "10",
+  "areaKm2": 8.67,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0910",
+   "1002",
+   "1004",
+   "1005"
+  ],
+  "labelPoint": [
+   13.58795,
+   52.50278
+  ],
+  "bbox": [
+   13.56348,
+   52.4747,
+   13.62196,
+   52.52897
+  ]
+ },
+ {
+  "code": "1004",
+  "name": "Mahlsdorf",
+  "slug": "mahlsdorf",
+  "bezirkCode": "10",
+  "areaKm2": 12.97,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0910",
+   "1003",
+   "1005"
+  ],
+  "labelPoint": [
+   13.61548,
+   52.50366
+  ],
+  "bbox": [
+   13.58396,
+   52.47048,
+   13.6585,
+   52.53057
+  ]
+ },
+ {
+  "code": "1005",
+  "name": "Hellersdorf",
+  "slug": "hellersdorf",
+  "bezirkCode": "10",
+  "areaKm2": 8.13,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "1001",
+   "1002",
+   "1003",
+   "1004"
+  ],
+  "labelPoint": [
+   13.60078,
+   52.53742
+  ],
+  "bbox": [
+   13.57339,
+   52.51202,
+   13.63765,
+   52.54995
+  ]
+ },
+ {
+  "code": "1101",
+  "name": "Friedrichsfelde",
+  "slug": "friedrichsfelde",
+  "bezirkCode": "11",
+  "areaKm2": 5.83,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "1001",
+   "1002",
+   "1102",
+   "1103",
+   "1112"
+  ],
+  "labelPoint": [
+   13.5173,
+   52.50291
+  ],
+  "bbox": [
+   13.49277,
+   52.4909,
+   13.54173,
+   52.51463
+  ]
+ },
+ {
+  "code": "1102",
+  "name": "Karlshorst",
+  "slug": "karlshorst",
+  "bezirkCode": "11",
+  "areaKm2": 6.54,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0909",
+   "0910",
+   "1002",
+   "1101",
+   "1112"
+  ],
+  "labelPoint": [
+   13.52947,
+   52.48339
+  ],
+  "bbox": [
+   13.50162,
+   52.46794,
+   13.5526,
+   52.4983
+  ]
+ },
+ {
+  "code": "1103",
+  "name": "Lichtenberg",
+  "slug": "lichtenberg",
+  "bezirkCode": "11",
+  "areaKm2": 7.19,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0201",
+   "0301",
+   "1001",
+   "1101",
+   "1110",
+   "1111",
+   "1112"
+  ],
+  "labelPoint": [
+   13.49676,
+   52.52193
+  ],
+  "bbox": [
+   13.46961,
+   52.50578,
+   13.51944,
+   52.53554
+  ]
+ },
+ {
+  "code": "1104",
+  "name": "Falkenberg",
+  "slug": "falkenberg",
+  "bezirkCode": "11",
+  "areaKm2": 3.05,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "1001",
+   "1107",
+   "1109"
+  ],
+  "labelPoint": [
+   13.54964,
+   52.57639
+  ],
+  "bbox": [
+   13.53003,
+   52.5661,
+   13.5677,
+   52.58764
+  ]
+ },
+ {
+  "code": "1106",
+  "name": "Malchow",
+  "slug": "malchow",
+  "bezirkCode": "11",
+  "areaKm2": 1.52,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0306",
+   "1107",
+   "1109"
+  ],
+  "labelPoint": [
+   13.48743,
+   52.57773
+  ],
+  "bbox": [
+   13.47946,
+   52.56823,
+   13.49895,
+   52.58735
+  ]
+ },
+ {
+  "code": "1107",
+  "name": "Wartenberg",
+  "slug": "wartenberg",
+  "bezirkCode": "11",
+  "areaKm2": 6.91,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0306",
+   "1104",
+   "1106",
+   "1109"
+  ],
+  "labelPoint": [
+   13.52022,
+   52.58311
+  ],
+  "bbox": [
+   13.4855,
+   52.5706,
+   13.54713,
+   52.59646
+  ]
+ },
+ {
+  "code": "1109",
+  "name": "Neu-Hohenschönhausen",
+  "slug": "neu-hohenschoenhausen",
+  "bezirkCode": "11",
+  "areaKm2": 5.14,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0302",
+   "0306",
+   "1001",
+   "1104",
+   "1106",
+   "1107",
+   "1110"
+  ],
+  "labelPoint": [
+   13.50736,
+   52.56813
+  ],
+  "bbox": [
+   13.48359,
+   52.55531,
+   13.5419,
+   52.57907
+  ]
+ },
+ {
+  "code": "1110",
+  "name": "Alt-Hohenschönhausen",
+  "slug": "alt-hohenschoenhausen",
+  "bezirkCode": "11",
+  "areaKm2": 9.34,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0302",
+   "1001",
+   "1103",
+   "1109",
+   "1111"
+  ],
+  "labelPoint": [
+   13.50493,
+   52.54628
+  ],
+  "bbox": [
+   13.46702,
+   52.53312,
+   13.53227,
+   52.56415
+  ]
+ },
+ {
+  "code": "1111",
+  "name": "Fennpfuhl",
+  "slug": "fennpfuhl",
+  "bezirkCode": "11",
+  "areaKm2": 2.12,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0301",
+   "0302",
+   "1103",
+   "1110"
+  ],
+  "labelPoint": [
+   13.47229,
+   52.52878
+  ],
+  "bbox": [
+   13.4562,
+   52.52281,
+   13.48541,
+   52.54046
+  ]
+ },
+ {
+  "code": "1112",
+  "name": "Rummelsburg",
+  "slug": "rummelsburg",
+  "bezirkCode": "11",
+  "areaKm2": 4.4,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0201",
+   "0902",
+   "0909",
+   "1101",
+   "1102",
+   "1103"
+  ],
+  "labelPoint": [
+   13.48652,
+   52.49795
+  ],
+  "bbox": [
+   13.46857,
+   52.48257,
+   13.51563,
+   52.51465
+  ]
+ },
+ {
+  "code": "1201",
+  "name": "Reinickendorf",
+  "slug": "reinickendorf",
+  "bezirkCode": "12",
+  "areaKm2": 10.46,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0105",
+   "0106",
+   "0307",
+   "0311",
+   "0313",
+   "1202",
+   "1209",
+   "1210",
+   "1211"
+  ],
+  "labelPoint": [
+   13.35121,
+   52.57226
+  ],
+  "bbox": [
+   13.30037,
+   52.55812,
+   13.38928,
+   52.59013
+  ]
+ },
+ {
+  "code": "1202",
+  "name": "Tegel",
+  "slug": "tegel",
+  "bezirkCode": "12",
+  "areaKm2": 33.58,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0105",
+   "0406",
+   "0502",
+   "0503",
+   "0507",
+   "1201",
+   "1203",
+   "1204",
+   "1205",
+   "1206",
+   "1207",
+   "1209",
+   "1211"
+  ],
+  "labelPoint": [
+   13.26688,
+   52.58074
+  ],
+  "bbox": [
+   13.22093,
+   52.54881,
+   13.32158,
+   52.62614
+  ]
+ },
+ {
+  "code": "1203",
+  "name": "Konradshöhe",
+  "slug": "konradshoehe",
+  "bezirkCode": "12",
+  "areaKm2": 2.18,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0507",
+   "1202",
+   "1204"
+  ],
+  "labelPoint": [
+   13.22328,
+   52.58519
+  ],
+  "bbox": [
+   13.21517,
+   52.56741,
+   13.2384,
+   52.5949
+  ]
+ },
+ {
+  "code": "1204",
+  "name": "Heiligensee",
+  "slug": "heiligensee",
+  "bezirkCode": "12",
+  "areaKm2": 10.67,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "1202",
+   "1203",
+   "1205"
+  ],
+  "labelPoint": [
+   13.23348,
+   52.61246
+  ],
+  "bbox": [
+   13.20162,
+   52.5932,
+   13.27361,
+   52.62841
+  ]
+ },
+ {
+  "code": "1205",
+  "name": "Frohnau",
+  "slug": "frohnau",
+  "bezirkCode": "12",
+  "areaKm2": 7.83,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "1202",
+   "1204",
+   "1206"
+  ],
+  "labelPoint": [
+   13.29378,
+   52.63923
+  ],
+  "bbox": [
+   13.26215,
+   52.62477,
+   13.31027,
+   52.66074
+  ]
+ },
+ {
+  "code": "1206",
+  "name": "Hermsdorf",
+  "slug": "hermsdorf",
+  "bezirkCode": "12",
+  "areaKm2": 6.05,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "1202",
+   "1205",
+   "1207",
+   "1208"
+  ],
+  "labelPoint": [
+   13.30677,
+   52.61739
+  ],
+  "bbox": [
+   13.28135,
+   52.60074,
+   13.33673,
+   52.6282
+  ]
+ },
+ {
+  "code": "1207",
+  "name": "Waidmannslust",
+  "slug": "waidmannslust",
+  "bezirkCode": "12",
+  "areaKm2": 2.23,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "1202",
+   "1206",
+   "1208",
+   "1209"
+  ],
+  "labelPoint": [
+   13.31906,
+   52.60826
+  ],
+  "bbox": [
+   13.30088,
+   52.59706,
+   13.34,
+   52.61487
+  ]
+ },
+ {
+  "code": "1208",
+  "name": "Lübars",
+  "slug": "luebars",
+  "bezirkCode": "12",
+  "areaKm2": 5,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0308",
+   "0312",
+   "1206",
+   "1207",
+   "1209",
+   "1210"
+  ],
+  "labelPoint": [
+   13.35429,
+   52.61515
+  ],
+  "bbox": [
+   13.32988,
+   52.60572,
+   13.37635,
+   52.62548
+  ]
+ },
+ {
+  "code": "1209",
+  "name": "Wittenau",
+  "slug": "wittenau",
+  "bezirkCode": "12",
+  "areaKm2": 5.89,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "1201",
+   "1202",
+   "1207",
+   "1208",
+   "1210",
+   "1211"
+  ],
+  "labelPoint": [
+   13.32855,
+   52.59381
+  ],
+  "bbox": [
+   13.30099,
+   52.57778,
+   13.34748,
+   52.6083
+  ]
+ },
+ {
+  "code": "1210",
+  "name": "Märkisches Viertel",
+  "slug": "maerkisches-viertel",
+  "bezirkCode": "12",
+  "areaKm2": 3.24,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "0312",
+   "0313",
+   "1201",
+   "1208",
+   "1209"
+  ],
+  "labelPoint": [
+   13.35558,
+   52.59933
+  ],
+  "bbox": [
+   13.33627,
+   52.59008,
+   13.37544,
+   52.6073
+  ]
+ },
+ {
+  "code": "1211",
+  "name": "Borsigwalde",
+  "slug": "borsigwalde",
+  "bezirkCode": "12",
+  "areaKm2": 2.04,
+  "ringShare": 0,
+  "ringStatus": "outside",
+  "neighbors": [
+   "1201",
+   "1202",
+   "1209"
+  ],
+  "labelPoint": [
+   13.30741,
+   52.58437
+  ],
+  "bbox": [
+   13.29094,
+   52.57761,
+   13.32351,
+   52.5919
+  ]
+ }
+]

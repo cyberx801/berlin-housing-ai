@@ -1,0 +1,288 @@
+@import "tailwindcss";
+
+/*
+ * Atlas design tokens — docs/design/DESIGN_SYSTEM.md
+ * Default Tailwind palettes are cleared so only role tokens exist as utilities.
+ * Every color pair below was contrast-computed (DESIGN_SYSTEM §2).
+ */
+@theme {
+  --color-*: initial;
+  --color-paper: #f3f5f4;
+  --color-sheet: #fbfcfb;
+  --color-ink: #003153;
+  --color-ink-2: #3d5468;
+  --color-ink-3: #5d6f7f;
+  --color-line-strong: #6b7c8a;
+  --color-rule: #d3dade;
+  --color-marker: #f2d43a;
+  --color-on-ink: #fbfcfb;
+  --color-ink-hover: #0a456e;
+  --color-critical: #b3261e;
+  --color-warning-ink: #7a5200;
+  --color-success-ink: #1e6b3a;
+  --color-focus: #003153;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Chart slots (validated, DESIGN_SYSTEM §8.1) — never used for text */
+  --color-series-1: #2a6fb0;
+  --color-series-2: #d0603a;
+  --color-series-3: #17a08a;
+  --color-series-4: #8b62d0;
+  --color-series-5: #4c8a2b;
+  --color-series-6: #d9709a;
+  --color-seq-1: #84aed2;
+  --color-seq-2: #5a8fbf;
+  --color-seq-3: #3672a8;
+  --color-seq-4: #1d578c;
+  --color-seq-5: #0b3d66;
+
+  --radius-*: initial;
+  --radius-control: 6px;
+  --radius-full: 9999px;
+
+  --shadow-*: initial;
+
+  --breakpoint-*: initial;
+  --breakpoint-md: 40rem; /* 640 */
+  --breakpoint-lg: 64rem; /* 1024 */
+  --breakpoint-xl: 90rem; /* 1440 */
+
+  --ease-atlas: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@theme inline {
+  --font-sans: var(--font-archivo), "Arial Narrow", Arial, sans-serif;
+  --font-serif: var(--font-source-serif), Georgia, serif;
+}
+
+:root {
+  color-scheme: light; /* dark mode ships only after full QA (DECISIONS D-020) */
+  --header-height: 4rem;
+  --motion-state: 120ms;
+  --motion-panel: 200ms;
+  --hatch: repeating-linear-gradient(
+    -45deg,
+    var(--color-line-strong) 0 1px,
+    transparent 1px 6px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-state: 0ms;
+    --motion-panel: 0ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-weight: 420;
+    line-height: 1.55;
+    min-height: 100dvh;
+  }
+  :where(h1, h2, h3, h4) {
+    font-weight: 650;
+    text-wrap: balance;
+  }
+  :where(p) {
+    text-wrap: pretty;
+  }
+  :where(a) {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+  :where([id]) {
+    scroll-margin-top: calc(var(--header-height) + 1rem);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-marker);
+    color: var(--color-ink);
+  }
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ---------- Type scale (DESIGN_SYSTEM §3.2). Width axis carries the identity. ---------- */
+@utility type-display-1 {
+  font-size: clamp(2.75rem, 1.6rem + 5.2vw, 6.5rem);
+  line-height: 0.95;
+  font-stretch: 125%;
+  font-weight: 780;
+  letter-spacing: -0.02em;
+}
+@utility type-display-2 {
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.5rem);
+  line-height: 1;
+  font-stretch: 115%;
+  font-weight: 720;
+  letter-spacing: -0.015em;
+}
+@utility type-title-1 {
+  font-size: 1.953rem;
+  line-height: 1.1;
+  font-stretch: 110%;
+  font-weight: 680;
+  letter-spacing: -0.01em;
+}
+@utility type-title-2 {
+  font-size: 1.563rem;
+  line-height: 1.2;
+  font-stretch: 100%;
+  font-weight: 640;
+}
+@utility type-title-3 {
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-stretch: 100%;
+  font-weight: 600;
+}
+@utility type-body {
+  font-size: 1rem;
+  line-height: 1.55;
+  font-stretch: 100%;
+  font-weight: 420;
+}
+@utility type-prose {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  font-weight: 400;
+  max-width: 68ch;
+}
+@utility type-small {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  font-stretch: 100%;
+  font-weight: 450;
+}
+@utility type-label {
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  font-stretch: 75%;
+  font-weight: 560;
+}
+@utility type-figure {
+  font-size: 2.441rem;
+  line-height: 1;
+  font-stretch: 118%;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+@utility stretch-wide {
+  font-stretch: 118%;
+}
+@utility stretch-condensed {
+  font-stretch: 75%;
+}
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Layout ---------- */
+@utility page-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 1rem;
+  padding-inline: 1rem;
+  margin-inline: auto;
+  max-width: 90rem;
+  @variant md {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    column-gap: 1.25rem;
+    padding-inline: 1.5rem;
+  }
+  @variant lg {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 1.5rem;
+    padding-inline: 2rem;
+  }
+}
+@utility page-gutter {
+  padding-inline: 1rem;
+  margin-inline: auto;
+  max-width: 90rem;
+  @variant md {
+    padding-inline: 1.5rem;
+  }
+  @variant lg {
+    padding-inline: 2rem;
+  }
+}
+
+/* ---------- Provenance notation (DESIGN_SYSTEM §7) ---------- */
+@utility band-official {
+  border-top: 3px solid var(--color-ink);
+}
+@utility band-user {
+  border-top: 3px solid var(--color-ink-2);
+}
+@utility band-hatch {
+  background-image: var(--hatch);
+}
+@utility frame-not-connected {
+  outline: 1.5px dashed var(--color-line-strong);
+  outline-offset: -1.5px;
+}
+
+/* ---------- Motion ---------- */
+@utility transition-state {
+  transition-duration: var(--motion-state);
+  transition-timing-function: var(--ease-atlas);
+  transition-property: color, background-color, border-color, outline-color, box-shadow, transform,
+    opacity;
+}
+@utility transition-panel {
+  transition-duration: var(--motion-panel);
+  transition-timing-function: var(--ease-atlas);
+  transition-property: transform, opacity, visibility, grid-template-rows;
+}
+
+@keyframes ring-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.ring-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: ring-draw 900ms ease-out 150ms both;
+}
+
+/* Forced colors: keep borders, focus and chart texture visible (DESIGN_SYSTEM §8.5). */
+@media (forced-colors: active) {
+  .band-hatch {
+    background-image: none;
+    border-top: 3px dashed CanvasText;
+  }
+  :focus-visible {
+    outline-color: Highlight;
+  }
+}

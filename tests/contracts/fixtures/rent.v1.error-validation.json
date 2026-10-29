@@ -1,0 +1,10 @@
+{
+  "api_version": "1.0",
+  "request_id": "6f1c2a7e-0d4b-4c51-9a3e-1b2c3d4e5f60",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Request has 1 invalid field.",
+    "details": [{ "field": "area_m2", "issue": "must be >= 10" }],
+    "retryable": false
+  }
+}

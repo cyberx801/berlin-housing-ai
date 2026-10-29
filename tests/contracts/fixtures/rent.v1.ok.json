@@ -1,0 +1,27 @@
+{
+  "api_version": "1.0",
+  "request_id": "6f1c2a7e-0d4b-4c51-9a3e-1b2c3d4e5f60",
+  "generated_at": "2026-11-15T10:15:00Z",
+  "estimate": {
+    "monthly_cold_rent": { "value": 1234.56, "currency": "EUR" },
+    "rent_per_m2": { "value": 12.34, "currency": "EUR" },
+    "interval": { "lower": 1111.11, "upper": 1333.33, "level": 0.8, "method": "quantile_regression" }
+  },
+  "model": {
+    "name": "rent-model",
+    "version": "0.0.0-example",
+    "trained_at": "2026-11-01T00:00:00Z",
+    "training_data": { "source_id": "example-source", "reference_period": { "start": "2000-01", "end": "2000-12" } }
+  },
+  "data_reference_date": "2000-12-31",
+  "inputs": {
+    "missing": ["building_era", "energy_class"],
+    "imputed": [
+      { "field": "building_era", "strategy": "model_native_missing" },
+      { "field": "energy_class", "strategy": "category_unknown" }
+    ]
+  },
+  "warnings": [
+    { "code": "LOW_SUPPORT_REGION", "message": "Few training examples for this Ortsteil.", "field": "ortsteil" }
+  ]
+}

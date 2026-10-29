@@ -1,0 +1,19 @@
+{
+  "bezirk": "Mitte",
+  "ortsteil": "Moabit",
+  "ortsteil_code": "0102",
+  "property_type": "apartment",
+  "rooms": 2.5,
+  "area_m2": 65,
+  "floor": 2,
+  "total_floors": 5,
+  "building_era": "unknown",
+  "energy_class": "unknown",
+  "condition": "unknown",
+  "has_lift": null,
+  "has_balcony": true,
+  "furnishing": "unfurnished",
+  "transit_distance_min": null,
+  "lat": null,
+  "lon": null
+}

@@ -1,0 +1,28 @@
+{
+  "generatedBy": "scripts/build-geo.mjs",
+  "sources": [
+    {
+      "id": "alkis-bezirke",
+      "file": "data/raw/geo/alkis_bezirke.geojson",
+      "sha256": "d29e8dca3693c8f011aaecdb8f214bc3edf58592a1aea996e2037128536e9122"
+    },
+    {
+      "id": "alkis-ortsteile",
+      "file": "data/raw/geo/alkis_ortsteile.geojson",
+      "sha256": "d0c077ffdf7da6dcc272123bcb66df11e8bcd9fe0f4dc2da6325c2fb61b1ed2d"
+    },
+    {
+      "id": "umweltzone",
+      "file": "data/raw/geo/umweltzone.geojson",
+      "sha256": "f9f059264096737e95353f4d01cf5a93119955d44ff5ecf65993cc70aa0e78c4"
+    }
+  ],
+  "retrieved": "2026-10-29",
+  "license": "dl-de/zero-2.0",
+  "rules": {
+    "ringInsideMin": 0.95,
+    "ringOutsideMax": 0.05,
+    "plateSimplify": "1.6%",
+    "mapSimplify": "9%"
+  }
+}
