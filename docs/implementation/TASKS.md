@@ -303,6 +303,7 @@ Last updated: 2026-10-29
 - [ ] `/methodology#your-data` (the "From your entries" band link) and `#in-development` return 404 until slice 8.
 - [ ] Before hydration the page shows the "reading" state, so a saved comparison is never in the static HTML (it can't be: it lives in the browser).
 - [ ] At 375 px a long property name is clamped to three lines in the sticky header; the full name is in the accessible name and the edit dialog.
+- [ ] At 320 px (400 % zoom) words longer than a column (about 69 px) break without a hyphen: "Unfurnished", a long host, a long user-typed name. Nothing is cut off and nothing scrolls sideways; from 360 px the fixed values fit.
 
 **Slice 7 checks (2026-10-29):**
 - `npm run typecheck` ✓
@@ -318,23 +319,43 @@ Last updated: 2026-10-29
   - Boundaries: no server marker in any client chunk. The compare page gets Bezirk and Ortsteil options as props; it imports no geo data module. No fixture import, no third-party fetch.
   - Provenance: the table sits in a Plate with `user` provenance ("From your entries"). The only money figures are the user's own asking rents and €/m² worked out from them, which DATA_BOUNDARIES §1 allows "as the user's own claim". No model number, no formula beyond rent ÷ area.
 - First-load JS (gzip, module scripts, `noModule` left out): `/compare` **183.5 kB**, over the 150 kB budget (201.7 kB before the dialog was split out). The rest is the shared ~140 kB baseline plus Zod for validating stored data on read (PRD F4). For slice 9: Zod Mini for the store would be the next cut.
+- After the review fixes below (second slice 7 commit): `npm run typecheck` ✓, `npm run lint` ✓, `npx vitest run` 287/287 ✓, `npm run build` ✓, `npx playwright test tests/e2e/compare.spec.ts` 18/18 ✓ against that build. The full E2E suite was not rerun for these fixes: they touch only `CompareTable` classes and the clear dialog's wording.
 
 **Bugs found while testing (fixed):**
 - The add dialog closed as soon as it opened in development: StrictMode's extra effect run reached `Dialog`'s unmount cleanup, which called `onClose` (D-049).
 - The dialog had two buttons named "Close" (the header's ✕ and the footer). The footer now says "Close and keep my entries".
 - Reading the `/analyze` draft from the dialog would have removed a broken draft before `/analyze` could say so. The dialog uses `peekDraft`, which never removes.
 - A seeded E2E comparison was consumed by the page's first read when written before hydration; the tests wait for `#compare-view[data-hydrated]` (`/analyze` stays mounted with its own marker, so the bare attribute matched twice).
+- Found on the screenshots after the first commit:
+  - The listing link had `break-all`, so at 768 px it read "example.org (new ta b)". "(new tab)" is now kept whole, and only a host too long for its column breaks.
+  - From `md`, the empty corner cell over the row headers didn't stick with the names, so row headers ("Listing", "Energy class") scrolled into view beside the sticky names. It now sticks with them.
+  - On phones the expanded names broke inside words ("Turmst raße", "Weddin g" at 320 px; "Turmstraße" is 103 px wide expanded, the column 69–88 px). Below `md` the names now use the condensed width that DESIGN_SYSTEM §3 gives table headers, and the expanded width from `md`.
+  - "Clear all" with one property said "All 1 property is deleted…". It now says "This property is deleted…".
 
-**Design review (screenshots 375/768/1440: empty, add dialog, dialog errors with the replace choice, three properties, sticky header mid-scroll, forced colors):**
+**Design review.** These screenshots were opened and looked at:
+- Empty state at 375 and 1440.
+- Three properties: 1:1 slices of the table at 320 and 375, and full pages at 768 and 1440.
+- The sticky names mid-scroll at 768 and 1440, with 3× crops at five scroll positions at 1440.
+- The add dialog at 320; the dialog's error summary with the replace choice at 768.
+- Forced colors at 1440: the table and the dialog.
+
+Findings:
 - One bold element: the property names over the table. The page is a plate with the "From your entries" band, a legend rail and a caption. No cards, no ranking, no colour used for "better".
 - Rows align on the first baseline across columns. Rule weights group the rows: place and size, the rent block, details, note and link.
-- At 375 px, German names hyphenate (`lang="de"`): "Gesundbrun-nen", "Charlotten-burg". User-typed names break anywhere if they must ("Turmstra-ße").
+- German place names hyphenate (`lang="de"`): "Gesundbrun-nen", "Charlotten-burg". English values and user-typed names don't. The Chromium used here hyphenates German but not English: a probe at 60 px gave "Unfurnished" an emergency break, not a hyphen. Other browsers weren't checked. At 375 every fixed value fits; at 320 the long ones break mid-word (open item above).
 - Forced colors: rules, the not-connected mark and the dialog border stay visible.
 - Departure from the wireframe: no empty "Add" column (D-047).
+- Not this slice's: the site header is `bg-paper/95` (slice 1), so rows scrolling under it show through faintly. Listed for the slice 9 screenshot pass.
 
 **Accessibility review (slice 7: table, dialog, confirm dialogs, notices):**
 - axe (wcag2a/aa, 2.1, 2.2): 0 violations at 375, 768 and 1440 px: empty, three properties, and the open dialog with its error summary.
-- Keyboard (scripted Tab walk at 1440 and 375 px with three properties: 28 and 23 stops): every stop has the 2 px outline. None is under the site header or the sticky names. The legend rail comes after the table in the DOM, so its link is reached after the table's, though the rail is drawn on the left from `lg`. On phones it follows the table.
+- Keyboard (scripted Tab walk at 1440 and 375 px with three properties: 28 and 23 stops, rerun after the review fixes): every stop has the 2 px outline. None is under the site header or the sticky names. The script flags "Skip to content" as covered: it is drawn over the header when focused, so that is a false positive.
+- [ ] **Focus order differs from the visual order at `lg`.** WCAG 2.4.3 Focus Order and 1.3.2 Meaningful Sequence. Severity **low**. Deferred to slice 9.
+  - From `lg` the legend rail is drawn left of the table, but it comes after the table in the DOM, so its one link is reached after the table's controls.
+  - On phones and at `md` the rail is drawn below the table, so the order matches there.
+  - Low because the rail is a legend for the table, and its link ("What this means") duplicates the one in the predicted-rent row.
+  - Fix in slice 9 together with the other routes' rails: put the rail first in the DOM, or keep it after the table at every width.
+- 320 px (1.4.10 Reflow): no horizontal scroll and nothing cut off with three properties. Words break mid-word there (see the open item above).
 - Dialogs: Esc closes and focus returns to the opener. After a save, remove or clear, focus goes where D-050 says, checked in component and E2E tests. Back and Forward with the add dialog open (Activity): no dialog left open on either page, and the entries are offered on the next add (checked by script).
 - Errors: the dialog's summary takes focus and links to each field, including the replace choice. Messages name the fix.
 - Table: real `<table>` with a hidden caption, column headers, row headers from `md` and explicit `headers` below it. The link says "(new tab)" in text.

@@ -97,7 +97,8 @@ export function CompareTable({ idPrefix, items, names, onEdit, onRemove }: Compa
       </colgroup>
       <thead>
         <tr>
-          <td className="hidden md:table-cell" />
+          {/* Sticks with the names so the row headers scroll under it, not beside them. */}
+          <td className="sticky top-[var(--header-height)] z-10 hidden bg-sheet md:table-cell" />
           {items.map((item, i) => (
             <th
               key={item.id}
@@ -106,7 +107,7 @@ export function CompareTable({ idPrefix, items, names, onEdit, onRemove }: Compa
               tabIndex={-1}
               className="sticky top-[var(--header-height)] z-10 border-b-2 border-ink bg-sheet px-2 pt-2 pb-2.5 text-left align-bottom md:pr-4 md:pl-0"
             >
-              <span className="line-clamp-3 type-body font-[650] break-words text-ink stretch-wide">
+              <span className="line-clamp-3 type-body font-[650] break-words text-ink stretch-condensed md:stretch-wide">
                 {item.label}
               </span>
             </th>
@@ -206,8 +207,8 @@ export function CompareTable({ idPrefix, items, names, onEdit, onRemove }: Compa
         )}
         {attributeRow("listing", "Listing", (item) =>
           item.listingUrl ? (
-            <a href={item.listingUrl} target="_blank" rel="noreferrer" className={cx(linkClass, "break-all")}>
-              {listingHost(item.listingUrl)} <span className="text-ink-2">(new tab)</span>
+            <a href={item.listingUrl} target="_blank" rel="noreferrer" className={cx(linkClass, "[overflow-wrap:anywhere]")}>
+              {listingHost(item.listingUrl)} <span className="whitespace-nowrap text-ink-2">(new tab)</span>
             </a>
           ) : (
             <Missing>No link</Missing>

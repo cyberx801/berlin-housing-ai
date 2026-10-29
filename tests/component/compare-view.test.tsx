@@ -134,7 +134,7 @@ describe("CompareView", () => {
     expect(live()).toHaveTextContent("Removed A. 1 of 3 places used.");
 
     await user.click(screen.getByRole("button", { name: "Clear all" }));
-    expect(dialog()).toHaveAccessibleDescription("All 1 property is deleted from this browser and can't be brought back.");
+    expect(dialog()).toHaveAccessibleDescription("This property is deleted from this browser and can't be brought back.");
     await user.click(within(dialog()).getByRole("button", { name: "Clear the comparison" }));
     await waitFor(() =>
       expect(screen.getByRole("heading", { name: "Add the properties you are weighing up" })).toHaveFocus(),

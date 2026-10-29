@@ -277,7 +277,7 @@ export function CompareView({
         open={confirmClear}
         onClose={() => setConfirmClear(false)}
         title="Clear the comparison?"
-        description={`All ${items.length === 1 ? "1 property is" : `${items.length} properties are`} deleted from this browser and can't be brought back.`}
+        description={`${items.length === 1 ? "This property is" : `All ${items.length} properties are`} deleted from this browser and can't be brought back.`}
         size="sm"
       >
         <div className="flex flex-wrap gap-3">
