@@ -385,7 +385,8 @@ Findings:
   - All 36 failures are in `desktop-1440`. None is an assertion: 33 are "worker process exited unexpectedly (code=3221225794)", a process Windows couldn't start, and 3 are "Target crashed".
   - The machine had 0.5–1.7 GB of free memory. Claude Code then stopped the run for low memory.
   - `mobile-375` and `tablet-768` passed completely, including `methodology.spec.ts`. That build had everything but the "sent anywhere" sentence (bug list below), a copy-only change made afterwards and built (`npm run build` ✓, typecheck and lint ✓).
-  - **`desktop-1440` is not verified for this slice. It has to be rerun once memory allows.**
+  - Rerun after memory was freed, on the final build, `npx playwright test --project=desktop-1440 --workers=1`: **50 passed, 2 skipped** (1.7 min). The two skips are by design: the mobile menu test (no menu button at 1440) and the 97-profile walk (phone only). `desktop-1440` is verified.
+  - `methodology.spec.ts` rerun on the final build for `mobile-375` and `tablet-768`, `--workers=1`: 10/10 ✓.
 - frontend-quality gate:
   - Boundaries: the page is a server component with no client component of its own. It reads `lib/data/geo` and `lib/data/registry` on the server and imports no fixture.
   - Provenance: the geography section carries the official label. The registry marks each dataset (official, not available, demo).
@@ -402,7 +403,7 @@ Findings:
 - At 1440: the top of the page; the geography section; the registry with the contents stuck beside it.
 - At 375: the top with the contents; the capability table; geography; market figures.
 - At 768: in development; known limitations.
-- At 320: the registry before and after the license and address fixes; the capability table after them. The Kaggle mark and apostrophe changes were not screenshotted.
+- At 320: the registry before and after the license and address fixes; the capability table after them. On the final build: the whole registry (dashed Kaggle mark, curly apostrophes) and the research section. Measured: every checksum and address ends inside its row, and the page has no horizontal overflow. In a full-element screenshot the translucent header shows over the research section; that is the screenshot stitching, and in the viewport the section opens below the header.
 
 Findings:
 - One bold element, the page title. Prose runs in one measured column in Source Serif. Headings and tables are in Archivo. No cards; the registry is a ledger, one definition list per dataset.
@@ -410,13 +411,13 @@ Findings:
 - No horizontal scroll at 320, 375, 768 or 1440. No console errors on the page.
 
 **Accessibility review (slice 8: contents list, capability table, registry):**
-- axe (wcag2a/aa, 2.1, 2.2): 0 violations at 375 and 768 on the final build. At 1440 the axe test passed on the earlier build; on the final build it crashed (see above).
+- axe (wcag2a/aa, 2.1, 2.2): 0 violations at 375, 768 and 1440 on the final build.
 - Structure:
   - One h1. Sections are `<section aria-labelledby>`, h2 with h3 inside.
   - The contents list is `<nav aria-labelledby>` ("On this page") and comes first in the DOM at every width, so the focus order matches the drawing.
   - The capability table has a caption, column headers and row headers.
 - Links: each contents entry lands on its heading, below the sticky header (E2E: the heading is in the viewport and its top is under the header). The same holds for links from other pages. Each id is unique after other routes have been visited and kept mounted.
-- [ ] Keyboard Tab walk **not run** for this slice. It was left out because of the memory shortage. Every control is a native link; to be done with the `desktop-1440` rerun.
+- [x] Keyboard (scripted Tab walk at 1440 on the final build, 45 stops up to the footer): skip link, header, the 17 contents entries, the 7 table rows, then the article and registry links, then the footer. Every stop shows the 2 px outline and none is under the sticky header. The script flags "Skip to content" as under the header; it is fixed at z-index 50 and is the topmost element at its centre when focused, so that is a false positive. Enter on a contents entry moves to its section (`#sources`, top 160 px, header bottom 65 px).
 - [!] Screen-reader smoke test **skipped**: NVDA and Firefox are still not installed.
 
 ## Slice 9 — Responsive polish and QA (depends on: all)
