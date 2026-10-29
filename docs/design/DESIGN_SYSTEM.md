@@ -103,7 +103,7 @@ Rules:
 - Don't emphasize a single word in headlines.
 - No eyebrow labels above headings.
 - Figures in tables and on axes use `font-variant-numeric: tabular-nums`. Standalone figures use proportional numerals.
-- Units are set in `small` next to the value, with a narrow no-break space (`65 m²`, `1,150 €`). See `lib/formatting`.
+- Units are set in `small` next to the value, with a narrow no-break space (`65 m²`, `€1,150`; en-GB conventions, D-023). See `lib/formatting`.
 
 ## 4. Grid and layout
 
@@ -214,21 +214,19 @@ The 45° and 135° line fill on data marks appears only when `forced-colors` is 
 |---|---|
 | `Button` | Variants: `primary` (ink fill), `secondary` (1 px ink outline), `quiet` (text with underline on hover). Sizes `md` (44 px) and `sm` (36 px, in dense rails only). Labels name the outcome ("Prepare analysis", not "Submit"). |
 | `Field` | A wrapper that provides the label, `required`/`optional` text, hint, error (`aria-describedby`), and unit suffix. |
-| `NumberField` | Native `input inputmode="decimal"`, with the unit suffix outside the input and optional stepper buttons (rooms, floors). Parsing is locale-aware. |
+| Number inputs | Native `input inputmode="decimal"` inside `Field`, with the unit suffix outside the input. Parsing accepts `65,5` and `65.5` (`parseDecimal`). |
 | `Select` | Native `<select>` for Bezirk and other short lists. It is the best mobile UX. |
-| `Combobox` | Ortsteil search on `/analyze` and `/explore`. Built on React Aria Components (D-007). |
-| `SegmentedControl` | A radio group with the visual style of joined pills, for property type and condition. |
-| `TriState` | Yes / No / Not sure, for lift and balcony. A radio group, never a checkbox. |
+| `ChoiceGroup` | A native radio group styled as pills: property type, condition, and the Yes / No / Not sure tri-state for lift and balcony (never a checkbox). |
 | `FloorIndicator` | A vertical stack of `total_floors` segments with the chosen floor marked. Decorative twin of the inputs, `aria-hidden`, because the inputs carry the meaning. |
 | `LegendRail` | The left rail. A `<aside aria-label="Legend and sources">` with definition lists. |
-| `Plate` | A figure container: `<figure>` with the question title, legend band, body, and caption/source line. |
-| `ProvenanceBand` | The five states from §7. Copy is fixed and the link is required. |
+| `Plate` | A figure container (`<section>`) with the legend band, question title, body, and caption/source line. `provenance` is a required prop. |
+| `ProvenanceMark` / `ProvenanceLabel` | The five visual states from §7 (mark) and their fixed copy with the methodology link (label). |
 | `Ledger` | Rows of term, description and status, used for the tools index and the truth table. Not cards. |
 | `StatusPanel` | Not-connected, empty and error states: a title, an explanation, what to do next, and actions. |
-| `Dialog` | React Aria `Modal`/`Dialog`. Focus trap, Esc to close, returns focus. |
+| `Dialog` | Native `<dialog>` with `showModal()`: inert background, Esc to close, focus returns to the opener. Requires an explicit `id` (Activity keeps hidden routes mounted). |
 | `Disclosure` | Native `<details>`/`<summary>`, styled. |
 | `RingPlate`, `LocatorPlate`, `BezirkSilhouette` | d3-geo SVG, server-rendered (see FRONTEND_ARCHITECTURE §6). |
-| Chart primitives | `LineChart`, `BarChart`, `Histogram`, `DotPlot`, each with `TableView`. visx and d3 inside, tokens outside. |
+| Chart primitives | `LineChart`, `BarChart`, `Histogram`, `DotPlot`, each with `TableView`. d3 inside, tokens outside. |
 
 Icons: `lucide-react`, utility glyphs only (check, alert, info, x, chevron, search, plus, minus). 1.5 px stroke, 20 px, `currentColor`. Icons are never decorative illustrations and never stand alone without an accessible name.
 

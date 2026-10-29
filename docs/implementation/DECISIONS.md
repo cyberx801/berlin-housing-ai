@@ -12,7 +12,7 @@ The working directory was the user home folder, which isn't a repository and hol
 ### D-002 · Visual direction "Atlas" · Proposed (awaiting client review)
 → Concept B was selected over Raster and Grundriss. Rationale and critique: DESIGN_DIRECTION.md. One element is borrowed from Grundriss: the floor indicator.
 
-### D-003 · Next.js 16 / React 19 / TypeScript pinned below 7 · Pending verification at scaffold
+### D-003 · Next.js 16 / React 19 / TypeScript pinned below 7 · Accepted (verified, see D-024)
 npm `latest` on 2026-10-29: next 16.4.3, react 19.3.1, typescript **7.0.2**. TypeScript 7 is the native compiler, while Next's build-time type check and typescript-eslint depend on the TypeScript JS API.
 → Pin TypeScript to 5.9.3, or 6.0.x if typescript-eslint's peer range allows it. Record the verified combination here.
 → Check whether `next lint` exists in 16.x, and use `eslint .` regardless.
@@ -24,14 +24,14 @@ npm `latest` on 2026-10-29: next 16.4.3, react 19.3.1, typescript **7.0.2**. Typ
 → The optional OpenFreeMap basemap is gated behind a flag after a terms review.
 → Consequence: no street context by default. Acceptable, because the product question is about Ortsteil-level context, not navigation.
 
-### D-005 · Charts: visx primitives + d3 · Accepted
+### D-005 · Charts: visx primitives + d3 · Superseded by D-025
 Recharts and similar libraries have defaults that look generic and are hard to make keyboard-accessible. Observable Plot is imperative.
 → visx 4 (peer `react ^19` verified) plus our own components, giving full control of tokens, tooltips, keyboard and table views.
 
 ### D-006 · Forms: React Hook Form + Zod 4 · Accepted
 → RHF 7.91 with `@hookform/resolvers` 6.0.2 (peer `zod ^4` verified). One UI-shaped schema, mapped once to the wire schema.
 
-### D-007 · Accessible primitives: native first, React Aria Components where native falls short · Accepted
+### D-007 · Accessible primitives: native first, React Aria Components where native falls short · Superseded by D-026
 → Native `<select>`, `<details>` and radio groups. React Aria Components only for Combobox (Ortsteil search), Dialog/Modal and Popover. Version to be verified at scaffold.
 
 ### D-008 · Prediction transport: disabled by default, proxy recommended · Accepted
@@ -78,6 +78,41 @@ Evidence (2026-10-29): `gdf` ≈ the computed area for single-part features (med
 ### D-022 · `/market` data loading model · Open (resolve in slice 5)
 ARCH §3 renders `/market` statically, passes the whole (small) demo dataset as props and filters it client-side. DATA_BOUNDARIES §5 defines `MarketDataSource` as async and per-query. Those fit the demo fixtures, but a real backend source will not suit the "pass everything as props" model.
 → In slice 5, choose either (a) server components that read `searchParams` (dynamic rendering, per-query calls), or (b) a client fetch through a route handler. Keep the `MarketDataSource` interface either way, so swapping the source doesn't touch the UI.
+→ Note (slice 1): the root layout sets `ensureStatic = "navigation"` (D-027), so option (a) would mean relaxing that for `/market` only. Option (b) keeps the route static.
 
 ### D-021 · Chart series caps from palette validation · Accepted
 → All-pairs forms (maps, scatter, small multiples) are capped at 3 colored series, and trend lines at 4 Bezirke. The district comparison uses one hue with outline selection. Source: `validate_palette.js` runs on 2026-10-29 (DESIGN_SYSTEM §8.1).
+
+### D-023 · Number and unit formatting: en-GB · Accepted
+`en-DE` (English text, German conventions) was tried first, but its Intl output is inconsistent (decimal commas next to comma-grouped currency in some engines).
+→ One locale, `en-GB`, everywhere: `€1,150`, `€17.69 /m²`, `7.7 km²`, `83 %`. Units follow the value after a narrow no-break space. Input parsing still accepts the German decimal comma (`65,5`).
+→ Lives in `src/lib/formatting/number.ts`, unit-tested.
+
+### D-024 · Toolchain verified at scaffold (resolves D-003) · Accepted
+Verified on 2026-10-29 with Node 22.16 / npm 10.9:
+→ next 16.4.3, react 19.3.1, **typescript 5.9.3**, eslint 9.39.5 with eslint-config-next 16.4.3 (its typescript-eslint accepts TS 5.9), tailwindcss 4.3.3 via `@tailwindcss/turbopack`, vitest 5.0.5, jsdom **29.1.1** (30.x warns on Node 22.16's engine range), @playwright/test 1.64.1.
+→ `next lint` no longer exists; `npm run lint` runs the `eslint` CLI. `npm run typecheck` runs `next typegen` first so the global `PageProps`/`LayoutProps` types exist.
+→ `turbopack.root` and `outputFileTracingRoot` are set because the home folder has an unrelated lockfile.
+
+### D-025 · Charts: d3 modules + our own SVG; visx not used (supersedes D-005) · Accepted
+→ d3-scale, d3-shape and d3-array are already needed (and d3-geo for plates). visx's scale/shape wrappers would duplicate them, and axes, tooltips, keyboard handling and table views are custom anyway. Fewer dependencies, same control.
+
+### D-026 · Native dialog and select; React Aria dropped (supersedes D-007) · Accepted
+→ `Dialog` is a native `<dialog>` opened with `showModal()` (inert background, Esc, focus return). The Ortsteil choice on `/analyze` is a native select filtered by the chosen Bezirk (at most 15 options), so no combobox is needed. `/explore` search is a text field that filters the synced list.
+→ `react-aria-components` was installed during scaffolding and removed before any use.
+
+### D-027 · Whole app is statically rendered · Accepted
+→ `cacheComponents` is on and the root layout exports `ensureStatic = "navigation"`, so the build fails if any page becomes request-time work. Consequences: `[slug]` routes need `generateStaticParams`; client components that read `useSearchParams` sit inside `<Suspense>`; URL state is read on the client.
+→ Activity keeps up to three hidden routes mounted. Element ids must therefore be unique across routes (explicit `id`/`idPrefix` props), dialogs and menus close when their route is hidden, and CSS animations that should run once are removed after they finish.
+
+### D-028 · `exactOptionalPropertyTypes` left off · Accepted
+→ It conflicts with many library prop types that pass `undefined` explicitly. Where the distinction matters (outcome objects, request options), code uses conditional spreads instead. `strict` and `noUncheckedIndexedAccess` are on.
+
+### D-029 · Provenance kinds and their five visual states · Accepted
+→ The `Provenance` type has seven kinds mapped to the five notations of D-009: `official` and `model` (solid ink band), `user` and `research` (ink-2 band), `demo` (45° hatch), `not-connected` (dashed frame), `pending` (plain outline, "Not written yet"). Each kind carries the fields its label needs (license, fixture note, missing capability, reason).
+
+### D-030 · Place references in URLs use slugs · Accepted
+→ Every URL that names a place uses its slug: `/analyze?bezirk=mitte&ortsteil=moabit`, `/neighborhoods?bezirk=mitte`, `/explore?o=moabit`. Pages map slugs to official codes. Codes stay internal (form values, contract `ortsteil_code`).
+
+### D-031 · Homepage plate: keyboard path is a native select, paths are not focusable · Accepted
+→ The 97 Ortsteil paths respond to pointer hover and tap, but are not tab stops. A native "Find an Ortsteil" select (grouped by Bezirk) is the keyboard and screen-reader path, and it drives the same highlight and readout (PRD A2). Small multiples share one map scale so Bezirk sizes stay comparable.

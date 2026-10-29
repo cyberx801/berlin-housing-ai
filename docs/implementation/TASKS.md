@@ -18,44 +18,44 @@ Last updated: 2026-10-29
 - [x] PRD, user flows, three design concepts, selected direction, design system with validated palette
 - [x] Frontend architecture, data boundaries, prediction contract (draft), decision log
 - [x] Project skills: `design-system`, `frontend-quality`, `accessibility-review`
-- [ ] **Client review of the design direction** (Atlas) ← gate before slice 2's visual work
+- [~] **Client review of the design direction** (Atlas). The owner said to proceed with implementation ("devam et"); a formal review of the built pages is still welcome and can change the direction.
 
 ## Slice 0 — Data foundation (depends on: nothing)
-- [ ] `scripts/build-geo.mjs`: mapshaper pipeline, derivations and asserts (DATA_BOUNDARIES §6, ARCH §6)
-- [ ] Generated `src/lib/data/geo/generated/*` + `public/geo/*`; size budgets asserted
-- [ ] `src/lib/formatting/slug.ts` + unit tests (the five canonical cases)
-- [ ] Geo build tests (12 / 97, mapping, symmetry, area consistency)
+- [x] `scripts/build-geo.mjs`: mapshaper pipeline, derivations and asserts (DATA_BOUNDARIES §6, ARCH §6)
+- [x] Generated `src/lib/data/geo/generated/*` + `public/geo/*`; size budgets asserted
+- [x] Slug rule lives in `scripts/lib/geo-derive.mjs` (slugs are build output, not computed at runtime) + unit tests
+- [x] Geo build tests (12 / 97, mapping, symmetry, area consistency, d3 winding): `tests/unit/geo-derive.test.ts`, `tests/unit/geo-data.test.ts`
 
 ## Slice 1 — Project foundation and design system (depends on: 0 for the geo types)
-- [ ] Scaffold Next 16 (App Router, TS strict, Tailwind v4, ESLint flat). Pin versions; verify TS 5.9 vs 6.0 against typescript-eslint and `next build`. Record the result in D-003.
-- [ ] `next.config.ts`: `turbopack.root`, `outputFileTracingRoot`
-- [ ] `tokens.css` (light; dark scaffolded but off), fonts via `next/font` (Archivo wdth/wght, Source Serif 4 opsz)
-- [ ] UI primitives: Button, Field, NumberField, Select, SegmentedControl, TriState, Disclosure, StatusPanel, Dialog, Combobox (React Aria)
-- [ ] Provenance: `Provenance` type, ProvenanceBand, SourceLine
-- [ ] Vitest + Testing Library + Playwright + axe wired up; `npm run check`
-- [ ] ESLint boundary rules + boundary test
-- [ ] `.env.example`; README setup verified on a clean install
+- [x] Scaffold Next 16 (App Router, TS strict, Tailwind v4, ESLint flat), versions pinned and verified (D-024)
+- [x] `next.config.ts`: `turbopack.root`, `outputFileTracingRoot`, cacheComponents; root layout `ensureStatic` (D-027)
+- [x] Tokens in `globals.css` `@theme` (light; dark tokens documented, not shipped), fonts via `next/font` (Archivo wdth 62–125 verified in the built `@font-face`, Source Serif 4 opsz)
+- [x] UI primitives: Button, Field, Select, ChoiceGroup, Disclosure, StatusPanel, Dialog (native, D-026)
+- [x] Provenance: `Provenance` type (D-029), ProvenanceMark, ProvenanceLabel, Plate
+- [x] Vitest + Testing Library wired up (82 tests passing); Playwright config + Chromium installed; `npm run check`
+- [x] ESLint boundary rules (negative-tested with probe files) + `tests/unit/boundaries.test.ts`
+- [~] `.env.example` done; README setup to be verified on a clean install in slice 9
 
 ## Slice 2 — App shell and homepage (depends on: 1; design gate)
-- [ ] SiteHeader (sticky, current-page state), MobileNav (dialog, focus-managed), SkipLink, SiteFooter (sources, licenses)
-- [ ] LegendRail + PageGrid (12/8/4 columns)
+- [x] SiteHeader (sticky, current-page state, mobile disclosure nav that closes on route change and Esc), skip link, SiteFooter (sources, licenses)
+- [x] LegendRail + `page-grid` utility (12/8/4 columns, verified in compiled CSS)
 - [ ] RingPlate (SVG, server) + interaction wrapper; ring draw-in respecting reduced motion
 - [ ] AnalysisEntry (Bezirk / area / rooms → `/analyze?…`), tools Ledger, Bezirk small multiples, explorer preview, data-truth ledger
-- [ ] not-found and error pages
+- [x] not-found and error pages
 - [ ] E2E: home renders, entry navigates with params, keyboard path through plate list
 
 ## Slice 3 — Property analysis and integration boundary (depends on: 1; uses 0 for options)
-- [ ] `lib/validation/property.ts` (UI schema + refinements + messages) + tests
-- [ ] `lib/contracts/rent-prediction.v1.ts` (DRAFT request, response, error) + `toRentPredictionRequest` + tests
-- [ ] `lib/api/prediction`: config (env Zod), DisabledTransport, HttpTransport, service + contract tests over `tests/contracts/fixtures/*`
+- [x] `lib/validation/property.ts` (UI schema + refinements + messages) + tests
+- [x] `lib/contracts/rent-prediction.v1.ts` (DRAFT request, response, error) + `toRentPredictionRequest` + tests
+- [x] `lib/api/prediction`: config (env Zod), DisabledTransport, HttpTransport, service + contract tests over `tests/contracts/fixtures/*` (found and fixed: major-version check was unreachable; non-JSON 5xx bodies were not retryable)
 - [ ] `/api/predictions/rent` proxy route (503 NOT_CONFIGURED default) + test
-- [ ] Form UI: five groups, rail progress, error summary, FloorIndicator, Ortsteil combobox filtered by Bezirk, URL prefill, session draft, reset
+- [ ] Form UI: five groups, rail progress, error summary, FloorIndicator, Ortsteil select filtered by Bezirk, URL prefill, session draft, reset
 - [ ] ResultPanel: all outcomes designed; `not_connected` live; `ok` rendered only in component tests from contract fixtures
 - [ ] E2E Flow 1
 
 ## Slice 4 — Market explorer `/explore` (depends on: 0, 1)
 - [ ] ExploreMap (MapLibre, dynamic, inline style, feature-state), WebGL fallback
-- [ ] Filter rail, synced list (listbox semantics), search combobox, info panel, URL state
+- [ ] Filter rail, synced list (listbox semantics), search field filtering the list, info panel, URL state
 - [ ] Mobile bottom sheet (List / Details)
 - [ ] E2E Flow 3 (selection via list and keyboard; URL deep link)
 

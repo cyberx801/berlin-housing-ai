@@ -4,7 +4,7 @@ The spec docs in `docs/` are the source of truth. Read the relevant one before c
 
 ## Integrity (never break these)
 - No rent estimate, "fair price" or prediction-like number is rendered unless it came from a real prediction API response (`provenance.kind === "model"`). No pricing formulas, no simulated inference, no paid AI or LLM APIs.
-- Every data-bearing component takes a typed `provenance` prop and shows a `ProvenanceBand`.
+- Every data-bearing component takes a typed `provenance` prop and shows its legend band (`Plate` or `ProvenanceLabel`).
 - Demo fixtures (`src/lib/fixtures/demo/`) are imported only by `src/lib/data/market/demo-source.ts`. Contract fixtures (`tests/contracts/fixtures/`) are never imported by `src/`.
 - Neighborhood facts come from the geodata derivations only. No ratings, indices or unsourced prose.
 - Kaggle CSVs aren't used by any screen until they pass the intake protocol (DATA_BOUNDARIES §4).

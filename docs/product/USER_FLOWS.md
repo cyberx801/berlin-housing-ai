@@ -49,7 +49,7 @@ States: directory with results, directory with no results (suggest clearing filt
 ```
 /explore
   ├─ map loads (lazy) · list renders immediately (SSR)
-  ├─ select via: map click | list (arrow keys + Enter) | search combobox
+  ├─ select via: map click | list (arrow keys + Enter) | search field (filters the list)
   │     └─ panel opens · URL ?o=<slug> · map fits bounds (instant if reduced motion)
   ├─ filter Bezirk / Ring status → list + map styling update · URL updates (replace, not push)
   └─ panel actions: [Open profile] [Analyze a flat here] [Close (Esc)]

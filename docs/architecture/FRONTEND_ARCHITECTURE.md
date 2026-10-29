@@ -10,19 +10,19 @@ Versions are the npm `latest` as of 2026-10-29 unless noted. They are pinned exa
 |---|---|---|---|
 | Framework | Next.js, App Router | 16.4.3 | SSG for 97 profile pages, route handlers for the future prediction proxy, `next/font` self-hosting |
 | UI runtime | React / React DOM | 19.3.1 | Required by Next 16 |
-| Language | TypeScript, `strict` plus `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` | **5.9.3 or 6.0.x** (not 7.0.2) | TS 7 is the native port, and Next's build-time type check and typescript-eslint depend on the JS API. Verified at scaffold (D-003). |
+| Language | TypeScript, `strict` plus `noUncheckedIndexedAccess` (`exactOptionalPropertyTypes` off, D-028) | **5.9.3** (not 7.0.2) | TS 7 is the native port, and Next's build-time type check and typescript-eslint depend on the JS API. Verified at scaffold (D-024). |
 | Styling | Tailwind CSS v4 + CSS custom properties | 4.3.3 | Tokens live in CSS (`@theme`). There is no config-file sprawl. |
 | Validation | Zod | 4.6.7 | One schema source for forms, URL parsing, storage and the API contract |
 | Forms | React Hook Form + `@hookform/resolvers` | 7.91.0 / 6.0.2 (peer: zod ^4 ✓) | Uncontrolled performance on a 15-field form, and works with native inputs |
-| Accessible primitives | Native HTML first. React Aria Components for Combobox, Dialog and Popover only. | verify at scaffold | Native `<select>`/`<details>` win on mobile and a11y. A combobox and modal are hard to get right by hand (D-007). |
-| Charts | visx primitives + d3-scale/d3-shape | @visx 4.0.0 (peer: react ^19 ✓) | Full control of marks and tokens, React-native SVG, and real tooltips and keyboard handling (D-005) |
+| Accessible primitives | Native HTML only: `<select>`, radio groups, `<details>`, `<dialog>` | — | Native controls win on mobile and with assistive tech. `showModal()` gives focus containment, inertness and Esc. No combobox is needed (D-026). |
+| Charts | d3-scale / d3-shape / d3-array + our own SVG components | 4.0.2 / 3.2.0 / 3.2.4 | Full control of marks, tokens, tooltips, keyboard and table views with fewer dependencies (D-025, supersedes D-005) |
 | Geo (SVG) | d3-geo + topojson-client | d3-geo 3.1.1 | Server-rendered SVG plates with no WebGL |
 | Map | MapLibre GL JS | 6.16.0 | Open source. No key with our own GeoJSON. `/explore` only, dynamic import (D-004). |
-| Geo build | mapshaper (devDependency) | verify | Topology-preserving simplification, clipping, and area (D-010, D-011) |
-| Icons | lucide-react | verify | Utility glyphs only |
+| Geo build | mapshaper (devDependency) | 0.7.100 | Topology-preserving simplification, clipping, and area (D-010, D-011) |
+| Icons | lucide-react | 1.63.0 | Utility glyphs only |
 | Unit/component tests | Vitest + Testing Library + user-event + jsdom | 5.0.5 / 16.3.3 | Fast, ESM-native |
 | E2E / a11y / visual | Playwright + @axe-core/playwright | 1.64.1 / 4.14.0 | Journeys, axe scans and viewport screenshots |
-| Lint | ESLint flat config + `eslint-config-next` + typescript-eslint | 10.13.0 / 16.4.3 | Whether `next lint` still exists in 16.x is verified at scaffold. Plain `eslint .` is used regardless. |
+| Lint | ESLint flat config + `eslint-config-next` (bundles typescript-eslint) | 9.39.5 / 16.4.3 | `next lint` is gone in 16.x; the `eslint` CLI is used (D-024). |
 
 Not used:
 - a global state library (D-018)
@@ -52,9 +52,9 @@ berlin-housing-ai/
 │  │  ├─ neighborhoods/page.tsx  neighborhoods/[slug]/page.tsx
 │  │  └─ api/predictions/rent/route.ts      proxy (disabled unless configured)
 │  ├─ components/                   presentational, no data access
-│  │  ├─ ui/          Button Field NumberField Select Combobox SegmentedControl TriState Dialog Disclosure StatusPanel
-│  │  ├─ layout/      SiteHeader MobileNav SiteFooter LegendRail PageGrid SkipLink
-│  │  ├─ provenance/  ProvenanceBand SourceLine
+│  │  ├─ ui/          Button Field Select ChoiceGroup Dialog Disclosure StatusPanel
+│  │  ├─ layout/      SiteHeader (incl. mobile nav) SiteFooter LegendRail nav-items; skip link + page-grid utility in the root layout/CSS
+│  │  ├─ provenance/  ProvenanceMark ProvenanceLabel Plate provenance-copy
 │  │  ├─ maps/        RingPlate LocatorPlate BezirkSilhouette (SVG) · ExploreMap (client, MapLibre)
 │  │  └─ charts/      LineChart BarChart Histogram DotPlot TableView ChartTooltip
 │  ├─ features/                     stateful compositions; own their hooks and URL state
@@ -131,10 +131,10 @@ There is no global store. If a second feature ever needs comparison state, it im
 ```
 data/raw/geo/*.geojson ──scripts/build-geo.mjs (mapshaper)──▶
    src/lib/data/geo/generated/
-      ortsteile.meta.json   [{code:"0102", name, slug, bezirkCode, bezirkName, bezirkSlug,
-                              areaKm2, ringShare, ringStatus, neighbors:[codes], centroid, bbox}]
-      bezirke.meta.json     [{code, name, slug, areaKm2, ortsteilCodes}]
-      plates.topo.json      heavy simplification (SVG plates, home, locators)
+      ortsteile.meta.json   [{code:"0102", name, slug, bezirkCode,
+                              areaKm2, ringShare, ringStatus, neighbors:[codes], labelPoint, bbox}]
+      bezirke.meta.json     [{code, name, slug, areaKm2, labelPoint, bbox, ortsteilCodes}]
+      plates.geo.json       heavy simplification, wound for d3-geo (SVG plates, home, locators)
    public/geo/
       ortsteile.geojson  bezirke.geojson  ring.geojson   moderate simplification (MapLibre)
 ```
@@ -163,7 +163,7 @@ The optional basemap (OpenFreeMap) is behind `NEXT_PUBLIC_ENABLE_BASEMAP`, which
 ## 7. Charts
 
 - Each chart is a client component with props `{ data, provenance, title, question, unit }`. The `provenance` prop is **required by type**. A chart cannot render without declaring its data origin.
-- Implementation: visx `scale`/`shape`/`axis`/`tooltip`/`event`, sized by a `ResizeObserver` hook, and token colors read from CSS variables.
+- Implementation: d3-scale/d3-shape for geometry, our own SVG for axes, marks and tooltips, sized by a `ResizeObserver` hook. Colors are CSS variables (`var(--color-series-1)`), never hard-coded hex.
 - Keyboard: the chart is focusable, and the arrow keys move a crosshair or mark focus. The tooltip content is mirrored in an `aria-live="polite"` region.
 - `TableView` renders the same data as a `<table>` with a caption, units and the provenance line.
 

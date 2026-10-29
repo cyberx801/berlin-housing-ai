@@ -293,8 +293,8 @@ Desktop                                         Mobile (rows = attributes, 3 nar
 │ Ortsteil   │ Moabit       │ Wedding│ Add a  │  │Moab│Wedd│ +  │ Ortsteil
 │ Area       │ 65 m²        │ 58 m²  │ prop-  │  │65  │58  │    │ m²
 │ Rooms      │ 2.5          │ Missing│ erty   │  │2.5 │ —  │    │ Rooms
-│ Asking cold│ 1,150 €      │ 990 €  │        │  …
-│ €/m² (from │ 17.69 €      │ 17.07 €│        │
+│ Asking cold│ €1,150       │ €990   │        │  …
+│ €/m² (from │ €17.69       │ €17.07 │        │
 │ your data) │              │        │        │
 │ Predicted  │ Model not connected (spans row)│
 └────────────┴──────────────┴────────┴────────┘

@@ -9,7 +9,7 @@ The source of truth is `docs/design/DESIGN_SYSTEM.md`, with rationale in `docs/d
 
 ## Before building
 1. Identify the plate: what question does this screen or module answer? Write it as the plate title.
-2. Identify the provenance of every value shown: official, user, demo, not connected, or pending (DESIGN_SYSTEM §7, DATA_BOUNDARIES §1). Every data-bearing module gets a `ProvenanceBand` with its fixed copy.
+2. Identify the provenance of every value shown: official, user, demo, not connected, or pending (DESIGN_SYSTEM §7, DATA_BOUNDARIES §1). Every data-bearing module gets its legend band (`Plate` / `ProvenanceLabel`) with the fixed copy.
 3. Place it in the grid: legend rail (columns 1–3 at `lg`+) and plate (4–12). Decide how the rail collapses at `md` (strip) and `sm` (disclosure).
 
 ## Hard rules (a violation means it isn't done)
