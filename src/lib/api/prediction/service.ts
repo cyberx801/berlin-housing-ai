@@ -4,6 +4,7 @@ import {
   type NameLookup,
   type RentPredictionRequestV1,
 } from "@/lib/contracts/rent-prediction.v1";
+import { randomId } from "@/lib/id";
 import type { PropertyInput } from "@/lib/validation/property";
 import { readPredictionConfig, type PredictionConfig } from "./config";
 import { createDisabledTransport, createHttpTransport } from "./transports";
@@ -22,7 +23,7 @@ export class PropertyAnalysisService {
   constructor(
     private readonly transport: PredictionTransport,
     private readonly names: NameLookup,
-    private readonly newId: () => string = () => crypto.randomUUID(),
+    private readonly newId: () => string = randomId,
   ) {}
 
   get mode() {

@@ -204,7 +204,7 @@ The 45° and 135° line fill on data marks appears only when `forced-colors` is 
 - **Focus:** a 2 px `--color-focus` outline with a 2 px offset, on **every** interactive element including map list items and SVG paths. Never remove the outline without a replacement. The focused element must not be hidden by sticky headers (WCAG 2.4.11): use `scroll-margin-top` of at least the header height plus 16 px.
 - **Hover:** inputs get a 2 px border. Ledger rows get a `paper` → `sheet` plane shift. Map polygons get a 1.5 px ink outline.
 - **Pressed:** buttons shift `translateY(1px)` and darken (`ink-hover`).
-- **Selected:** a marker fill, plus a 2 px ink outline, plus a text state such as "Selected" (or `aria-selected` / `aria-pressed`).
+- **Selected:** a marker fill, plus a 2 px ink outline, plus a text state such as "Selected" (or `aria-selected` / `aria-pressed`). Under `forced-colors` the fill disappears, so selected controls opt out with `forced-color-adjust: none` and paint themselves in Highlight / HighlightText.
 - **Disabled:** ink-3 text, a dashed border and `aria-disabled`, with the reason given nearby in text. Avoid disabled submit buttons. Prefer validation on submit.
 - **Touch targets:** at least 44 × 44 px for primary controls and at least 24 × 24 px everywhere (WCAG 2.5.8).
 

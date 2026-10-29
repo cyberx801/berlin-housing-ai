@@ -18,8 +18,8 @@ interface ChoiceGroupProps<V extends string> {
   error?: string | undefined;
   /** Props spread onto every radio input (e.g. react-hook-form `register(name)`). */
   inputProps?: Omit<ComponentProps<"input">, "type" | "value" | "id">;
-  /** Controlled usage outside forms. */
-  value?: V;
+  /** Controlled usage; "" means nothing is chosen yet. */
+  value?: V | "";
   onValueChange?: (value: V) => void;
   className?: string;
   size?: "md" | "sm";
@@ -89,6 +89,9 @@ export function ChoiceGroup<V extends string>({
                   size === "md" ? "min-h-11 px-4 type-body" : "min-h-9 px-3 type-small",
                   "peer-hover:border-ink",
                   "peer-checked:border-ink peer-checked:bg-marker peer-checked:font-[620] peer-checked:shadow-[inset_0_0_0_1px_var(--color-ink)]",
+                  // Forced colors drop the fill and the inset shadow, leaving only the weight. The
+                  // checked pill opts out (no text backplate) and paints itself in system colors.
+                  "forced-colors:peer-checked:forced-color-adjust-none forced-colors:peer-checked:border-[Highlight] forced-colors:peer-checked:bg-[Highlight] forced-colors:peer-checked:text-[HighlightText]",
                   "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus",
                   error && "border-critical",
                 )}

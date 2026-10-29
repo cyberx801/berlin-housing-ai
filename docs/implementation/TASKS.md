@@ -69,10 +69,34 @@ Last updated: 2026-10-29
 - [x] `lib/validation/property.ts` (UI schema + refinements + messages) + tests
 - [x] `lib/contracts/rent-prediction.v1.ts` (DRAFT request, response, error) + `toRentPredictionRequest` + tests
 - [x] `lib/api/prediction`: config (env Zod), DisabledTransport, HttpTransport, service + contract tests over `tests/contracts/fixtures/*` (found and fixed: major-version check was unreachable; non-JSON 5xx bodies were not retryable)
-- [ ] `/api/predictions/rent` proxy route (503 NOT_CONFIGURED default) + test
-- [ ] Form UI: five groups, rail progress, error summary, FloorIndicator, Ortsteil select filtered by Bezirk, URL prefill, session draft, reset
-- [ ] ResultPanel: all outcomes designed; `not_connected` live; `ok` rendered only in component tests from contract fixtures
-- [ ] E2E Flow 1
+- [x] `/api/predictions/rent` proxy route (503 NOT_CONFIGURED default; 400/413/422 before any upstream call; 502/504 on upstream failure; key only upstream) + `tests/unit/prediction-proxy.test.ts` (D-036)
+- [x] Form UI: five groups with "n of m answered", rail progress (sticky at `lg`) and mobile progress strip (D-035), error summary (D-032), FloorIndicator, Ortsteil select filtered by Bezirk (or grouped, filling in the Bezirk), URL prefill applied once (D-034), session draft, Start over with confirmation
+- [x] ResultPanel: every outcome designed (`not_connected` ×2 reasons, `ok`, `rejected`, `unavailable` with retry, `invalid_input`); `not_connected` is what ships; `ok` is rendered only in `tests/component/result-panel.test.tsx` from contract fixtures read off disk
+- [x] "Add to comparison" writes to the comparison store (slice 7 builds the page)
+- [x] E2E Flow 1: `tests/e2e/analyze.spec.ts` (homepage → prefilled form → not-connected result, error summary, invalid link values, Bezirk change, reload + Start over, focus not obscured, axe)
+- [x] `randomId()` with a `getRandomValues` fallback: `crypto.randomUUID` throws outside secure contexts (e.g. the dev server opened from a phone at a LAN address)
+
+**Slice 3 checks (2026-10-29):** `npm run typecheck` ✓, `npm run lint` ✓ (0 problems), `npm run test` 158/158 ✓ (13 files), `npm run build` ✓ (`/analyze` static, `/api/predictions/rent` dynamic), `npx playwright test` 62 passed / 1 skipped ✓ (skip: mobile menu at 1440, by design).
+
+**Bugs found while testing (fixed):**
+- Cross-field errors (floor above total floors, Ortsteil outside the Bezirk) never showed while any required field was empty, because Zod skips object refinements once a field has an issue. They now use `when` (D-033).
+- Leaving the property type radios without choosing made React Hook Form store `null`, which showed Zod's raw "Invalid input: expected string, received null" in the summary. It would also have made the session draft unreadable on reload. Property type is now a controlled group, and the schema has field messages for type errors.
+- At 1440 px, pressing "Prepare analysis" while an invalid field was focused lost the click: blur validation inserted an error and moved the button 27 px between pointer-down and pointer-up. Validation now starts on submit (D-033).
+- Pressing submit before hydration does nothing (React drops it). E2E tests wait for `form[data-hydrated]`. **Open:** a real user on a slow phone gets no feedback in that window; to be handled in slice 9.
+
+**Design review findings (screenshots 375/768/1440: prefilled, error summary, result):**
+- Fixed: the empty FloorIndicator wrapper still took a column and narrowed "Total floors".
+- Fixed: the "Filled in from the link" notice stayed on screen under the result; a prepared result now replaces it.
+- Verified: no horizontal scroll in any of the three states at any width; one bold element per screen (the result heading, or the summary).
+
+**Accessibility review (slice 3: form, error summary, result panel, Start over dialog):**
+- axe (wcag2a/aa, 2.1, 2.2): 0 violations on first load, with the error summary, with the result, and with the dialog open, at 375, 768 and 1440 px.
+- Keyboard: after a prefill, focus is on the first empty required field; Space picks a radio; summary links move focus to their fields; the result heading takes focus after submit; Esc closes the dialog and focus returns to "Start over".
+- 2.4.11 Focus not obscured: E2E tabs backwards through the whole form at three widths, under both the header and the mobile strip (D-035).
+- Live regions: Ortsteil cleared, Bezirk filled in, draft restored, invalid link values, "Analysis prepared." and the comparison status (`role="status"`).
+- Forced colors (emulated): **fixed** `ChoiceGroup` (slice 1 component). The selected pill kept only its font weight, because fill and inset shadow are dropped. It now opts out with `forced-color-adjust: none` and uses Highlight / HighlightText. The floor indicator marks the chosen floor in Highlight.
+- 2.5.8: the strip's "Prepare analysis" is 36 px (dense rail size, ≥ 24 px); quiet buttons are ≥ 24 px.
+- [!] Screen-reader smoke test of Flow 1 **skipped**: NVDA and Firefox are still not installed.
 
 ## Slice 4 — Market explorer `/explore` (depends on: 0, 1)
 - [ ] ExploreMap (MapLibre, dynamic, inline style, feature-state), WebGL fallback
@@ -93,8 +117,9 @@ Last updated: 2026-10-29
 - [ ] E2E Flow 2; 404 for unknown slug
 
 ## Slice 7 — Compare (depends on: 3)
-- [ ] Versioned storage + external store + cross-tab sync + corrupt-data handling
-- [ ] Add/replace/remove/clear (confirm), add-from-analysis, comparison table (desktop + mobile), €/m² from user data
+- [x] Versioned storage + external store + cross-tab sync + corrupt-data handling (built in slice 3: `features/property-comparison/store.ts`, `tests/unit/compare-store.test.ts`)
+- [~] Add-from-analysis (the action on `/analyze` is built; the asking-rent prompt on `/compare` is not)
+- [ ] Add/replace/remove/clear (confirm), comparison table (desktop + mobile), €/m² from user data
 - [ ] E2E Flow 5 (persist across reload)
 
 ## Slice 8 — Methodology (depends on: 0, 3, 5)

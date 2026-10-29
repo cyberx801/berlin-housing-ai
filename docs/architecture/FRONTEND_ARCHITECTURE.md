@@ -109,7 +109,7 @@ Client components that read `useSearchParams` are wrapped in `<Suspense>` with a
 | Static reference data (geo, demo market) | Build output | Server components → props |
 | Shareable view state (filters, selection) | URL | `lib/url-state` typed parsers (Zod `safeParse` on read; invalid → default plus a notice) |
 | Form state | React Hook Form | The `propertyInputSchema` resolver |
-| Analysis draft | `sessionStorage` (`bhai.analyze.draft.v1`) | Debounced write, Zod-validated read |
+| Analysis draft | `sessionStorage` (`bhai.analyze.draft.v1`) | Written on every change once it has been read (D-034), Zod-validated read |
 | Comparison | `localStorage` (`bhai.compare.v1`) | A small external store + `useSyncExternalStore`, with cross-tab `storage` events |
 | UI ephemera | Component state | `useState` |
 
@@ -124,7 +124,8 @@ There is no global store. If a second feature ever needs comparison state, it im
   - storage reads
 - `lib/contracts/rent-prediction.v1.ts` holds the **wire-shaped** schema. `toRentPredictionRequest(input: PropertyInput): RentPredictionRequestV1` is the **only** mapping between them, and it is unit-tested field by field: "not_sure" → `null`/`"unknown"`, names → official ALKIS names, and the code is included.
 - Error messages live in `lib/validation/messages.ts`. They name the field, the rule and the fix.
-- Submit behavior: validate everything, render an error summary (`role="alert"`, links to fields), and focus the summary. Field errors appear on blur after first interaction, then live while the user is correcting.
+- Submit behavior: validate everything, render an error summary (a focusable region named by its heading, links to fields), and focus the summary (D-032). Field errors first appear on submit, then update live while the user is correcting (D-033). Blur validation was dropped because the inserted error moved the submit button mid-click.
+- Cross-field refinements use Zod's `when`, so they report as soon as the fields they compare are valid, even while other required fields are still empty.
 
 ## 6. Geo pipeline and rendering
 

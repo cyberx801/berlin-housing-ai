@@ -166,6 +166,12 @@ export const roomsField = requiredNumber({
 
 const BEZIRK_MISSING = "Choose the Bezirk (borough) the flat is in.";
 
+/** For `when`: true if none of the named fields has an issue yet. */
+const fieldsValid =
+  (...fields: string[]) =>
+  (payload: { issues: readonly { path?: readonly PropertyKey[] | undefined }[] }) =>
+    !payload.issues.some((issue) => fields.includes(String(issue.path?.[0])));
+
 /**
  * The homepage's short entry (Bezirk, area, rooms). Same rules and messages as `/analyze`;
  * the Bezirk is a slug because the values go straight into the `/analyze` URL (D-030).
@@ -189,9 +195,10 @@ export function createPropertySchema(bezirke: readonly BezirkOption[], ortsteile
 
   return z
     .object({
-      bezirk: z.string().refine((v) => bezirkByCode.has(v), { message: BEZIRK_MISSING }),
+      // Type errors get the field's own message too, so a stray null never shows Zod's wording.
+      bezirk: z.string({ error: BEZIRK_MISSING }).refine((v) => bezirkByCode.has(v), { message: BEZIRK_MISSING }),
       ortsteil: z
-        .string()
+        .string({ error: "Choose an Ortsteil from the list." })
         .refine((v) => v === "" || ortsteilByCode.has(v), { message: "Choose an Ortsteil from the list." })
         .transform((v) => (v === "" ? null : v)),
       address: z
@@ -199,7 +206,7 @@ export function createPropertySchema(bezirke: readonly BezirkOption[], ortsteile
         .max(LIMITS.address.max, `Keep the address note under ${LIMITS.address.max} characters.`)
         .transform((v) => (v.trim() === "" ? null : v.trim())),
       propertyType: z
-        .string()
+        .string({ error: "Choose the property type." })
         .refine((v): v is PropertyType => (PROPERTY_TYPES as readonly string[]).includes(v), {
           message: "Choose the property type.",
         })
@@ -227,8 +234,12 @@ export function createPropertySchema(bezirke: readonly BezirkOption[], ortsteile
         example: "8",
       }),
     })
-    .superRefine((v, ctx) => {
-      if (v.ortsteil) {
+    // Cross-field rules. Zod skips object refinements while any field has an issue, which would
+    // hide these until every required field is filled; `when` runs each one as soon as the
+    // fields it compares are valid themselves.
+    .superRefine(
+      (v, ctx) => {
+        if (!v.ortsteil) return;
         const o = ortsteilByCode.get(v.ortsteil);
         const b = bezirkByCode.get(v.bezirk);
         if (o && b && o.bezirkCode !== b.code) {
@@ -239,15 +250,21 @@ export function createPropertySchema(bezirke: readonly BezirkOption[], ortsteile
             message: `${o.name} is in ${actual}, not ${b.name}. Choose an Ortsteil in ${b.name} or change the Bezirk.`,
           });
         }
-      }
-      if (v.floor !== null && v.totalFloors !== null && v.floor > v.totalFloors) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["floor"],
-          message: `Floor ${v.floor} is above the building's ${v.totalFloors} floors. Lower the floor or raise total floors.`,
-        });
-      }
-    })
+      },
+      { when: fieldsValid("bezirk", "ortsteil") },
+    )
+    .superRefine(
+      (v, ctx) => {
+        if (v.floor !== null && v.totalFloors !== null && v.floor > v.totalFloors) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["floor"],
+            message: `Floor ${v.floor} is above the building's ${v.totalFloors} floors. Lower the floor or raise total floors.`,
+          });
+        }
+      },
+      { when: fieldsValid("floor", "totalFloors") },
+    )
     .transform(
       (v): PropertyInput => ({
         bezirkCode: v.bezirk,
@@ -270,6 +287,71 @@ export function createPropertySchema(bezirke: readonly BezirkOption[], ortsteile
 }
 
 export type PropertySchema = ReturnType<typeof createPropertySchema>;
+
+/** A parsed `PropertyInput` as kept in browser storage (compare store). Validated on every read. */
+export const storedPropertySchema: z.ZodType<PropertyInput> = z.object({
+  bezirkCode: z.string().regex(/^(0[1-9]|1[0-2])$/),
+  ortsteilCode: z
+    .string()
+    .regex(/^\d{4}$/)
+    .nullable(),
+  address: z.string().max(LIMITS.address.max).nullable(),
+  propertyType: z.enum(PROPERTY_TYPES),
+  areaM2: z.number().min(LIMITS.areaM2.min).max(LIMITS.areaM2.max),
+  rooms: z.number().min(LIMITS.rooms.min).max(LIMITS.rooms.max).multipleOf(LIMITS.rooms.step),
+  floor: z.number().int().min(LIMITS.floor.min).max(LIMITS.floor.max).nullable(),
+  totalFloors: z.number().int().min(LIMITS.totalFloors.min).max(LIMITS.totalFloors.max).nullable(),
+  buildingEra: z.enum([...BUILDING_ERAS, UNKNOWN]),
+  energyClass: z.enum([...ENERGY_CLASSES, UNKNOWN]),
+  condition: z.enum([...CONDITIONS, UNKNOWN]),
+  hasLift: z.boolean().nullable(),
+  hasBalcony: z.boolean().nullable(),
+  furnishing: z.enum([...FURNISHINGS, UNKNOWN]),
+  transitMinutes: z.number().int().min(LIMITS.transitMinutes.min).max(LIMITS.transitMinutes.max).nullable(),
+});
+
+const boolToTri = (v: boolean | null): TriState => (v === true ? "yes" : v === false ? "no" : UNKNOWN);
+const numToField = (v: number | null) => (v === null ? "" : String(v));
+
+/** The inverse of the schema's transform, for editing a stored property in a form. */
+export function toFormValues(input: PropertyInput): PropertyFormValues {
+  return {
+    bezirk: input.bezirkCode,
+    ortsteil: input.ortsteilCode ?? "",
+    address: input.address ?? "",
+    propertyType: input.propertyType,
+    area: String(input.areaM2),
+    rooms: String(input.rooms),
+    floor: numToField(input.floor),
+    totalFloors: numToField(input.totalFloors),
+    buildingEra: input.buildingEra,
+    energyClass: input.energyClass,
+    condition: input.condition,
+    lift: boolToTri(input.hasLift),
+    balcony: boolToTri(input.hasBalcony),
+    furnishing: input.furnishing,
+    transitMinutes: numToField(input.transitMinutes),
+  };
+}
+
+/** Raw form values as kept in the session draft. Shape-checked only; the form validates content. */
+export const formValuesSchema: z.ZodType<PropertyFormValues> = z.object({
+  bezirk: z.string().max(4),
+  ortsteil: z.string().max(4),
+  address: z.string().max(LIMITS.address.max * 2),
+  propertyType: z.union([z.enum(PROPERTY_TYPES), z.literal("")]),
+  area: z.string().max(12),
+  rooms: z.string().max(12),
+  floor: z.string().max(12),
+  totalFloors: z.string().max(12),
+  buildingEra: z.enum([...BUILDING_ERAS, UNKNOWN]),
+  energyClass: z.enum([...ENERGY_CLASSES, UNKNOWN]),
+  condition: z.enum([...CONDITIONS, UNKNOWN]),
+  lift: z.enum(TRI_STATES),
+  balcony: z.enum(TRI_STATES),
+  furnishing: z.enum([...FURNISHINGS, UNKNOWN]),
+  transitMinutes: z.string().max(12),
+});
 
 /** Whether a raw form value counts as "answered" for progress display. */
 export function isAnswered(field: keyof PropertyFormValues, values: PropertyFormValues): boolean {

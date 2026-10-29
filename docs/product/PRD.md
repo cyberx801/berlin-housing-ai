@@ -74,7 +74,7 @@ Acceptance criteria are written so a Playwright test or a reviewer can check the
 - **B1** The form has five groups: Location, The flat, Building, Features, Surroundings. Each group has a heading, a completion count, and required/optional marking in text, not color alone.
 - **B2** Required fields are Bezirk, property type, living area and rooms. All other fields are optional, and every categorical optional field offers an explicit **"Not sure"** value. Booleans are tri-state; see D-015.
 - **B3** The Ortsteil options are limited to the selected Bezirk. Changing the Bezirk clears an Ortsteil that no longer fits, and the change is announced.
-- **B4** Validation rules come from the shared Zod schema, for example area 10–500 m², rooms 1–10 in steps of 0.5, and floor ≤ total floors. Each error names the field, the rule and the fix. On submit, focus moves to the first invalid field, and an error summary links to each one.
+- **B4** Validation rules come from the shared Zod schema, for example area 10–500 m², rooms 1–10 in steps of 0.5, and floor ≤ total floors. Each error names the field, the rule and the fix. On submit, an error summary appears and receives focus, and each of its links moves focus to the field it names (D-032).
 - **B5** Submitting a valid form calls `PropertyAnalysisService.estimateRent()`. With the default disabled transport, the result is a typed `not_connected` outcome. The UI then shows:
   - the **"Prediction engine not connected"** state
   - a summary of the inputs

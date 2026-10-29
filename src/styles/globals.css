@@ -59,6 +59,7 @@
 :root {
   color-scheme: light; /* dark mode ships only after full QA (DECISIONS D-020) */
   --header-height: 4rem;
+  --progress-strip-height: 3.25rem;
   --motion-state: 120ms;
   --motion-panel: 200ms;
   --hatch: repeating-linear-gradient(
@@ -247,6 +248,14 @@
   }
   @variant lg {
     padding-inline: 2rem;
+  }
+}
+
+/* /analyze below lg: a sticky progress strip sits under the header, so focused and linked-to
+   elements must clear it as well as the header (WCAG 2.4.11). Unlayered, so it beats the base rule. */
+@media (width < 64rem) {
+  [data-sticky-strip] :where(label, legend, input, select, textarea, button, a, summary, h2, h3, [id]) {
+    scroll-margin-top: calc(var(--progress-strip-height) + 0.5rem);
   }
 }
 

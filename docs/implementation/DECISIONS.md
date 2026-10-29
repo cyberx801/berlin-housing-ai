@@ -116,3 +116,24 @@ Verified on 2026-10-29 with Node 22.16 / npm 10.9:
 
 ### D-031 · Homepage plate: keyboard path is a native select, paths are not focusable · Accepted
 → The 97 Ortsteil paths respond to pointer hover and tap, but are not tab stops. A native "Find an Ortsteil" select (grouped by Bezirk) is the keyboard and screen-reader path, and it drives the same highlight and readout (PRD A2). Small multiples share one map scale so Bezirk sizes stay comparable.
+
+### D-032 · `/analyze` submit errors: focus goes to the error summary · Accepted
+→ PRD B4 said "focus moves to the first invalid field", while FRONTEND_ARCHITECTURE §5, USER_FLOWS Flow 1 and the accessibility skill said "focus the summary". The summary wins: it states how many fields need fixing and links to each one, and each link moves focus to its control (radio groups: the checked or first radio). PRD B4 is corrected. The three-field homepage entry keeps first-field focus, as before.
+
+### D-033 · `/analyze` validates on submit, then live while correcting · Accepted
+→ Supersedes "errors appear on blur" in FRONTEND_ARCHITECTURE §5. Measured in Chromium at 1440 px: with blur validation, pressing "Prepare analysis" while an invalid field is focused inserts that field's error between pointer-down and pointer-up. The button moves 27 px and the click is lost. React Hook Form now runs `mode: "onSubmit"` and `reValidateMode: "onChange"`, which is also how the homepage entry behaves.
+→ Cross-field rules (floor ≤ total floors, Ortsteil in Bezirk) run with Zod's `when` as soon as the fields they compare are valid. Zod otherwise skips object refinements while any other field has an issue, which hid them until every required field was filled.
+
+### D-034 · `/analyze` URL prefill is applied once and starts a new description · Accepted
+→ A link with `bezirk`, `ortsteil`, `type`, `area` or `rooms` fills an empty form with the valid values. Invalid values are left empty and listed in a notice. The parameters are then removed from the URL with `history.replaceState` (Next syncs `useSearchParams`), so a reload restores the user's edits from the session draft instead of re-applying the link.
+→ If the tab already held a draft, the link replaces it, and "Bring back your earlier entries" restores it. Mixing fields from two different flats silently would be worse.
+→ The draft is written on every change. It is small and `sessionStorage` is synchronous, and a debounce would lose the last keystrokes on a quick reload. Nothing is written until the draft has been read, so empty defaults can never overwrite a stored draft.
+
+### D-035 · `/analyze` below 1024 px: progress strip with its own submit; no sticky bottom bar · Accepted
+→ DESIGN_DIRECTION shows "Prepare analysis" sticky at the bottom on mobile. A bottom bar would cover the focused field and the on-screen keyboard's neighbourhood (WCAG 2.4.11). Instead, the sticky top strip carries "Required fields: n of 4" and a small "Prepare analysis" button, and a full-size button ends the form.
+→ Below `lg`, form elements get `scroll-margin-top` equal to the strip height, on top of the global `scroll-padding-top`. An E2E test tabs backwards through the form at 375, 768 and 1440 px and checks that no focused element sits under the header or the strip.
+
+### D-036 · Prediction proxy route behaviour · Accepted
+→ `POST /api/predictions/rent` reads `PREDICTION_API_BASE_URL`, `PREDICTION_API_KEY` and `PREDICTION_TIMEOUT_MS` at request time (server only). A malformed value counts as "not configured" and is logged, never guessed.
+→ Request handling: bodies over 16 kB get 413, non-JSON gets 400 and a contract mismatch gets 422 (all `VALIDATION_ERROR` envelopes), all before any upstream call. Without a base URL the answer is 503 `PREDICTION_ENGINE_NOT_CONFIGURED`, which the browser shows as "not connected".
+→ Upstream handling: a timeout gives 504 `UPSTREAM_TIMEOUT` and a network failure 502 `UPSTREAM_UNREACHABLE`, both retryable. Upstream JSON passes through unchanged with `Retry-After`. A non-JSON upstream body is dropped, so only the status reaches the browser and is mapped exactly as in direct mode. The key is sent only as the upstream `Authorization` header. The `X-Request-ID` is echoed only if it is a safe token.

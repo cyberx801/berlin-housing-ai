@@ -92,6 +92,18 @@ describe("property schema", () => {
     expect(schema.parse({ ...minimal, floor: "0", totalFloors: "5" }).floor).toBe(0);
   });
 
+  it("reports cross-field problems while other required fields are still empty", () => {
+    const issues = issuesFor({ ...EMPTY_PROPERTY_FORM, bezirk: "03", ortsteil: "0102", floor: "7", totalFloors: "5" });
+    expect(issues.floor).toMatch(/Floor 7 is above the building's 5 floors/);
+    expect(issues.ortsteil).toMatch(/Moabit is in Mitte, not Pankow/);
+    expect(issues.area).toBeDefined();
+  });
+
+  it("skips a cross-field rule while one of its own fields is invalid", () => {
+    const issues = issuesFor({ ...minimal, floor: "abc", totalFloors: "5" });
+    expect(issues.floor).toMatch(/must be a number/);
+  });
+
   it("maps tri-states to booleans and keeps 'not sure' as null", () => {
     const result = schema.parse({ ...minimal, lift: "yes", balcony: "no" });
     expect(result.hasLift).toBe(true);
