@@ -30,8 +30,8 @@ export function SiteFooter() {
         <div className="col-span-4 md:col-span-5 lg:col-span-3">
           <h2 className="mb-3 type-small font-[620] text-ink">Sources and licenses</h2>
           <ul className="flex flex-col gap-2 type-small text-ink-2">
-            <li>District and Ortsteil boundaries: ALKIS Berlin, Geoportal Berlin, dl-de/zero-2.0</li>
-            <li>Umweltzone (area within the S-Bahn ring): Geoportal Berlin, dl-de/zero-2.0</li>
+            <li>District and Ortsteil boundaries: ALKIS Berlin, Geoportal Berlin, <span className="whitespace-nowrap">dl-de/zero-2.0</span></li>
+            <li>Umweltzone (area within the S-Bahn ring): Geoportal Berlin, <span className="whitespace-nowrap">dl-de/zero-2.0</span></li>
             <li>
               <Link href="/methodology#sources" className="text-ink-2 hover:text-ink">
                 Full dataset registry

@@ -11,6 +11,7 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  type FocusEvent,
   type ReactNode,
 } from "react";
 import { useForm, useWatch, type Resolver } from "react-hook-form";
@@ -286,6 +287,21 @@ export function PropertyAnalysisForm({
       ? `The rent model could not use ${serverErrorCount === 1 ? "1 value" : `${serverErrorCount} values`}`
       : `Fix ${errorList.length === 1 ? "1 field" : `${errorList.length} fields`} to prepare the analysis`;
 
+  // WCAG 2.4.11: the strip's scroll-margin keeps focused fields clear of it, but WebKit
+  // ignores scroll-margin when focus moves; there the page is scrolled by the difference.
+  const stripRef = useRef<HTMLDivElement>(null);
+  function keepClearOfStrip(event: FocusEvent<HTMLDivElement>) {
+    const target = event.target;
+    const strip = stripRef.current;
+    if (!(target instanceof HTMLElement) || !strip || strip.contains(target)) return;
+    requestAnimationFrame(() => {
+      const bottom = strip.getBoundingClientRect().bottom;
+      if (strip.offsetHeight === 0 || document.activeElement !== target) return;
+      const top = target.getBoundingClientRect().top;
+      if (top < bottom) window.scrollBy({ top: top - bottom - 8 });
+    });
+  }
+
   const submitButton = (size?: "sm") => (
     <Button type="submit" form={FORM_ID} size={size} aria-busy={isSubmitting || undefined}>
       Prepare analysis
@@ -293,9 +309,9 @@ export function PropertyAnalysisForm({
   );
 
   return (
-    <div data-sticky-strip className="pb-16">
+    <div data-sticky-strip className="pb-16" onFocus={keepClearOfStrip}>
       {/* Below lg the rail becomes a sticky strip under the header (DESIGN_DIRECTION /analyze mobile). */}
-      <div className="sticky top-[var(--header-height)] z-30 border-b border-rule bg-paper lg:hidden">
+      <div ref={stripRef} className="sticky top-[var(--header-height)] z-30 border-b border-rule bg-paper lg:hidden">
         <div className="page-gutter flex min-h-[var(--progress-strip-height)] items-center justify-between gap-3 py-2">
           <p className="type-small font-[620] tabular">{requiredText}</p>
           {submitButton("sm")}

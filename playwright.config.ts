@@ -18,6 +18,10 @@ export default defineConfig({
     { name: "mobile-375", use: { ...devices["Desktop Chrome"], viewport: { width: 375, height: 812 }, hasTouch: true } },
     { name: "tablet-768", use: { ...devices["Desktop Chrome"], viewport: { width: 768, height: 1024 } } },
     { name: "desktop-1440", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
+    // The QA pass in WebKit (ARCH §12), opt-in: QA_WEBKIT=1 npx playwright test --project=webkit-375
+    ...(process.env.QA_WEBKIT
+      ? [{ name: "webkit-375", use: { ...devices["iPhone 13"], viewport: { width: 375, height: 812 } } }]
+      : []),
   ],
   webServer: {
     command: `npx next start --port ${PORT}`,

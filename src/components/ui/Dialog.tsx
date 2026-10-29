@@ -15,12 +15,37 @@ interface DialogProps {
   size?: "sm" | "lg";
 }
 
+// Safari doesn't focus a button on click: focus goes to <body> or to a focusable ancestor
+// (here <main tabindex=-1>), and the dialog returns it there. The control last pressed
+// stands in for the opener then.
+let lastPressed: HTMLElement | null = null;
+if (typeof document !== "undefined") {
+  document.addEventListener(
+    "pointerdown",
+    (event) => {
+      lastPressed = event.target instanceof Element ? event.target.closest<HTMLElement>("button, a[href], [tabindex]") : null;
+    },
+    true,
+  );
+}
+
+/**
+ * After close: focus the opener where the browser put focus on <body> or an ancestor instead.
+ * Owners that move focus elsewhere (D-050) run their effects after the dialog's.
+ */
+function returnFocus(target: HTMLElement | null) {
+  const active = document.activeElement;
+  if (target?.isConnected && target !== active && (!active || active.contains(target))) target.focus();
+}
+
 /**
  * Modal built on the native <dialog>: showModal() makes the rest of the page inert, traps
- * focus and closes on Esc; the browser returns focus to the opener on close.
+ * focus and closes on Esc; the browser returns focus to the opener on close, and where it
+ * doesn't (Safari after a click) the dialog does.
  */
 export function Dialog({ open, onClose, title, description, children, id, size = "lg" }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -29,8 +54,16 @@ export function Dialog({ open, onClose, title, description, children, id, size =
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
-    if (!open && dialog.open) dialog.close();
+    if (open && !dialog.open) {
+      const active = document.activeElement;
+      opener.current =
+        lastPressed && (!(active instanceof HTMLElement) || active.contains(lastPressed)) ? lastPressed : (active as HTMLElement);
+      dialog.showModal();
+    }
+    if (!open && dialog.open) {
+      dialog.close();
+      returnFocus(opener.current);
+    }
   }, [open]);
 
   // Routes stay mounted (hidden) after navigation; never leave a modal open behind. The owner
@@ -43,9 +76,11 @@ export function Dialog({ open, onClose, title, description, children, id, size =
       window.clearTimeout(pendingClose.current);
       pendingClose.current = null;
     }
+    const returnTo = opener;
     return () => {
       if (!dialog?.open) return;
       dialog.close();
+      returnFocus(returnTo.current);
       pendingClose.current = window.setTimeout(() => {
         pendingClose.current = null;
         onCloseRef.current();

@@ -31,6 +31,8 @@ test.describe("/analyze", () => {
     // The link's values are applied once and then dropped from the URL (a reload keeps edits).
     await page.waitForURL(/\/analyze$/);
     await hydratedForm(page).waitFor();
+    // The title arrives with the streamed metadata, after the page (in WebKit up to ~1.5 s later).
+    await expect(page).toHaveTitle("Analyze a flat | Berlin Housing AI", { timeout: 15_000 });
     await expect(page.getByRole("heading", { level: 1, name: "Describe the flat" })).toBeVisible();
     await expect(page.getByText("Filled in from the link: Bezirk, living area, rooms.")).toBeVisible();
     await expect(page.getByRole("combobox", { name: /^Bezirk/ }).locator("option:checked")).toHaveText("Mitte");

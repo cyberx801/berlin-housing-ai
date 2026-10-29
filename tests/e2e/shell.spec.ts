@@ -2,7 +2,10 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 test.describe("app shell", () => {
-  test("the skip link is the first tab stop and moves focus to main", async ({ page }) => {
+  test("the skip link is the first tab stop and moves focus to main", async ({ page, browserName }) => {
+    // WebKit leaves links out of the Tab order unless "Press Tab to highlight each item" is on
+    // (Safari's default), and Playwright's WebKit has no Option+Tab on Windows.
+    test.skip(browserName === "webkit", "Links aren't Tab stops in WebKit by default");
     await page.goto("/");
     await page.keyboard.press("Tab");
     const skip = page.getByRole("link", { name: "Skip to content" });

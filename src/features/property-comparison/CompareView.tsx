@@ -8,6 +8,7 @@ import { Plate } from "@/components/provenance/Plate";
 import { ProvenanceMark } from "@/components/provenance/ProvenanceMark";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
+import { Disclosure } from "@/components/ui/Disclosure";
 import { StatusPanel } from "@/components/ui/StatusPanel";
 import { FIELD_ORDER } from "@/features/property-analysis/fields";
 import { randomId } from "@/lib/id";
@@ -142,31 +143,43 @@ export function CompareView({
     </Button>
   );
 
+  const legend = (
+    <>
+      <LegendBlock title="Saved in this browser">
+        <p>{hydrated ? placesText(items.length) : `Up to ${MAX_COMPARE_ITEMS} properties.`}</p>
+        <p>Nothing you enter here is sent anywhere. Clearing your browser data removes it.</p>
+      </LegendBlock>
+      <LegendBlock title="€/m²">
+        <p>The asking cold rent divided by the living area. Both come from your entries.</p>
+      </LegendBlock>
+      <LegendBlock title="Missing">
+        <p>Not entered, or answered &ldquo;Not sure&rdquo;. Edit a property to fill it in.</p>
+      </LegendBlock>
+      <LegendBlock title="Predicted rent">
+        <p className="flex items-center gap-2 font-[620] text-ink">
+          <ProvenanceMark kind="not-connected" className="shrink-0" />
+          Not connected
+        </p>
+        <p>The rent model is still being built, so no property has a predicted rent.</p>
+        <Link href="/methodology#in-development" className={linkClass}>
+          What this means
+        </Link>
+      </LegendBlock>
+    </>
+  );
+
   return (
     <div id={`${ID}-view`} data-hydrated={hydrated ? "" : undefined} className="page-grid gap-y-8 pb-16">
-      {/* The rail comes first in the DOM, as on every route, so focus follows the drawing (D-053). */}
-      <LegendRail className="col-span-full lg:col-span-3">
-        <LegendBlock title="Saved in this browser">
-          <p>{hydrated ? placesText(items.length) : `Up to ${MAX_COMPARE_ITEMS} properties.`}</p>
-          <p>Nothing you enter here is sent anywhere. Clearing your browser data removes it.</p>
-        </LegendBlock>
-        <LegendBlock title="€/m²">
-          <p>The asking cold rent divided by the living area. Both come from your entries.</p>
-        </LegendBlock>
-        <LegendBlock title="Missing">
-          <p>Not entered, or answered &ldquo;Not sure&rdquo;. Edit a property to fill it in.</p>
-        </LegendBlock>
-        <LegendBlock title="Predicted rent">
-          <p className="flex items-center gap-2 font-[620] text-ink">
-            <ProvenanceMark kind="not-connected" className="shrink-0" />
-            Not connected
-          </p>
-          <p>The rent model is still being built, so no property has a predicted rent.</p>
-          <Link href="/methodology#in-development" className={linkClass}>
-            What this means
-          </Link>
-        </LegendBlock>
-      </LegendRail>
+      {/* The rail comes first in the DOM, as on every route, so focus follows the drawing. Below lg
+          it is a closed disclosure above the table (DESIGN_SYSTEM §4, D-053). */}
+      <aside aria-label="Legend and sources" className="col-span-full lg:hidden">
+        <Disclosure summary="Legend and sources">
+          <div className="grid gap-x-6 gap-y-4 pb-2 md:grid-cols-2">{legend}</div>
+        </Disclosure>
+      </aside>
+      <div className="hidden lg:col-span-3 lg:block">
+        <LegendRail>{legend}</LegendRail>
+      </div>
 
       <div className="col-span-full flex min-w-0 flex-col gap-6 lg:col-span-9">
         {discarded ? (
