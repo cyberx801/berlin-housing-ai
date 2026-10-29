@@ -384,7 +384,7 @@ Findings:
 - Full suite on the final build, `npx playwright test --workers=3`: 156 tests. **119 passed, 1 skipped, 36 failed.**
   - All 36 failures are in `desktop-1440`. None is an assertion: 33 are "worker process exited unexpectedly (code=3221225794)", a process Windows couldn't start, and 3 are "Target crashed".
   - The machine had 0.5–1.7 GB of free memory. Claude Code then stopped the run for low memory.
-  - `mobile-375` and `tablet-768` passed completely, including `methodology.spec.ts` on the final build.
+  - `mobile-375` and `tablet-768` passed completely, including `methodology.spec.ts`. That build had everything but the "sent anywhere" sentence (bug list below), a copy-only change made afterwards and built (`npm run build` ✓, typecheck and lint ✓).
   - **`desktop-1440` is not verified for this slice. It has to be rerun once memory allows.**
 - frontend-quality gate:
   - Boundaries: the page is a server component with no client component of its own. It reads `lib/data/geo` and `lib/data/registry` on the server and imports no fixture.
@@ -396,12 +396,13 @@ Findings:
 - At 320 px the license id broke at its hyphen ("dl-/de/zero-2.0") and service addresses broke inside words. The id is kept whole, and the addresses wrap after their slashes.
 - The Kaggle entry used the research mark in the registry, a solid rule that looks like "From your entries", while the table showed "Not available" with the dashed mark. Both use the dashed mark now.
 - "The boundaries are as published on 29 October 2026" was wrong: that is the download date. It now says "as downloaded on".
+- "Nothing you enter is sent anywhere" overstated it. The home page's short form opens `/analyze` with Bezirk, area and rooms in the address, which reaches the site's server. The sentence now covers Analyze and Compare and names that exception.
 
 **Design review.** These screenshots were opened and looked at:
 - At 1440: the top of the page; the geography section; the registry with the contents stuck beside it.
 - At 375: the top with the contents; the capability table; geography; market figures.
 - At 768: in development; known limitations.
-- At 320: the capability table and the registry (before and after the fixes).
+- At 320: the registry before and after the license and address fixes; the capability table after them. The Kaggle mark and apostrophe changes were not screenshotted.
 
 Findings:
 - One bold element, the page title. Prose runs in one measured column in Source Serif. Headings and tables are in Archivo. No cards; the registry is a ledger, one definition list per dataset.

@@ -261,8 +261,11 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
           </li>
         </ul>
         <p className="type-prose">
-          Nothing you enter is sent anywhere. The rent model isn&rsquo;t connected, so Analyze ends by showing the
-          request it would send instead of sending it. There are no accounts, no cookies and no tracking.
+          Nothing you enter on Analyze or Compare is sent anywhere. The rent model isn&rsquo;t connected, so Analyze
+          ends by showing the request it would send instead of sending it. The short form on the home page is the
+          exception: it opens Analyze with its three values (Bezirk, living area and rooms) in the page address, and
+          that address reaches this site&rsquo;s server like any page request. There are no accounts, no cookies and
+          no tracking.
         </p>
       </Section>
 
