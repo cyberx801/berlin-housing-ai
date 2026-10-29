@@ -110,6 +110,14 @@ test.describe("/market", () => {
     await expect(slider).toHaveAttribute("aria-valuetext", /^February 2020: /);
     // The visual readout follows the keyboard.
     await expect(moduleById(page, "market-trend").locator("[data-chart-tooltip]")).toContainText("February 2020");
+    // Reached by Tab, every chart shows the focus outline (WCAG 2.4.7).
+    for (const chart of await page.getByRole("slider").all()) {
+      await chart.focus();
+      await page.keyboard.press("Shift+Tab");
+      await page.keyboard.press("Tab");
+      await expect(chart).toBeFocused();
+      expect(await chart.evaluate((el) => getComputedStyle(el).outlineStyle)).toBe("solid");
+    }
   });
 
   test("answers bad API queries with 400 and a reason", async ({ request }) => {

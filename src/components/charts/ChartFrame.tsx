@@ -152,7 +152,7 @@ export function ChartFrame({
           aria-valuenow={current + 1}
           aria-valuetext={valueText(current)}
           data-chart-index={active ?? undefined}
-          className="absolute inset-0 touch-pan-y outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          className="absolute inset-0 touch-pan-y"
           onKeyDown={onKeyDown}
           onFocus={() => {
             setFocused(true);

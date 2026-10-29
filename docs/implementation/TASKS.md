@@ -350,7 +350,7 @@ Findings:
 **Accessibility review (slice 7: table, dialog, confirm dialogs, notices):**
 - axe (wcag2a/aa, 2.1, 2.2): 0 violations at 375, 768 and 1440 px: empty, three properties, and the open dialog with its error summary.
 - Keyboard (scripted Tab walk at 1440 and 375 px with three properties: 28 and 23 stops, rerun after the review fixes): every stop has the 2 px outline. None is under the site header or the sticky names. The script flags "Skip to content" as covered: it is drawn over the header when focused, so that is a false positive.
-- [ ] **Focus order differs from the visual order at `lg`.** WCAG 2.4.3 Focus Order and 1.3.2 Meaningful Sequence. Severity **low**. Deferred to slice 9.
+- [x] **Focus order differs from the visual order at `lg`.** Fixed in slice 9 (D-053). WCAG 2.4.3 Focus Order and 1.3.2 Meaningful Sequence. Severity **low**. Deferred to slice 9.
   - From `lg` the legend rail is drawn left of the table, but it comes after the table in the DOM, so its one link is reached after the table's controls.
   - On phones and at `md` the rail is drawn below the table, so the order matches there.
   - Low because the rail is a legend for the table, and its link ("What this means") duplicates the one in the predicted-rent row.
@@ -374,7 +374,7 @@ Findings:
 - [x] Ring, area and adjacency method. The thresholds, counts, the Moabit key example and Blankenfelde's computed area all come from the geodata. The thresholds are checked against the build at load.
 - [x] Uncertainty explainer: why a single rent can't be named, and that a range or "No uncertainty range available" will accompany an estimate. The method and level are named as open questions for the model team.
 - [x] All provenance band links resolve to anchors: `tests/unit/methodology.test.ts` scans `src/` for `/methodology#…` (7 distinct ids today, all present). The E2E follows links from `/`, the footer and `/market`.
-- [ ] Follow-up for slice 9: four E2E specs still ignore console 404s "from routes built in later slices". Every route exists now, so the filter can go.
+- [x] Follow-up for slice 9 (done): four E2E specs still ignore console 404s "from routes built in later slices". Every route exists now, so the filter can go.
 
 **Slice 8 checks (2026-10-29):**
 - `npm run typecheck` ✓, `npm run lint` ✓ (0 problems).
@@ -421,13 +421,60 @@ Findings:
 - [!] Screen-reader smoke test **skipped**: NVDA and Firefox are still not installed.
 
 ## Slice 9 — Responsive polish and QA (depends on: all)
-- [ ] Screenshot review at 375/768/1440 for every route and key state; fix list
-- [ ] Full keyboard and screen-reader pass (NVDA + Firefox if installed; VoiceOver if available; record which was used)
-- [ ] Dark mode: ship only if every token check passes; otherwise force light (D-020)
-- [ ] Optional: "Show demo layer" choropleth on `/explore` (PRD C6), default off, hatched and labelled
-- [ ] Chart texture channel for forced colors / print / "patterns" setting (DESIGN_SYSTEM §8.5)
-- [ ] Performance budgets checked (Lighthouse mobile). First-load JS is already over 150 kB on `/`, `/analyze`, `/market` and `/explore` (measured in slice 6), and on `/compare` (183.5 kB, slice 7).
-- [ ] Final QA report: commands run, results, known gaps
+- [x] Screenshot review at 375/768/1440 for every route and key state; fix list (below)
+- [x] Full keyboard pass: scripted Tab walk on all nine routes at 1440 and 375 px. [!] Screen-reader pass **skipped**: NVDA and Firefox are not installed, and no VoiceOver device is available.
+- [x] Dark mode: not shipped, `color-scheme: light` stays (D-055)
+- [x] Optional demo choropleth on `/explore` (PRD C6): not built (D-056)
+- [x] Chart texture channel for forced colors, print and the "patterns" setting (D-054)
+- [!] Performance budgets checked: **first-load JS is over budget on five routes, and the budget can't be met as written.** Needs the owner's decision (below).
+- [x] Final QA report (below)
+- [x] Slice 7 and 8 follow-ups: the compare rail order (D-053), the opaque header, and the 404 console filters removed from four specs.
+
+**Slice 9 fixes:**
+- **Forced colors, charts** (WCAG 1.4.3, 1.4.11; severity high). Browsers leave SVG paint alone under forced colors, so the Bezirk labels stayed dark ink on the system's black Canvas, close to invisible, and the lines kept their token colours. Charts now paint in system colors, with dashes and hatching (D-054). Checked by an E2E test and by screenshots.
+- **Chart focus outline** (WCAG 2.4.7; high). The four chart sliders showed no outline when reached by Tab. In Tailwind 4, `outline-none` also sets the outline style variable to none, so `focus-visible:outline-2` drew nothing. The base `:focus-visible` rule now applies. An E2E assertion was added.
+- **Dialogs in Safari** (WCAG 2.4.3; medium). A click in WebKit focuses the nearest focusable ancestor (`<main tabindex=-1>`), not the button, so a closed dialog returned focus to `<main>`. The dialog now records the pressed control and returns focus to it.
+- **`/analyze` progress strip in WebKit** (WCAG 2.4.11; medium). WebKit ignores `scroll-margin` when focus moves, so a field could land under the sticky strip. The form scrolls it clear.
+- **`/compare` legend** (D-053): first in the DOM, and below `lg` a closed "Legend and sources" disclosure above the table.
+- **Header** is opaque; rows no longer show through it.
+- **Footer**: "dl-de/zero-2.0" broke at its hyphen at 768 px; it is kept whole.
+- **404 page**: the "404" eyebrow label above the heading is removed (no eyebrows, DESIGN_SYSTEM §3.2).
+- **Patterns setting** on `/market`: "Draw patterns in the charts", saved in this browser (D-054).
+
+**Slice 9 checks (2026-10-29):**
+- `npm run typecheck` ✓, `npm run lint` ✓, `npx vitest run` 299/299 ✓ (26 files; new `chart-patterns.test.tsx`, 4 tests), `npm run build` ✓.
+- E2E on the final build, one project at a time, `--workers=1`:
+  - `mobile-375`: 54/54 ✓.
+  - `tablet-768`: 53 passed, 1 skipped (the 97-profile walk, phone only) ✓.
+  - `desktop-1440`: 52 passed, 2 skipped (the mobile menu; the profile walk) ✓.
+  - `webkit-375` (new, opt-in with `QA_WEBKIT=1`): 44 passed, 2 skipped, 8 failed. All 8 were timeouts waiting for hydration or a navigation. With `--last-failed`, 7 passed; the eighth (`methodology.spec.ts` "its ids stay unique…") failed 1 of 3 with `--repeat-each=3`. The first footer click from `/` sometimes doesn't navigate within 5 s in WebKit. **Flaky, not diagnosed.**
+  - The skip-link test is skipped in WebKit: links aren't Tab stops there unless "Press Tab to highlight each item" is on (Safari's default), and Playwright's WebKit has no Option+Tab on Windows.
+- Tab walk (scripted, every route at 1440 and 375, up to the footer): every stop shows the 2 px outline and none is under the header or the strip, after the chart fix. Before it, the chart sliders were the only failure.
+- Screenshot sweep: 15 states × 3 widths, full page, plus close-ups:
+  - The states: home; analyze empty, with errors, and with a link-prefilled form; explore, and explore with Moabit selected; market with four Bezirke, and market empty; directory, and directory with no match; a profile; compare empty, and compare with three properties; methodology; 404.
+  - Automatic checks: no horizontal overflow anywhere. The flags were false positives: the explore list title is `sr-only` below `lg`, and the market tables scroll inside their own focusable region. The 404 page's console error is its own 404.
+- Forced colors and print at 1440 on `/market`, and the patterns setting: screenshots of all four charts.
+
+**Performance (needs the owner's decision):**
+- First-load JS (gzip, measured from the final build): `/` 177.9 kB, `/analyze` 204.1, `/market` 196.0, `/compare` 183.9, `/explore` 151.7, `/neighborhoods` 147.4, profiles and `/methodology` 140.3. The budget is 150 kB. No server marker in any client chunk, and MapLibre is in no first-load chunk.
+- The shared baseline (React, the Next runtime, the shell) is 140.3 kB. Every route therefore has about 10 kB for its own code, so the budget can't be met as written.
+- The largest avoidable piece is classic Zod: one 30 kB chunk on `/`, `/analyze`, `/market` and `/compare` (it includes JSON Schema, email, JWT and other validators the app doesn't use). A bundle test of the same schema shapes measured 23.7 kB for classic Zod against 6.9 kB for `zod/mini`. Moving client-side validation to `zod/mini` would save roughly 17 kB per route. That is a rewrite of about 850 lines of schemas, and four routes would still be over 150 kB.
+- Lighthouse 12.8.2, mobile preset (simulated 4× CPU slowdown), local production server, about 1 GB of free memory:
+  - Simulated: `/` LCP 8.0 s, TBT 1,780 ms, score 0.41. `/analyze` LCP 6.6 s, TBT 730 ms. `/methodology`, which ships no code of its own, LCP 6.3 s, TBT 1,080 ms.
+  - Unthrottled (`--throttling-method=provided`): `/` and `/methodology` both LCP 1.4 s, TBT 0 ms.
+  - Even the baseline-only page is far from 2.5 s under simulation. The loaded machine dominates these numbers, so they neither confirm nor refute the LCP budget. The relative signal: `/` adds about 700 ms of blocking time over the baseline page.
+  - LCP is text (the home h1, a prose paragraph elsewhere), and 94 % of it is render delay behind script work.
+- Options for the owner: (a) restate the budget as baseline plus a route allowance; (b) move client validation to `zod/mini`; (c) both. Re-measure on an idle machine either way.
+
+**Known gaps, decided:**
+- Before hydration a filtered `/neighborhoods` or `/explore` link shows all 97 rows (slice 6). Accepted: the filters live in the URL and are applied on hydration. The static page stays one file per route (D-027).
+- Profile HTML is about 95–105 kB each (slice 6; Moabit 96 kB). Accepted for this phase: most of it is the locator SVG and its RSC copy. Not measured further.
+- At 320 px, words longer than a compare column break mid-word (slice 7). Accepted: nothing is cut off and nothing scrolls sideways, and from 360 px the fixed values fit.
+- After a client navigation the page `<title>` arrives with the streamed metadata, after the page. In WebKit it was empty at hydration and set within 1.5 s in a manual run; under the test runner it took more than 5 s (the Flow 1 test now waits up to 15 s before axe). Same cause as the slice 6 404 title. Not fixed.
+
+**Design review (slice 9):** looked at the full-page sweep at 375, 768 and 1440 and the close-ups (compare, market rail, home, explore, analyze, profile, directory, 404, footer). One bold element per screen holds on those. The new disclosure on `/compare` uses the existing `Disclosure` (a chevron, an underlined summary). The patterns checkbox sits under the filters with a rule above it, in the rail's type sizes.
+
+**Accessibility review (slice 9):** the findings above, with their criteria. axe passes on every route at all three widths and in WebKit, except where WebKit timed out (above). [!] Screen-reader smoke test **skipped** again: no NVDA, Firefox or VoiceOver here. The `/compare` table's `headers` arrangement is still the first thing to check with a real reader.
 
 ## Blocked / external
 - [!] Real market data: waiting for the Kaggle files + URL/license (PRD Q1)

@@ -302,3 +302,23 @@ Verified on 2026-10-29 with Node 22.16 / npm 10.9:
 → **`#in-development`** is the umbrella every "Not connected" band links to. It covers the rent model (`#predictions`) and transit (`#transit`), and says nothing fills their space in the meantime.
 → **Contents first in the DOM** at every width: above the article on phones, the sticky left column from `lg`, scrolling on its own if a short window can't fit it. The reading and focus order match the drawing, unlike the legend rail on `/compare` (slice 7 finding).
 → **Copy rules.** No euro amounts anywhere on the page (an E2E check). The demo section says why the trend lines rise without quoting a level. The prediction contract is called a draft; the interval method and level are named as open questions. The "AI" in the name is said to refer to the model in development, which nothing on the site uses today. Examples (Moabit's key, Blankenfelde's area) take their values from the geodata. Blankenfelde's own area field (139 m², from the raw file) is checked against that file by a test.
+
+### D-053 · Legend rails come first in the DOM; below `lg` the compare legend is a disclosure · Accepted (slice 9)
+→ **Rule.** On every route the legend rail (or filter rail, or contents list) comes before the plate in the DOM, so the reading and focus order match the drawing at every width (WCAG 2.4.3, 1.3.2). `/compare` was the one exception (slice 7 finding): from `lg` its rail was drawn left of the table but came after it.
+→ **`/compare` below `lg`.** Moving the rail first put four legend blocks (about 350 px) above the table on phones. Following DESIGN_SYSTEM §4, below `lg` the legend is a closed "Legend and sources" disclosure above the table, a two-column strip inside from `md`. From `lg` it is the sticky rail. The blocks are rendered once in each arrangement and only one is displayed, so there is one `<aside>` in the accessibility tree.
+
+### D-054 · The chart texture channel and the "patterns" setting · Accepted (slice 9)
+→ **When it is on.** Under `forced-colors`, in print, or when the reader ticks "Draw patterns in the charts" on `/market` (DESIGN_SYSTEM §8.5). Never by default.
+→ **What it draws.**
+  - Lines get a dash per categorical slot (slot 1 solid). The legend and filter keys are drawn as the same SVG line, so they carry the same dash.
+  - Bars and histogram columns get a 45° line fill from one `<pattern>` (`#chart-texture-45`), rendered once by `/market`, so its id stays unique while other routes are mounted.
+  - Dots keep their fill: each is one series, labelled by its row.
+  - The 135° fill isn't needed: no chart in this phase has two filled series.
+→ **Forced colors.** Browsers don't adjust SVG paint, so the Bezirk labels (ink on the system's dark Canvas) were close to invisible. Charts now opt out (`forced-color-adjust: none`) and paint themselves in system colors: text and marks in `CanvasText`, gridlines in `GrayText`, the selected Bezirke in `Highlight`.
+→ **The setting** is kept in this browser (`localStorage` `bhai.chartPatterns.v1`). An inline head script sets `<html data-chart-patterns>` before first paint, so there is no flash in colour alone. If storage is blocked the setting still applies until reload, and the hint says it can't be kept.
+
+### D-055 · Dark mode is not shipped in this phase · Accepted (slice 9)
+→ D-020 required full QA before shipping. That means every route at three widths, including the MapLibre style, the SVG plates and the charts, re-validated against the dark surface. It wasn't feasible in this slice (machine memory limits the browser runs). The site keeps `color-scheme: light`. The dark tokens stay documented in DESIGN_SYSTEM §2.3 for a later slice.
+
+### D-056 · No demo choropleth on `/explore` in this phase · Accepted (slice 9)
+→ PRD C6 allows an optional "Show demo layer". It would paint generated demo values onto real Ortsteil geometry, which readers can easily take for real market figures, even when hatched and labelled. It is not built. It can be revisited when a validated dataset exists, or if the owner asks for it explicitly.

@@ -51,7 +51,7 @@ Tokens are implemented as CSS custom properties in `src/styles/tokens.css` and e
 | `--color-success-ink` | `#1E6B3A` | 5.96 paper | confirmations (with icon) |
 | `--color-focus` | `#003153` | 12.26 | focus ring (§9) |
 
-### 2.3 Dark mode (secondary; shipped in slice 9 only if it passes the same checks)
+### 2.3 Dark mode (secondary; not shipped in this phase, D-055)
 
 | Token | Value | Contrast |
 |---|---|---|
@@ -197,7 +197,7 @@ Prussian (slot-1 ramp) and Brick (slot-2 ramp), with a neutral midpoint of `#E4E
 - **One y-axis, always.**
 
 ### 8.5 Accessibility texture
-The 45° and 135° line fill on data marks appears only when `forced-colors` is active, when printing, or when the user enables "patterns" (planned for slice 9). It is never on by default and never decorative.
+The 45° and 135° line fill on data marks appears only when `forced-colors` is active, when printing, or when the user enables "patterns" ("Draw patterns in the charts" on `/market`). Lines get a dash per slot instead. It is never on by default and never decorative. Built in slice 9 (D-054); only the 45° fill is used so far.
 
 ## 9. Focus, states, and interaction tokens
 
