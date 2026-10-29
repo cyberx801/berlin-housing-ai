@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+
+# next.js / build
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# env (only .env.example is committed)
+.env
+.env*.local
+
+# tests
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# data intake: not committed until license allows redistribution (data/PROVENANCE.md)
+data/raw/kaggle/*
+!data/raw/kaggle/.gitkeep
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
