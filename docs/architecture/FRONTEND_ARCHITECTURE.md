@@ -60,11 +60,12 @@ berlin-housing-ai/
 │  │  └─ charts/      LineChart BarChart Histogram DotPlot TableView ChartTooltip
 │  ├─ features/                     stateful compositions; own their hooks and URL state
 │  │  ├─ property-analysis/   neighborhood-explorer/   market-intelligence/
-│  │  ├─ neighborhoods/       property-comparison/
+│  │  ├─ neighborhoods/       property-comparison/     methodology/
 │  ├─ lib/
 │  │  ├─ contracts/rent-prediction.v1.ts     Zod: request, response, error (DRAFT)
 │  │  ├─ api/prediction/                     service, transports/{disabled,http}, config, errors
 │  │  ├─ data/geo/                           typed accessors + generated/ (server-only)
+│  │  ├─ data/registry.ts                    dataset registry for /methodology (server-only, D-051)
 │  │  ├─ data/market/                        MarketDataSource interface, demo-source, index, http (server-only)
 │  │  ├─ market/                             filter parsing (URL and API) and response schemas (client-safe)
 │  │  ├─ fixtures/demo/                      ONLY imported by data/market/demo-source.ts
@@ -99,7 +100,7 @@ tests/contracts/fixtures/** ◀── ONLY tests/**
 | `/neighborhoods` | Static (all 97 rows in the HTML) | all 97 meta rows | filter rail + A–Z table | `bezirk, ring, q` (`history.replaceState` from user actions, D-037, D-045) |
 | `/neighborhoods/[slug]` | SSG, `generateStaticParams` (97). `dynamicParams` isn't available with Cache Components, so other slugs render on request and call `notFound()` (D-043) | one Ortsteil + neighbors + locator paths; market provenance for the demo module | none (links only) | — |
 | `/compare` | Static shell. The table renders after hydration from `localStorage`, with a neutral "reading" state until then (D-050) | Bezirk/Ortsteil options | `CompareView` (store, table, confirm dialogs); `CompareEditor`, loaded on demand, shares `PropertyFields` with `/analyze` (D-048) | — (storage) |
-| `/methodology` | Static | dataset registry | none | anchors |
+| `/methodology` | Static | dataset registry (`lib/data/registry.ts`, D-051), geodata build info and ring counts | none: no client component of its own | anchors from `features/methodology/sections.ts` (D-052) |
 | `POST /api/predictions/rent` | Route handler (Node), dynamic | — | — | — |
 | `GET /api/market/{rent-trend,districts,distribution,property-types}` | Route handlers, dynamic, `no-store` | one `MarketDataSource` call each, returning `{ provenance, data }` | — | strict query: `bezirke` (codes), `from`, `to`, `type`; 400 with a reason |
 

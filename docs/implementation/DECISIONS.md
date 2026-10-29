@@ -281,3 +281,24 @@ Verified on 2026-10-29 with Node 22.16 / npm 10.9:
 → **Announcements** go to a polite live region, written after the dialog has closed: while a modal is open the rest of the page is inert, and a message written there would not be read. Inside the dialog, its own live region carries the Bezirk/Ortsteil sync messages.
 → **Before hydration** the saved comparison can't be read, so the page shows "Reading the comparison saved in this browser." instead of an empty state, with a `<noscript>` note that the comparison needs JavaScript. `data-hydrated` on `#compare-view` marks the live page.
 → **Remove and Clear all** each ask in a small dialog that names what is deleted and says it can't be brought back.
+
+### D-051 · The dataset registry on `/methodology#sources` · Accepted
+→ **Source.** `data/PROVENANCE.md` stays the full, human-readable registry. The page renders `src/lib/data/registry.ts` (server-only), a typed list of the same datasets with plain-language fields. It doesn't parse the Markdown, which holds request strings, tables and notes meant for people working on the data.
+→ **What comes from where.**
+  - The checksums and the download date come from `generated/provenance.json`, which the geodata build writes from the files it actually read. They are read through `getGeoBuildInfo()` in `lib/data/geo`, validated with Zod like the other generated files.
+  - The rest is written in the module.
+  - The demo fixture's id and seed are written in too; the fixture itself is never imported (DATA_BOUNDARIES §5).
+→ **Kept in step by `tests/unit/methodology.test.ts`.**
+  - Every `## <id>` heading in `PROVENANCE.md` has a registry entry, and every entry has a heading.
+  - The build's checksums equal the registry's and appear in `PROVENANCE.md`.
+  - Download dates, licenses, service addresses and the demo seed match.
+  - Services are base addresses, never a GetFeature request that would download the data.
+  - A new dataset therefore can't reach the registry or the Markdown alone.
+→ **Ring thresholds.** The geo module throws at load if the build's thresholds differ from `src/lib/geo/ring.ts`, which the page copy and the profiles read. No threshold is typed into the copy.
+
+### D-052 · `/methodology` structure and anchors · Accepted
+→ **Order.** The capability table first (PRD §3 as a real table, one row per capability, each linking to its section). Then one section per row in the table's order: geography (with areas, ring status, neighbors and simplified drawing), market figures, the research dataset, in development (the rent model, uncertainty and transit), your entries and neighborhood descriptions. Then known limitations, then the dataset registry.
+→ **Anchors.** The ids live in `features/methodology/sections.ts`, used by the page, its contents list and the tests. Seven are fixed by existing links and must not be renamed: `sources`, `your-data`, `market-data`, `predictions`, `in-development`, `neighborhood-content`, `ring`. A unit test fails on any `/methodology#…` link in `src/` that has no section. An E2E test checks that each id appears once after other routes have been visited (Activity keeps them mounted).
+→ **`#in-development`** is the umbrella every "Not connected" band links to. It covers the rent model (`#predictions`) and transit (`#transit`), and says nothing fills their space in the meantime.
+→ **Contents first in the DOM** at every width: above the article on phones, the sticky left column from `lg`, scrolling on its own if a short window can't fit it. The reading and focus order match the drawing, unlike the legend rail on `/compare` (slice 7 finding).
+→ **Copy rules.** No euro amounts anywhere on the page (an E2E check). The demo section says why the trend lines rise without quoting a level. The prediction contract is called a draft; the interval method and level are named as open questions. The "AI" in the name is said to refer to the model in development, which nothing on the site uses today. Examples (Moabit's key, Blankenfelde's area) take their values from the geodata. Blankenfelde's own area field (139 m², from the raw file) is checked against that file by a test.

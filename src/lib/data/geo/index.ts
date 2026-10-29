@@ -11,10 +11,12 @@ import type {
   PlatePlace,
   Plates,
 } from "@/types/geo";
+import { RING_INSIDE_MIN, RING_OUTSIDE_MAX } from "@/lib/geo/ring";
 import type { Provenance } from "@/types/provenance";
 import bezirkeJson from "./generated/bezirke.meta.json";
 import ortsteileJson from "./generated/ortsteile.meta.json";
 import platesJson from "./generated/plates.geo.json";
+import buildJson from "./generated/provenance.json";
 
 // Generated files are validated on load so a broken build output fails loudly.
 const point = z.tuple([z.number(), z.number()]);
@@ -62,6 +64,27 @@ if (
   throw new Error("plates.geo.json is incomplete; run npm run geo:build");
 }
 
+const buildSchema = z.object({
+  generatedBy: z.string(),
+  sources: z.array(z.object({ id: z.string(), file: z.string(), sha256: z.string().regex(/^[0-9a-f]{64}$/) })).min(1),
+  retrieved: z.iso.date(),
+  license: z.string(),
+  rules: z.object({
+    ringInsideMin: z.number(),
+    ringOutsideMax: z.number(),
+    plateSimplify: z.string().regex(/^\d+(\.\d+)?%$/),
+    mapSimplify: z.string().regex(/^\d+(\.\d+)?%$/),
+  }),
+});
+
+export type GeoBuildInfo = z.infer<typeof buildSchema>;
+
+const BUILD: GeoBuildInfo = buildSchema.parse(buildJson);
+// The copy on every page reads the shared constants; the build must have used the same ones.
+if (BUILD.rules.ringInsideMin !== RING_INSIDE_MIN || BUILD.rules.ringOutsideMax !== RING_OUTSIDE_MAX) {
+  throw new Error("provenance.json ring thresholds differ from src/lib/geo/ring.ts; run npm run geo:build");
+}
+
 export const GEO_PROVENANCE: Provenance = {
   kind: "official",
   sourceId: "alkis-ortsteile",
@@ -96,6 +119,11 @@ export function getBezirkBySlug(slug: string): BezirkMeta | undefined {
 
 export function getPlates(): Plates {
   return PLATES;
+}
+
+/** What the geodata build read (files and checksums) and the rules it applied. */
+export function getGeoBuildInfo(): GeoBuildInfo {
+  return BUILD;
 }
 
 /** Readout rows for the plates, sorted by name (German collation). */

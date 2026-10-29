@@ -300,7 +300,7 @@ Last updated: 2026-10-29
   - the add dialog closed and reopened with its entries; "Fill in from your analysis"
   - corrupt JSON, an old version and an invalid item: dropped, with the notice
   - axe empty, full and with the dialog's error summary; three properties at an explicit 360 px with no horizontal scroll
-- [ ] `/methodology#your-data` (the "From your entries" band link) and `#in-development` return 404 until slice 8.
+- [x] `/methodology#your-data` (the "From your entries" band link) and `#in-development` returned 404 until slice 8. Both resolve now (slice 8).
 - [ ] Before hydration the page shows the "reading" state, so a saved comparison is never in the static HTML (it can't be: it lives in the browser).
 - [ ] At 375 px a long property name is clamped to three lines in the sticky header; the full name is in the accessible name and the edit dialog.
 - [ ] At 320 px (400 % zoom) words longer than a column (about 69 px) break without a hyphen: "Unfurnished", a long host, a long user-typed name. Nothing is cut off and nothing scrolls sideways; from 360 px the fixed values fit.
@@ -363,8 +363,60 @@ Findings:
 - [!] Screen-reader smoke test **skipped**: NVDA and Firefox are still not installed. The two table arrangements rely on `headers`, so this is the first thing to check with a real reader.
 
 ## Slice 8 — Methodology (depends on: 0, 3, 5)
-- [ ] Sections mirroring the PRD §3 truth table; dataset registry rendered from `data/PROVENANCE` metadata; ring/area/adjacency method; uncertainty explainer
-- [ ] All provenance band links resolve to anchors
+- [x] Sections mirroring the PRD §3 truth table (D-052). The page opens on "On this page", then the capability table (one row per PRD §3 row, each linking to its section), then one section per row in the same order, then known limitations and the registry. PRD G1 topics:
+  - what works today: `#what-works`
+  - geodata derivations: `#geodata`, with `#areas`, `#ring`, `#adjacency` and `#drawing`
+  - market data vs. predictions: `#market-data`, `#market-vs-predictions`
+  - in development: `#in-development`, with `#predictions`, `#uncertainty` and `#transit`
+  - your entries, neighborhood descriptions and known limitations: `#your-data`, `#neighborhood-content`, `#limitations`
+  - data sources and licenses: `#sources`
+- [x] Dataset registry (D-051): `lib/data/registry.ts`, checked against `data/PROVENANCE.md` in both directions. Checksums and the download date come from the geodata build output.
+- [x] Ring, area and adjacency method. The thresholds, counts, the Moabit key example and Blankenfelde's computed area all come from the geodata. The thresholds are checked against the build at load.
+- [x] Uncertainty explainer: why a single rent can't be named, and that a range or "No uncertainty range available" will accompany an estimate. The method and level are named as open questions for the model team.
+- [x] All provenance band links resolve to anchors: `tests/unit/methodology.test.ts` scans `src/` for `/methodology#…` (7 distinct ids today, all present). The E2E follows links from `/`, the footer and `/market`.
+- [ ] Follow-up for slice 9: four E2E specs still ignore console 404s "from routes built in later slices". Every route exists now, so the filter can go.
+
+**Slice 8 checks (2026-10-29):**
+- `npm run typecheck` ✓, `npm run lint` ✓ (0 problems).
+- `npx vitest run` 295/295 ✓ (25 files). New: `methodology.test.ts`, with 8 tests: anchors, the registry against `PROVENANCE.md` and the build, and the raw area field quoted in the copy.
+- `npm run build` ✓: `/methodology` static (○).
+- `npx playwright test tests/e2e/methodology.spec.ts --workers=2`: 15/15 ✓, on the build before the last copy and markup fixes (license id, service-address wrapping, the Kaggle mark, apostrophes, "as downloaded"). Its first run failed 15/15 because an old `next start` from slice 7 was still serving port 3100 without the new route. That server was stopped and the run repeated.
+- Full suite on the final build, `npx playwright test --workers=3`: 156 tests. **119 passed, 1 skipped, 36 failed.**
+  - All 36 failures are in `desktop-1440`. None is an assertion: 33 are "worker process exited unexpectedly (code=3221225794)", a process Windows couldn't start, and 3 are "Target crashed".
+  - The machine had 0.5–1.7 GB of free memory. Claude Code then stopped the run for low memory.
+  - `mobile-375` and `tablet-768` passed completely, including `methodology.spec.ts` on the final build.
+  - **`desktop-1440` is not verified for this slice. It has to be rerun once memory allows.**
+- frontend-quality gate:
+  - Boundaries: the page is a server component with no client component of its own. It reads `lib/data/geo` and `lib/data/registry` on the server and imports no fixture.
+  - Provenance: the geography section carries the official label. The registry marks each dataset (official, not available, demo).
+  - No euro amount appears on the page (an E2E check), and no demo value or Berlin market figure is quoted.
+- First-load JS: `/methodology` 140.3 kB, the shared baseline, within the 150 kB budget. No server marker in any client chunk (re-measured for all routes; the others are unchanged).
+
+**Bugs found while testing (fixed):**
+- At 320 px the license id broke at its hyphen ("dl-/de/zero-2.0") and service addresses broke inside words. The id is kept whole, and the addresses wrap after their slashes.
+- The Kaggle entry used the research mark in the registry, a solid rule that looks like "From your entries", while the table showed "Not available" with the dashed mark. Both use the dashed mark now.
+- "The boundaries are as published on 29 October 2026" was wrong: that is the download date. It now says "as downloaded on".
+
+**Design review.** These screenshots were opened and looked at:
+- At 1440: the top of the page; the geography section; the registry with the contents stuck beside it.
+- At 375: the top with the contents; the capability table; geography; market figures.
+- At 768: in development; known limitations.
+- At 320: the capability table and the registry (before and after the fixes).
+
+Findings:
+- One bold element, the page title. Prose runs in one measured column in Source Serif. Headings and tables are in Archivo. No cards; the registry is a ledger, one definition list per dataset.
+- The contents list is 486 px tall, so it fits a 900 px window while stuck.
+- No horizontal scroll at 320, 375, 768 or 1440. No console errors on the page.
+
+**Accessibility review (slice 8: contents list, capability table, registry):**
+- axe (wcag2a/aa, 2.1, 2.2): 0 violations at 375 and 768 on the final build. At 1440 the axe test passed on the earlier build; on the final build it crashed (see above).
+- Structure:
+  - One h1. Sections are `<section aria-labelledby>`, h2 with h3 inside.
+  - The contents list is `<nav aria-labelledby>` ("On this page") and comes first in the DOM at every width, so the focus order matches the drawing.
+  - The capability table has a caption, column headers and row headers.
+- Links: each contents entry lands on its heading, below the sticky header (E2E: the heading is in the viewport and its top is under the header). The same holds for links from other pages. Each id is unique after other routes have been visited and kept mounted.
+- [ ] Keyboard Tab walk **not run** for this slice. It was left out because of the memory shortage. Every control is a native link; to be done with the `desktop-1440` rerun.
+- [!] Screen-reader smoke test **skipped**: NVDA and Firefox are still not installed.
 
 ## Slice 9 — Responsive polish and QA (depends on: all)
 - [ ] Screenshot review at 375/768/1440 for every route and key state; fix list
