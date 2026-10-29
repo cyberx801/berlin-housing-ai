@@ -77,6 +77,7 @@ export function NeighborhoodDirectory({ places, bezirke, provenance }: Neighborh
   const stateRef = useRef<PlaceFilter>(NO_FILTER);
   const pendingWrites = useRef<string[]>([]);
   const writeTimer = useRef<number | undefined>(undefined);
+  const pendingCommit = useRef<(() => void) | null>(null);
   const announceTimer = useRef<number | undefined>(undefined);
   const searchRef = useRef<HTMLInputElement>(null);
   const bezirkRef = useRef<HTMLSelectElement>(null);
@@ -101,17 +102,29 @@ export function NeighborhoodDirectory({ places, bezirke, provenance }: Neighborh
       window.clearTimeout(writeTimer.current);
       const path = window.location.pathname;
       const commit = () => {
+        pendingCommit.current = null;
         if (window.location.pathname !== path) return;
         const query = placeFilterQuery(stateRef.current, lookups);
         if (query === window.location.search) return;
         pendingWrites.current.push(query.slice(1));
         window.history.replaceState(null, "", `${path}${query}`);
       };
-      if (delay > 0) writeTimer.current = window.setTimeout(commit, delay);
-      else commit();
+      if (delay > 0) {
+        pendingCommit.current = commit;
+        writeTimer.current = window.setTimeout(commit, delay);
+      } else commit();
     },
     [lookups],
   );
+
+  /**
+   * Writes a search still waiting on its delay, before a link or Enter leaves the page. The timer
+   * is cleared when the route hides, so without this, Back would return to a URL without the search.
+   */
+  const flushUrl = () => {
+    window.clearTimeout(writeTimer.current);
+    pendingCommit.current?.();
+  };
 
   const onSearch = useCallback(
     (search: string) => {
@@ -168,6 +181,7 @@ export function NeighborhoodDirectory({ places, bezirke, provenance }: Neighborh
   const onSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && matches.length === 1 && matches[0]) {
       event.preventDefault();
+      flushUrl();
       router.push(`/neighborhoods/${matches[0].slug}`);
     }
   };
@@ -191,7 +205,7 @@ export function NeighborhoodDirectory({ places, bezirke, provenance }: Neighborh
 
   return (
     <>
-      <div className="page-grid gap-y-8 pb-16">
+      <div className="page-grid gap-y-8 pb-16" onClickCapture={flushUrl}>
         <div className="col-span-4 md:col-span-8 lg:col-span-3">
           <div
             id={IDS.filters}

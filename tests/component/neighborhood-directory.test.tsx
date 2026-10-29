@@ -68,8 +68,11 @@ describe("NeighborhoodDirectory", () => {
     await user.type(search(), "moa");
     expect(rowNames()).toEqual(["Moabit"]);
     expect(search()).toHaveAccessibleDescription("1 of 97 Ortsteile");
+    expect(window.location.search).toBe("");
     await user.keyboard("{Enter}");
     expect(push).toHaveBeenCalledWith("/neighborhoods/moabit");
+    // The delayed search write is flushed first, so Back returns to "?q=moa".
+    expect(window.location.search).toBe("?q=moa");
 
     await user.clear(search());
     await user.type(search(), "koepenick");

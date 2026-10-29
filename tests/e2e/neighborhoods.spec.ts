@@ -100,6 +100,27 @@ test.describe("/neighborhoods", () => {
     await expect(rows(page)).toHaveText(shown);
   });
 
+  test("a search typed just before leaving is still there on Back", async ({ page }) => {
+    await page.goto("/neighborhoods");
+    const box = page.getByRole("searchbox", { name: "Search by name" });
+    // Faster than the 400 ms delay on writing the search to the URL.
+    await box.pressSequentially("moa");
+    await box.press("Enter");
+    await expect(page).toHaveURL(/\/neighborhoods\/moabit$/);
+    await page.goBack();
+    await expect(page).toHaveURL(/\/neighborhoods\?q=moa$/);
+    await expect(box).toHaveValue("moa");
+
+    await box.fill("");
+    await expect(page).toHaveURL(/\/neighborhoods$/);
+    await box.pressSequentially("wedd");
+    await rows(page).filter({ hasText: "Wedding" }).click();
+    await expect(page).toHaveURL(/\/neighborhoods\/wedding$/);
+    await page.goBack();
+    await expect(page).toHaveURL(/\/neighborhoods\?q=wedd$/);
+    await expect(box).toHaveValue("wedd");
+  });
+
   test("the empty state names the active filters and clears them", async ({ page }) => {
     await page.goto("/neighborhoods?bezirk=spandau&ring=inside");
     await expect(page.getByText("No Ortsteil matches these filters")).toBeVisible();
