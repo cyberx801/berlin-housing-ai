@@ -211,3 +211,38 @@ Verified on 2026-10-29 with Node 22.16 / npm 10.9:
   - Charts draw only after measuring their box. The server-rendered box already has its final size, so nothing shifts on hydration.
   - After a filter change, the previous render stays dimmed until the new answer arrives.
 → **Contrast.** The dot plot's interquartile band uses the sequential step `seq-2`, at 3.3:1 on the sheet. A translucent series color measured 1.6:1, which fails WCAG 1.4.11.
+
+### D-043 · `/neighborhoods/[slug]`: 97 prerendered profiles, `notFound()` for anything else · Accepted
+→ FRONTEND_ARCHITECTURE §3 planned `dynamicParams = false`. With Cache Components that export fails the build ("not compatible with `nextConfig.cacheComponents`"), so it is not used.
+→ `generateStaticParams` returns all 97 slugs from the geodata, and the build lists 97 fully static pages. Any other slug renders on request: the page awaits `params` outside any Suspense boundary, finds no Ortsteil and calls `notFound()`, and `generateMetadata` does the same.
+→ Verified on the production server: `/neighborhoods/not-a-place` answered 404 on the first request (cache MISS) and again on the second (HIT), so an unknown slug is never stored as a 200. The E2E spec asserts the status twice.
+→ Observed only on this Windows machine: `/neighborhoods/Moabit` answers 200 with the Moabit page, because the case-insensitive file system resolves the prerendered `moabit.html`. `getNeighborhoodProfile("Moabit")` itself is `undefined` (unit-tested), so a case-sensitive host would answer 404. Not changed.
+→ The unknown-slug state (USER_FLOWS Flow 2) lives in the root `not-found.tsx`: a GET search form (`next/form`, `action="/neighborhoods"`, field `q`) and the A–Z link. The form submits before JavaScript loads, and the directory applies `q` once it hydrates.
+
+### D-044 · Profile content: verified facts first, honest modules after · Accepted
+→ The order changes from the DESIGN_DIRECTION wireframe. The facts ledger sits beside the locator plate from `lg`, the nearby comparison follows, and the three modules without data come last, under "What this page can't tell you yet". Real data reads first.
+→ **The market module shows no figures.** The source is keyed by Bezirk, so any number on `/neighborhoods/moabit` would be a Mitte number on a Moabit page. The module says market series exist per Bezirk only and links to the dashboard for that Bezirk.
+  - The link is built with `marketQuery`, e.g. `/market?bezirke=mitte`.
+  - Its band is the source's own `provenance` (demo today), so it follows the source when real data arrives. The "they are demo data" sentence shows only while the kind is `demo`.
+→ **Transit** is `not-connected` ("No station dataset is registered yet"). It promises no dataset and shows no distance. **Character** is `pending`, with no prose about the place: descriptions need a citable source for each claim (DATA_BOUNDARIES §7).
+→ **Shared names.** Six Ortsteile share their Bezirk's name (Mitte, Pankow, Spandau, Neukölln, Lichtenberg, Reinickendorf). They read "An Ortsteil of the Bezirk Mitte", not "of Mitte".
+→ **Meta.** Titles and descriptions carry only geometry facts (name, Bezirk, area, ring status and share, neighbours), never market values. A unit test checks all 97 descriptions.
+→ The demo fixture's provenance note now ends "…to build and test the market dashboard" instead of "this dashboard", since the note also appears on profiles. The fixture was regenerated (`--check` passes), and the version stays v1 because no value changed.
+
+### D-045 · `/neighborhoods` directory · Accepted
+→ **The list.** One A–Z table (German collation): Ortsteil (link), Bezirk, area (two fixed decimals, so a column lines up), ring status. Below `md` the Bezirk moves under the name and the column hides. The whole list is in the static HTML.
+→ **Filters.** Search, Bezirk and ring status sit in a `role="search"` rail, sticky from `lg`. They reuse `features/neighborhood-explorer/filters.ts`:
+  - Reading: `readPlaceFilter`.
+  - Writing: `placeFilterQuery`, a wrapper over `exploreQuery` that leaves out the selection.
+  - URL state follows the D-037 pattern (Suspense reader, `history.replaceState` from handlers only, echo suppression, search written after 400 ms).
+→ **Count.** A polite live region announces it, 800 ms after typing stops. Enter in the search field opens the profile when exactly one Ortsteil matches.
+→ **No results.** The empty state lists each active filter with its own Remove button and offers "Clear all filters". The buttons vanish once results return, so focus moves to the control that changed: the search field, the Bezirk select or the "Any" radio.
+→ **Known gap.** A link with filters shows all 97 rows until hydration applies them. This is the same pre-hydration issue as `/explore`, listed for slice 9.
+
+### D-046 · Locator plate labels: placed, not just filtered · Accepted
+→ Labels are constant-size HTML over a scaling SVG, so collisions depend on the rendered width. At 375 px, the labels for Köpenick's eleven neighbours overlapped.
+→ `lib/geo/labels.ts` estimates each box from the label type, measured at about 5.9 px per character and 17 px tall. It places greedily:
+  - The focus goes first, then the neighbours by projected area.
+  - A label is dropped when it collides with one already placed or runs off the plate.
+→ It runs twice. The first pass assumes a 288 px plate, a phone. The second assumes 448 px, the `@md` container width, and starts from the first pass's set, so the wider set always contains the narrower one. Labels that fit only the wider plate are `hidden @md:inline` on the plate's container. Dropped names are still in the borders list and the SVG description.
+→ The caption mentions the ring only when its line crosses the frame (`locatorShowsRing`). Blankenfelde's plate, for example, says the ring lies outside the view.

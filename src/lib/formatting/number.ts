@@ -15,6 +15,7 @@ const eur2 = new Intl.NumberFormat(LOCALE, {
 const n0 = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 0 });
 const n1 = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 1 });
 const n2 = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 2 });
+const n2fixed = new Intl.NumberFormat(LOCALE, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export function formatEUR(value: number): string {
   return eur0.format(value);
@@ -32,8 +33,9 @@ export function formatAreaM2(value: number): string {
   return `${n1.format(value)}${NNBSP}m²`;
 }
 
-export function formatKm2(value: number): string {
-  return `${n2.format(value)}${NNBSP}km²`;
+/** `fixed`: always two decimals, so a column of areas lines up ("7.70 km²" above "10.58 km²"). */
+export function formatKm2(value: number, fixed = false): string {
+  return `${(fixed ? n2fixed : n2).format(value)}${NNBSP}km²`;
 }
 
 export function formatPercent(share: number, fractionDigits: 0 | 1 = 0): string {

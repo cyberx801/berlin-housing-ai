@@ -96,8 +96,8 @@ tests/contracts/fixtures/** ◀── ONLY tests/**
 | `/analyze` | Static shell | Bezirk → Ortsteil options | PropertyAnalysisForm, ResultPanel | prefill only: `bezirk, ortsteil, type, area, rooms` |
 | `/explore` | Static shell; `ExploreMap` via `next/dynamic` (`ssr: false`) | Ortsteil list (SSR, usable before the map loads) | map, list, panel, filters | `o, bezirk, ring, q` (`history.replaceState` from user actions, D-037) |
 | `/market` | Static shell with the default view prerendered; other filters fetched per module from `/api/market/*` (D-022) | `MarketDataSource` (demo), default filters only | filter rail, four chart modules | `bezirke, from, to, type` (`history.replaceState` from user actions, D-040) |
-| `/neighborhoods` | Static | all 97 meta rows | filter + search | `bezirk, ring, q` |
-| `/neighborhoods/[slug]` | SSG, `generateStaticParams` (97), `dynamicParams = false` | one Ortsteil + neighbors + locator paths | none required (links only) | — |
+| `/neighborhoods` | Static (all 97 rows in the HTML) | all 97 meta rows | filter rail + A–Z table | `bezirk, ring, q` (`history.replaceState` from user actions, D-037, D-045) |
+| `/neighborhoods/[slug]` | SSG, `generateStaticParams` (97). `dynamicParams` isn't available with Cache Components, so other slugs render on request and call `notFound()` (D-043) | one Ortsteil + neighbors + locator paths; market provenance for the demo module | none (links only) | — |
 | `/compare` | Static shell | Bezirk/Ortsteil options | comparison store, dialogs | — (storage) |
 | `/methodology` | Static | dataset registry | none | anchors |
 | `POST /api/predictions/rent` | Route handler (Node), dynamic | — | — | — |

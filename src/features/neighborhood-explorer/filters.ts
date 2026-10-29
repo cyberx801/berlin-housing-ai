@@ -69,6 +69,12 @@ export function searchKeys(name: string): string[] {
   return [...new Set([foldQuery(folded), transliterated])];
 }
 
+/** "All 97 Ortsteile", "1 of 97 Ortsteile", "6 of 97 Ortsteile". */
+export function placeCountText(shown: number, total: number, filtered: boolean): string {
+  if (!filtered) return `All ${total} Ortsteile`;
+  return `${shown} of ${total} Ortsteile`;
+}
+
 export function isFiltered(filter: PlaceFilter): boolean {
   return filter.bezirk !== null || filter.ring !== null || foldQuery(filter.q) !== "";
 }
@@ -117,6 +123,11 @@ export function readExploreParams(
     state: { ...filter, selected },
     invalid: slug && selected === null ? ["o", ...invalid] : invalid,
   };
+}
+
+/** `/neighborhoods`: "?bezirk=mitte&ring=inside&q=…", or "" when nothing is set. */
+export function placeFilterQuery(filter: PlaceFilter, lookups: PlaceLookups): string {
+  return exploreQuery({ ...filter, selected: null }, lookups);
 }
 
 /** "?o=moabit&bezirk=mitte&ring=inside&q=…", or "" when nothing is set. */

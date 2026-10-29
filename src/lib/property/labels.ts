@@ -66,3 +66,10 @@ export const RING_STATUS_LABELS = {
   partly: "Partly inside the ring",
   outside: "Outside the ring",
 } as const;
+
+/** For table cells under a "Ring status" header. */
+export const RING_STATUS_SHORT = {
+  inside: "Inside",
+  partly: "Partly inside",
+  outside: "Outside",
+} as const;

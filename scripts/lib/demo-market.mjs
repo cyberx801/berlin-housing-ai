@@ -155,7 +155,7 @@ export function buildDemoMarket(seed = DEMO_MARKET_SEED) {
     _provenance: {
       kind: "demo",
       fixtureId: "demo-market-v1",
-      note: "Synthetic listings from a seeded generator, made to build and test this dashboard.",
+      note: "Synthetic listings from a seeded generator, made to build and test the market dashboard.",
     },
     generator: { script: "scripts/build-demo-fixtures.mjs", seed, version: DEMO_MARKET_VERSION },
     firstMonth: monthKey(0),

@@ -34,7 +34,7 @@ Edge cases:
 
 ```
 / (Bezirk silhouettes) ─▶ /neighborhoods?bezirk=mitte
-  └─ filter: Ring = inside · search "moa"
+  └─ filter: Ring = partly inside (Moabit is 83 % inside) · search "moa"
        └─▶ /neighborhoods/moabit
              ├─ facts ledger (Bezirk, area, Ring status, adjacent Ortsteile — official)
              ├─ market module (demo, hatched) · transit (not connected) · character (pending)

@@ -105,7 +105,7 @@ Last updated: 2026-10-29
 - [x] Below `lg`: map at 55 % above a List / Details tablist and a self-scrolling sheet (D-039)
 - [x] E2E Flow 3: `tests/e2e/explore.spec.ts` (search and keyboard selection, shared link and reload, unknown slug, map click, filters and URL, forced fallback without the map module, leave and return with one canvas, axe)
 - [ ] Demo choropleth behind "Show demo layer" (PRD C6): waits for the slice 5 fixtures
-- [ ] "Open the … profile" links to `/neighborhoods/<slug>`, which returns 404 until slice 6 (as on the homepage)
+- [x] "Open the … profile" links to `/neighborhoods/<slug>`. The profiles exist since slice 6.
 
 **Slice 4 checks (2026-10-29):** `npm run typecheck` ✓, `npm run lint` ✓ (0 problems), `npm run test` 182/182 ✓ (15 files; new: `explore-filters`, `explore-view`), `npm run build` ✓ (`/explore` static), `npx playwright test` 83 passed / 1 skipped ✓ (skip: mobile menu at 1440, by design). In the browser: worker and the three GeoJSON files load with 200, no console errors; the static HTML has all 97 options and no MapLibre reference.
 
@@ -198,9 +198,69 @@ Last updated: 2026-10-29
 - [!] Screen-reader smoke test of Flow 4 **skipped**: NVDA and Firefox are still not installed.
 
 ## Slice 6 — Neighborhoods (depends on: 0, 2)
-- [ ] Directory with filters/search/URL state; empty state
-- [ ] `[slug]` SSG (97), LocatorPlate, facts ledger, adjacent comparison, honest modules (market demo / transit not connected / character pending)
-- [ ] E2E Flow 2; 404 for unknown slug
+- [x] Directory `/neighborhoods` (D-045):
+  - One A–Z table of all 97 Ortsteile, in the static HTML
+  - Search, Bezirk and ring status in a `role="search"` rail, reusing `features/neighborhood-explorer/filters.ts`
+  - URL state `bezirk`/`ring`/`q` (D-037 pattern), with cleaning of unusable links
+  - Count in a polite live region; Enter on a single match opens its profile
+  - Empty state that lists each active filter with its own Remove button, plus "Clear all filters"
+- [x] Profiles `/neighborhoods/[slug]`, all 97 prerendered (D-043, D-044):
+  - LocatorPlate, facts ledger (Bezirk, Ortsteil number, area, ring status and share with the method stated, borders), and a nearby table across Bezirk borders
+  - Honest modules: market (the source's demo band, no figures, link to the Bezirk on the dashboard), transit (not connected), character (not written yet)
+  - Analyze (prefilled `bezirk` + `ortsteil`) and Explore (`?o=`) links; meta from geometry facts only
+- [x] Unknown slug: `notFound()` → HTTP 404 (also on a repeated request). The root 404 has a GET search box into the directory and the A–Z link. `dynamicParams = false` is unavailable with Cache Components (D-043).
+- [x] Locator labels placed against collisions at two widths, and a caption that mentions the ring only when it is in view (D-046). This also applies to the homepage preview.
+- [x] E2E Flow 2: `tests/e2e/neighborhoods.spec.ts`. It covers:
+  - silhouette → directory → filters → profile → neighbour → map
+  - filters surviving a profile visit and Back
+  - the empty state and its way out
+  - the unknown slug: 404 twice, plus the search box
+  - axe and horizontal scroll on the directory and three profiles
+  - all 97 profiles at 375 px: 200, h1 = name, no horizontal scroll
+- [ ] `/methodology#ring`, the "How this is calculated" target on profiles, returns 404 until slice 8 (like `#market-data`).
+- [ ] Pre-hydration: a filtered link shows all 97 rows until hydration applies the filters (as on `/explore`). Slice 9.
+
+**Slice 6 checks (2026-10-29):**
+- `npm run typecheck` ✓
+- `npm run lint` ✓ (0 problems)
+- `npx vitest run` 236/236 ✓ (21 files; new: `neighborhoods` (profiles, meta, label placement, ring-in-view, URL writer) and `neighborhood-directory`)
+- `npm run fixtures:build -- --check` ✓. The demo note was reworded and regenerated (D-044).
+- `npm run build` ✓: `/neighborhoods` static, 97 profiles fully static (`response: complete` in the prerender manifest), `ensureStatic` holds.
+- Production server by hand: `/neighborhoods/not-a-place` 404 (cache MISS), then 404 again (HIT). `/neighborhoods/moabit` 200, title "Moabit, Ortsteil of Mitte".
+- `npx playwright test`, three full runs on the final code:
+  - **Run 1:** 115 passed / 3 skipped / **2 failed**. Both were the homepage A3 test (375, 1440), which raced `/analyze` removing its prefill query. Repeated 3× it failed 1 in 9. That test is from slice 2 and the race isn't caused by this slice. **Fixed the test**: it now checks the prefilled form instead of the transient URL, and passed 15/15 repeated.
+  - **Run 2:** 115 passed / 3 skipped / **2 failed**. Both were 30 s timeouts (`/analyze` Flow 1 at 768, `/explore` map click at 1440), with the dev server still running alongside. `--last-failed` then passed both (18.7 s).
+  - **Run 3:** 117 passed / 3 skipped ✓, after stopping the dev server. The skips are the mobile menu at 1440, by design, and the 97-profile walk, which runs only at 375.
+
+**Bugs found while testing (fixed):**
+- Köpenick's locator labels overlapped at 375 px, and long labels near the edge ran off the plate. They are now placed (D-046).
+- The caption claimed a ring line on plates where none is in view, e.g. Blankenfelde.
+- The demo band on profiles read "made to build and test this dashboard".
+- The Remove buttons' hidden text lost its leading space ("Removethe …") in the accessible name. They use `aria-label` now, starting with the visible word (2.5.3).
+- Areas in tables mixed one and two decimals ("7.7" over "10.58"). Tables use two fixed decimals.
+- "S-Bahn" broke at its hyphen in the ring hint (directory and `/explore`).
+
+**Design review (screenshots 375/768/1440: directory default, filtered and empty; profiles Moabit, Mitte, Köpenick, Blankenfelde, Hansaviertel, Alt-Hohenschönhausen, Märkisches Viertel):**
+- One bold element per screen: the profile name in Archivo display, or the directory title. Modules are plates with bands. There is no card grid and no rating.
+- Every data-bearing block carries words:
+  - official on the facts, the nearby table and the locator
+  - the demo hatch plus its label on the market module, which holds no figures
+  - a dashed outline and "Not connected" on transit
+  - a muted panel and "Not written yet" on character
+- Long names hyphenate (`lang="de"`, `hyphens-auto`), e.g. "Alt- / Hohenschön- / hausen" at 375 px. No horizontal scroll on any of the 97 profiles at 375 px (E2E).
+- From `lg`, the facts ledger sits beside the locator, so the header has no dead space. The layout departs from the DESIGN_DIRECTION wireframe here and orders verified sections first (D-044).
+- Known: below `md` the filter rail fills most of the first screen before the table. It is kept open, as on `/market`, because the search field is the main tool. Revisit in slice 9.
+
+**Accessibility review (slice 6: directory filters, table, empty state, profile, 404 form):**
+- axe (wcag2a/aa, 2.1, 2.2): 0 violations at 375, 768 and 1440 px on the directory, the empty state, three profiles and the unknown-slug 404.
+- Keyboard (scripted Tab walk at 1440 and 375 px, the first 16–22 stops): the order follows the page. The ring radios are one stop. Every walked stop shows the 2 px outline, and none was under the sticky header. Deeper table rows were not walked; the site-wide scroll padding (shell spec) covers them.
+- Focus after actions: emptying a filter from the empty state moves focus to that control. "Clear filters" and "Clear all filters" move it to the search field.
+- Live region: the count after each filter change, and after 800 ms when typing.
+- Link-cleaning notice: `role="status"`.
+- Tables: real `<table>` with a (visually hidden) caption, column headers and row headers. The current Ortsteil row says "(this Ortsteil)" in text, not by shading alone.
+- Locator: `role="img"` with title and a description naming every neighbour. The HTML labels are `aria-hidden`. Names dropped for space are still in the borders list.
+- 404 form: a labelled `type="search"` field in `role="search"`. It submits without JavaScript (GET to `/neighborhoods?q=`), but the directory applies `q` only once hydrated. Until then all 97 rows show (the pre-hydration item above).
+- [!] Screen-reader smoke test **skipped**: NVDA and Firefox are still not installed.
 
 ## Slice 7 — Compare (depends on: 3)
 - [x] Versioned storage + external store + cross-tab sync + corrupt-data handling (built in slice 3: `features/property-comparison/store.ts`, `tests/unit/compare-store.test.ts`)

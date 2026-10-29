@@ -5,6 +5,7 @@ import type {
   BezirkOption,
   ExploreBezirk,
   ExplorePlace,
+  NeighborhoodProfile,
   OrtsteilMeta,
   OrtsteilOption,
   PlatePlace,
@@ -122,6 +123,19 @@ export function getExplorePlaces(): ExplorePlace[] {
       bbox: meta.bbox,
     };
   });
+}
+
+export function getNeighborhoodProfile(slug: string): NeighborhoodProfile | undefined {
+  const meta = ortsteilBySlug.get(slug);
+  if (!meta) return undefined;
+  const byCode = new Map(getExplorePlaces().map((p) => [p.code, p]));
+  return {
+    place: byCode.get(meta.code)!,
+    neighbors: meta.neighbors
+      .map((code) => byCode.get(code))
+      .filter((p): p is ExplorePlace => p !== undefined)
+      .sort((a, b) => a.name.localeCompare(b.name, "de")),
+  };
 }
 
 export function getExploreBezirke(): ExploreBezirk[] {

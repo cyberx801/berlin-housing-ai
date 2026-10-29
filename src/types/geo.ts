@@ -67,6 +67,13 @@ export interface ExplorePlace extends PlatePlace {
   bbox: [number, number, number, number];
 }
 
+/** One `/neighborhoods/[slug]` page: the Ortsteil and the Ortsteile it borders. */
+export interface NeighborhoodProfile {
+  place: ExplorePlace;
+  /** Sorted by name (German collation). */
+  neighbors: ExplorePlace[];
+}
+
 export interface ExploreBezirk {
   code: string;
   name: string;

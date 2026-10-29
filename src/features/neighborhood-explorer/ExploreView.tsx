@@ -28,6 +28,7 @@ import {
   exploreQuery,
   isFiltered,
   NO_FILTER,
+  placeCountText,
   placeMatcher,
   QUERY_MAX_LENGTH,
   readExploreParams,
@@ -91,11 +92,6 @@ function targetFor(state: { selected: string | null; bezirk: string | null }): M
   if (state.selected) return { kind: "ortsteil", code: state.selected };
   if (state.bezirk) return { kind: "bezirk", code: state.bezirk };
   return { kind: "berlin" };
-}
-
-function countText(shown: number, total: number, filtered: boolean): string {
-  if (!filtered) return `All ${total} Ortsteile`;
-  return shown === 1 ? `1 of ${total} Ortsteile` : `${shown} of ${total} Ortsteile`;
 }
 
 interface ExploreViewProps {
@@ -279,7 +275,7 @@ export function ExploreView({
       setView((v) => ({ id: v.id + 1, target: targetFor({ selected: null, bezirk: next.bezirk }), instant: false }));
     }
     const shown = places.filter(placeMatcher(next)).length;
-    announce(`${countText(shown, places.length, isFiltered(next))} shown.`, typing ? Q_ANNOUNCE_DELAY : 0);
+    announce(`${placeCountText(shown, places.length, isFiltered(next))} shown.`, typing ? Q_ANNOUNCE_DELAY : 0);
   };
 
   const clearFilters = () => updateFilter({ bezirk: null, ring: null, q: "" });
@@ -319,7 +315,7 @@ export function ExploreView({
         : mapStatus;
   const mountMap = support === "webgl2" && mapStatus !== "unsupported" && mapStatus !== "error";
   const hiddenByFilter = selectedPlace !== null && !matching.has(selectedPlace.code);
-  const count = countText(matches.length, places.length, filtered);
+  const count = placeCountText(matches.length, places.length, filtered);
 
   return (
     <div className="explore-layout mx-auto max-w-[90rem] lg:px-8 lg:pb-6" onKeyDown={onKeyDown}>
@@ -410,7 +406,11 @@ export function ExploreView({
             id={IDS.ring}
             name={IDS.ring}
             legend="Ring status"
-            hint="The ring is the Umweltzone: the area inside the S-Bahn ring."
+            hint={
+              <>
+                The ring is the Umweltzone: the area inside the <span className="whitespace-nowrap">S-Bahn</span> ring.
+              </>
+            }
             options={RING_OPTIONS}
             size="sm"
             showRequirement={false}

@@ -50,11 +50,13 @@ test.describe("homepage", () => {
     await entry.getByLabel("Rooms").fill("2,5");
     await entry.getByRole("button", { name: "Continue to the full form" }).click();
 
-    await page.waitForURL(/\/analyze\?/);
-    const url = new URL(page.url());
-    expect(url.searchParams.get("bezirk")).toBe("mitte");
-    expect(url.searchParams.get("area")).toBe("65");
-    expect(url.searchParams.get("rooms")).toBe("2,5");
+    // /analyze applies the link's values once and then drops them from the URL, so waiting for
+    // the transient "?bezirk=…" URL races that cleanup. Check what arrived in the form instead.
+    await page.waitForURL(/\/analyze$/);
+    await expect(page.getByText("Filled in from the link: Bezirk, living area, rooms.")).toBeVisible();
+    await expect(page.getByRole("combobox", { name: /^Bezirk/ }).locator("option:checked")).toHaveText("Mitte");
+    await expect(page.getByRole("textbox", { name: /^Living area/ })).toHaveValue("65");
+    await expect(page.getByRole("textbox", { name: /^Rooms/ })).toHaveValue("2,5");
   });
 
   test("rejects out-of-range values with the shared messages", async ({ page }) => {
