@@ -322,3 +322,6 @@ Verified on 2026-10-29 with Node 22.16 / npm 10.9:
 
 ### D-056 · No demo choropleth on `/explore` in this phase · Accepted (slice 9)
 → PRD C6 allows an optional "Show demo layer". It would paint generated demo values onto real Ortsteil geometry, which readers can easily take for real market figures, even when hatched and labelled. It is not built. It can be revisited when a validated dataset exists, or if the owner asks for it explicitly.
+
+### D-057 · JS budget restated as baseline plus route allowance · Accepted (slice 9, owner)
+→ The 150 kB per-route budget couldn't be met: the shared baseline alone is 140.3 kB. ARCH §10 now caps the baseline at 145 kB and gives each route an allowance (content +10 kB, `/explore` +15 kB, form and chart routes +65 kB). The form and chart allowance is set from today's sizes (largest: `/analyze` at 204.1 kB). It freezes the current state rather than proving it lean, and its job is to stop further growth. The `zod/mini` migration (about −17 kB on four routes) remains an option and is not done.

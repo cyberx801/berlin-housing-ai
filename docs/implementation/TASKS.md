@@ -455,7 +455,7 @@ Findings:
   - Automatic checks: no horizontal overflow anywhere. The flags were false positives: the explore list title is `sr-only` below `lg`, and the market tables scroll inside their own focusable region. The 404 page's console error is its own 404.
 - Forced colors and print at 1440 on `/market`, and the patterns setting: screenshots of all four charts.
 
-**Performance (needs the owner's decision):**
+**Performance (the owner chose to restate the budget, D-057; every route is now within it):**
 - First-load JS (gzip, measured from the final build): `/` 177.9 kB, `/analyze` 204.1, `/market` 196.0, `/compare` 183.9, `/explore` 151.7, `/neighborhoods` 147.4, profiles and `/methodology` 140.3. The budget is 150 kB. No server marker in any client chunk, and MapLibre is in no first-load chunk.
 - The shared baseline (React, the Next runtime, the shell) is 140.3 kB. Every route therefore has about 10 kB for its own code, so the budget can't be met as written.
 - The largest avoidable piece is classic Zod: one 30 kB chunk on `/`, `/analyze`, `/market` and `/compare` (it includes JSON Schema, email, JWT and other validators the app doesn't use). A bundle test of the same schema shapes measured 23.7 kB for classic Zod against 6.9 kB for `zod/mini`. Moving client-side validation to `zod/mini` would save roughly 17 kB per route. That is a rewrite of about 850 lines of schemas, and four routes would still be over 150 kB.

@@ -140,7 +140,7 @@ Acceptance criteria are written so a Playwright test or a reviewer can check the
 - **Accessibility:** WCAG 2.2 AA as far as practicable. axe reports 0 serious or critical violations on every route. Full keyboard operation. Reduced-motion support. Visible focus that meets 2.4.11/2.4.13 intent.
 - **Performance:**
   - LCP ≤ 2.5 s on a mid-range mobile profile (Lighthouse).
-  - Route JS ≤ 150 kB gzip, except `/explore`, where MapLibre is lazy-loaded after first paint.
+  - Route JS within the shared baseline plus the route allowance in ARCH §10 (D-057). MapLibre on `/explore` is lazy-loaded after first paint.
   - Geometry payload sent to the client ≤ 300 kB gzip.
 - **Browsers:** the last 2 versions of Chrome, Edge, Firefox and Safari, and iOS Safari 17+.
 - **Privacy:** no cookies, analytics or third-party requests by default. User data stays in browser storage.

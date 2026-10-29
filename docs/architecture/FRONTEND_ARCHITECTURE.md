@@ -212,7 +212,7 @@ ResultPanel ◀── RentEstimateOutcome (discriminated union: ok | not_connect
 
 | Item | Budget |
 |---|---|
-| First-load JS per route (gzip) | ≤ 150 kB. `/explore` is excluded only for the lazily loaded MapLibre chunk. |
+| First-load JS per route (gzip) | Shared baseline (React, Next runtime, shell; measured on `/methodology`) ≤ 145 kB, plus a route allowance: content routes (`/methodology`, `/neighborhoods`, profiles) +10 kB; `/explore` +15 kB (MapLibre stays lazy and excluded); form and chart routes (`/`, `/analyze`, `/market`, `/compare`) +65 kB. Growth past the allowance needs a DECISIONS entry (D-057). |
 | Inline SVG for the home Ring Plate | ≤ 90 kB raw HTML contribution |
 | `public/geo/*.geojson` total (gzip) | ≤ 300 kB |
 | Fonts | 2 variable families, subset `latin` + `latin-ext` (German diacritics) |
