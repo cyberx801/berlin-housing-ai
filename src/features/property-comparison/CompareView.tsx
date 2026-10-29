@@ -144,7 +144,31 @@ export function CompareView({
 
   return (
     <div id={`${ID}-view`} data-hydrated={hydrated ? "" : undefined} className="page-grid gap-y-8 pb-16">
-      <div className="col-span-full flex min-w-0 flex-col gap-6 lg:col-span-9 lg:col-start-4 lg:row-start-1">
+      {/* The rail comes first in the DOM, as on every route, so focus follows the drawing (D-053). */}
+      <LegendRail className="col-span-full lg:col-span-3">
+        <LegendBlock title="Saved in this browser">
+          <p>{hydrated ? placesText(items.length) : `Up to ${MAX_COMPARE_ITEMS} properties.`}</p>
+          <p>Nothing you enter here is sent anywhere. Clearing your browser data removes it.</p>
+        </LegendBlock>
+        <LegendBlock title="€/m²">
+          <p>The asking cold rent divided by the living area. Both come from your entries.</p>
+        </LegendBlock>
+        <LegendBlock title="Missing">
+          <p>Not entered, or answered &ldquo;Not sure&rdquo;. Edit a property to fill it in.</p>
+        </LegendBlock>
+        <LegendBlock title="Predicted rent">
+          <p className="flex items-center gap-2 font-[620] text-ink">
+            <ProvenanceMark kind="not-connected" className="shrink-0" />
+            Not connected
+          </p>
+          <p>The rent model is still being built, so no property has a predicted rent.</p>
+          <Link href="/methodology#in-development" className={linkClass}>
+            What this means
+          </Link>
+        </LegendBlock>
+      </LegendRail>
+
+      <div className="col-span-full flex min-w-0 flex-col gap-6 lg:col-span-9">
         {discarded ? (
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-l-4 border-ink bg-sheet px-4 py-3">
             <p className="type-small text-ink">
@@ -217,29 +241,6 @@ export function CompareView({
           </Plate>
         )}
       </div>
-
-      <LegendRail className="col-span-full lg:col-span-3 lg:col-start-1 lg:row-start-1">
-        <LegendBlock title="Saved in this browser">
-          <p>{hydrated ? placesText(items.length) : `Up to ${MAX_COMPARE_ITEMS} properties.`}</p>
-          <p>Nothing you enter here is sent anywhere. Clearing your browser data removes it.</p>
-        </LegendBlock>
-        <LegendBlock title="€/m²">
-          <p>The asking cold rent divided by the living area. Both come from your entries.</p>
-        </LegendBlock>
-        <LegendBlock title="Missing">
-          <p>Not entered, or answered &ldquo;Not sure&rdquo;. Edit a property to fill it in.</p>
-        </LegendBlock>
-        <LegendBlock title="Predicted rent">
-          <p className="flex items-center gap-2 font-[620] text-ink">
-            <ProvenanceMark kind="not-connected" className="shrink-0" />
-            Not connected
-          </p>
-          <p>The rent model is still being built, so no property has a predicted rent.</p>
-          <Link href="/methodology#in-development" className={linkClass}>
-            What this means
-          </Link>
-        </LegendBlock>
-      </LegendRail>
 
       {editor ? (
         <CompareEditor

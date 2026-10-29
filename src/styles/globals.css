@@ -346,7 +346,58 @@ dialog :where(label, legend, input, select, textarea, button, a, h3, [id]) {
   }
 }
 
-/* Forced colors: keep borders, focus and chart texture visible (DESIGN_SYSTEM §8.5). */
+/* ---------- Chart texture channel (DESIGN_SYSTEM §8.5, D-054) ----------
+   Off by default. On under forced colors, in print, or with "patterns" on (<html data-chart-patterns>,
+   set by the head script from the reader's choice). Lines get a dash per slot, bars a 45° line fill,
+   so no series depends on color alone. Slot 1 stays solid. The dashes allow for the round caps. */
+:root[data-chart-patterns] svg [data-series="2"] {
+  stroke-dasharray: 8 5;
+}
+:root[data-chart-patterns] svg [data-series="3"] {
+  stroke-dasharray: 0.5 5;
+}
+:root[data-chart-patterns] svg [data-series="4"] {
+  stroke-dasharray: 10 4 0.5 4;
+}
+:root[data-chart-patterns] svg [data-series="5"] {
+  stroke-dasharray: 3 4;
+}
+:root[data-chart-patterns] svg [data-series="6"] {
+  stroke-dasharray: 14 5;
+}
+:root[data-chart-patterns] [data-chart] svg [data-texture-fill] {
+  fill: url(#chart-texture-45);
+}
+[data-texture-ground] {
+  fill: var(--color-series-1);
+}
+[data-texture-line] {
+  stroke: var(--color-sheet);
+}
+@media print {
+  svg [data-series="2"] {
+    stroke-dasharray: 8 5;
+  }
+  svg [data-series="3"] {
+    stroke-dasharray: 0.5 5;
+  }
+  svg [data-series="4"] {
+    stroke-dasharray: 10 4 0.5 4;
+  }
+  svg [data-series="5"] {
+    stroke-dasharray: 3 4;
+  }
+  svg [data-series="6"] {
+    stroke-dasharray: 14 5;
+  }
+  [data-chart] svg [data-texture-fill] {
+    fill: url(#chart-texture-45);
+  }
+}
+
+/* Forced colors: keep borders, focus and chart texture visible (DESIGN_SYSTEM §8.5).
+   Browsers leave SVG paint alone in this mode, so the charts paint themselves in system colors:
+   text and marks in CanvasText, gridlines in GrayText, the selection in Highlight. */
 @media (forced-colors: active) {
   .band-hatch {
     background-image: none;
@@ -354,5 +405,67 @@ dialog :where(label, legend, input, select, textarea, button, a, h3, [id]) {
   }
   :focus-visible {
     outline-color: Highlight;
+  }
+
+  [data-chart] svg,
+  svg:has([data-series]) {
+    forced-color-adjust: none;
+  }
+  [data-chart] svg :is(text, tspan) {
+    fill: CanvasText;
+  }
+  [data-chart] svg .stroke-rule {
+    stroke: GrayText;
+  }
+  [data-chart] svg :is(.stroke-line-strong, .stroke-ink, .stroke-ink-3, .stroke-seq-2) {
+    stroke: CanvasText;
+  }
+  [data-chart] svg .stroke-seq-2 {
+    stroke-opacity: 0.45;
+  }
+  [data-chart] svg .stroke-sheet {
+    stroke: Canvas;
+  }
+  svg [data-series],
+  [data-chart] svg [class*="stroke-series-"] {
+    stroke: CanvasText;
+  }
+  [data-chart] svg [class*="fill-series-"] {
+    fill: CanvasText;
+  }
+  [data-chart] svg [data-texture-fill] {
+    fill: url(#chart-texture-45);
+    stroke: CanvasText;
+    stroke-width: 1px;
+  }
+  [data-chart] svg [data-emphasis] {
+    stroke: Highlight;
+    stroke-width: 3px;
+  }
+  /* The histogram's hovered-bin shade. */
+  [data-chart] svg rect.fill-ink {
+    fill: Highlight;
+    opacity: 0.3;
+  }
+  [data-texture-ground] {
+    fill: Canvas;
+  }
+  [data-texture-line] {
+    stroke: CanvasText;
+  }
+  svg [data-series="2"] {
+    stroke-dasharray: 8 5;
+  }
+  svg [data-series="3"] {
+    stroke-dasharray: 0.5 5;
+  }
+  svg [data-series="4"] {
+    stroke-dasharray: 10 4 0.5 4;
+  }
+  svg [data-series="5"] {
+    stroke-dasharray: 3 4;
+  }
+  svg [data-series="6"] {
+    stroke-dasharray: 14 5;
   }
 }

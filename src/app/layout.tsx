@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, Source_Serif_4 } from "next/font/google";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { chartPatternsScript } from "@/components/charts/chart-patterns";
 import { ringDrawScript } from "@/components/maps/ring-draw";
 import { getPlates } from "@/lib/data/geo";
 import { fitProjection, svgPath } from "@/lib/geo/svg";
@@ -46,10 +47,11 @@ function ringMarkPath() {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    // suppressHydrationWarning: the head script may add data-ring-drawn to <html> before hydration.
+    // suppressHydrationWarning: the head script may add data-ring-drawn and data-chart-patterns
+    // to <html> before hydration.
     <html lang="en" className={`${archivo.variable} ${sourceSerif.variable}`} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: ringDrawScript }} />
+        <script dangerouslySetInnerHTML={{ __html: ringDrawScript + chartPatternsScript }} />
       </head>
       <body className="flex min-h-dvh flex-col">
         <a

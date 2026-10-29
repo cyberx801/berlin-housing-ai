@@ -13,8 +13,7 @@ function watchErrors(page: Page) {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
-    // Prefetches of routes built in later slices answer 404; everything else counts.
-    if (message.type() === "error" && !message.text().includes("404")) errors.push(message.text());
+    if (message.type() === "error") errors.push(message.text());
   });
   return errors;
 }
@@ -126,5 +125,53 @@ test.describe("/market", () => {
     await open(page, "/market?bezirke=spandau,mitte&type=penthouse", "Spandau and Mitte, penthouses, 2020 to 2025.");
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBe(0);
     await expectNoAxeViolations(page);
+  });
+
+  const FOUR = "Mitte, Pankow, Spandau and Neukölln, all property types, 2020 to 2025.";
+  const paint = (page: Page) =>
+    page.evaluate(() => {
+      const style = (selector: string) => {
+        const el = document.querySelector(`#market-trend ${selector}, #market-districts ${selector}`);
+        return el ? getComputedStyle(el) : null;
+      };
+      return {
+        line2Dash: style('svg path[data-series="2"]')?.strokeDasharray,
+        line1Dash: style('svg path[data-series="1"]')?.strokeDasharray,
+        barFill: getComputedStyle(document.querySelector("#market-districts [data-texture-fill]")!).fill,
+        labelFill: getComputedStyle(document.querySelector("#market-districts svg text")!).fill,
+      };
+    });
+
+  test("the patterns setting dashes the lines, hatches the bars and survives a reload", async ({ page }) => {
+    await open(page, "/market?bezirke=mitte,pankow,spandau,neukoelln", FOUR);
+    expect(await paint(page)).toMatchObject({ line2Dash: "none", barFill: "rgb(42, 111, 176)" });
+
+    const box = page.getByRole("checkbox", { name: "Draw patterns in the charts" });
+    await box.check();
+    expect(await paint(page)).toMatchObject({ line1Dash: "none", line2Dash: "8px, 5px", barFill: 'url("#chart-texture-45")' });
+
+    await page.reload();
+    await settled(page);
+    await expect(box).toBeChecked();
+    expect(await paint(page)).toMatchObject({ line2Dash: "8px, 5px" });
+    await box.uncheck();
+    expect(await paint(page)).toMatchObject({ line2Dash: "none" });
+  });
+
+  test("under forced colors the charts paint in system colors, with dashes and hatching", async ({ browser }) => {
+    const context = await browser.newContext({ forcedColors: "active", colorScheme: "dark" });
+    const page = await context.newPage();
+    await open(page, "/market?bezirke=mitte,pankow,spandau,neukoelln", FOUR);
+    const forced = await paint(page);
+    const canvasText = await page.evaluate(() => {
+      const probe = document.createElement("span");
+      probe.style.color = "CanvasText";
+      document.body.append(probe);
+      const value = getComputedStyle(probe).color;
+      probe.remove();
+      return value;
+    });
+    expect(forced).toMatchObject({ line2Dash: "8px, 5px", barFill: 'url("#chart-texture-45")', labelFill: canvasText });
+    await context.close();
   });
 });

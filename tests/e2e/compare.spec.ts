@@ -13,8 +13,7 @@ function watchErrors(page: Page) {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
-    // Prefetches of routes built in later slices answer 404; everything else counts.
-    if (message.type() === "error" && !message.text().includes("404")) errors.push(message.text());
+    if (message.type() === "error") errors.push(message.text());
   });
   return errors;
 }

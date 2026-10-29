@@ -36,7 +36,7 @@ export function SiteHeader({ ringMarkPath }: { ringMarkPath: string }) {
   }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-rule bg-paper/95 backdrop-blur-none">
+    <header className="sticky top-0 z-40 border-b border-rule bg-paper">
       <div className="page-gutter flex h-[var(--header-height)] items-center justify-between gap-6">
         <Link
           href="/"

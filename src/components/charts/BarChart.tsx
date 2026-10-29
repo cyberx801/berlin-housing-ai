@@ -112,6 +112,8 @@ export function BarChart({ label, provenance, rows, formatValue, formatTick, emp
                     <path
                       d={barPath({ x: l.left, y: top, width: Math.max(w, 1), height: l.thickness }, "right")}
                       strokeWidth={r.emphasis ? 2 : 0}
+                      data-texture-fill=""
+                      data-emphasis={r.emphasis ? "" : undefined}
                       className={cx(
                         "fill-series-1",
                         r.emphasis ? "stroke-ink" : "stroke-transparent",

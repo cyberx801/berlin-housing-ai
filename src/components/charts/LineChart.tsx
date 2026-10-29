@@ -144,6 +144,7 @@ export function LineChart({
                     strokeWidth={2}
                     strokeLinejoin="round"
                     strokeLinecap="round"
+                    data-series={s.slot}
                     className={SERIES_STROKE[s.slot]}
                   />
                   {/* A month with no neighbours on either side would otherwise draw nothing. */}

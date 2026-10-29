@@ -137,6 +137,7 @@ export function ChartFrame({
   return (
     <div
       ref={ref}
+      data-chart=""
       className={cx("relative min-w-0", className)}
       style={height ? { height } : undefined}
     >

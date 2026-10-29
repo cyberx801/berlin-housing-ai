@@ -1,7 +1,8 @@
 "use client";
 
 import { Suspense, useCallback, useMemo, useRef, useState } from "react";
-import type { SeriesSlot } from "@/components/charts/chart-parts";
+import { ChartTextureDefs, type SeriesSlot } from "@/components/charts/chart-parts";
+import { ChartPatternsToggle } from "@/components/charts/ChartPatternsToggle";
 import { Button } from "@/components/ui/Button";
 import {
   createBezirkSlugs,
@@ -217,8 +218,12 @@ export function MarketView({ bezirke, coverage, initial }: MarketViewProps) {
               onType={setType}
               onReset={reset}
             />
+            <div className="mt-6 border-t border-rule pt-4">
+              <ChartPatternsToggle id="market-chart-patterns" />
+            </div>
           </div>
         </div>
+        <ChartTextureDefs />
         <div className="col-span-full flex min-w-0 flex-col gap-10 lg:col-span-9">
           {linkIssues.length > 0 ? (
             <div role="status" className="flex flex-wrap items-center gap-x-4 gap-y-2 border-l-4 border-ink bg-sheet px-4 py-3">

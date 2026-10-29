@@ -20,14 +20,27 @@ export const SERIES_FILL: Record<SeriesSlot, string> = {
   5: "fill-series-5",
   6: "fill-series-6",
 };
-const SERIES_BG: Record<SeriesSlot, string> = {
-  1: "bg-series-1",
-  2: "bg-series-2",
-  3: "bg-series-3",
-  4: "bg-series-4",
-  5: "bg-series-5",
-  6: "bg-series-6",
-};
+
+/** Id of the 45° fill texture, drawn once per chart route by `ChartTextureDefs`. */
+export const TEXTURE_45_ID = "chart-texture-45";
+
+/**
+ * The accessibility texture (DESIGN_SYSTEM §8.5): a 45° line fill for bars. It is used only
+ * under forced colors, in print, or with "patterns" on (globals.css switches the fill). Render
+ * it once on a route that draws charts, so its id stays unique while other routes are mounted.
+ */
+export function ChartTextureDefs() {
+  return (
+    <svg aria-hidden="true" width="0" height="0" className="absolute" focusable="false">
+      <defs>
+        <pattern id={TEXTURE_45_ID} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="6" height="6" data-texture-ground="" />
+          <line x1="1" y1="0" x2="1" y2="6" strokeWidth="2" data-texture-line="" />
+        </pattern>
+      </defs>
+    </svg>
+  );
+}
 
 /** Height reserved above the plot for the in-SVG provenance stamp. */
 export const STAMP_SPACE = 26;
@@ -45,9 +58,25 @@ export function ProvenanceStamp({ provenance, x = 0, y = 14 }: { provenance: Pro
   );
 }
 
-/** A short stroke of the series color: the identity key beside a label (never colored text). */
+/**
+ * A short stroke of the series color: the identity key beside a label (never colored text).
+ * It is drawn like the line itself, so with patterns on it carries the same dashes.
+ */
 export function LineKey({ slot, className }: { slot: SeriesSlot; className?: string }) {
-  return <span aria-hidden="true" className={cx("inline-block h-[3px] w-4 shrink-0 rounded-full", SERIES_BG[slot], className)} />;
+  return (
+    <svg aria-hidden="true" width="20" height="4" focusable="false" className={cx("shrink-0", className)}>
+      <line
+        x1="1.5"
+        x2="18.5"
+        y1="2"
+        y2="2"
+        strokeWidth="3"
+        strokeLinecap="round"
+        data-series={slot}
+        className={SERIES_STROKE[slot]}
+      />
+    </svg>
+  );
 }
 
 /** Rough width of a label at the condensed label size, used to plan margins before drawing. */

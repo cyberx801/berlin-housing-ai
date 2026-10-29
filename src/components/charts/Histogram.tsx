@@ -122,6 +122,7 @@ export function Histogram({
                   <path
                     key={b.x0}
                     d={barPath({ x: left, y: top, width, height: innerHeight - top }, "top")}
+                    data-texture-fill=""
                     className={cx("fill-series-1", active === i && "opacity-80")}
                   />
                 ) : null;

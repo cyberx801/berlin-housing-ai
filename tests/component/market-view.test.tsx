@@ -113,12 +113,12 @@ describe("MarketView", () => {
     // Removing Mitte must not repaint Pankow (slot 2) or Spandau (slot 3).
     await user.click(checkbox("Mitte"));
     await allReady();
-    const keyOf = (name: string) => checkbox(name).closest("label")!.querySelector("[aria-hidden]");
-    expect(keyOf("Pankow")).toHaveClass("bg-series-2");
-    expect(keyOf("Spandau")).toHaveClass("bg-series-3");
+    const keyOf = (name: string) => checkbox(name).closest("label")!.querySelector("[data-series]");
+    expect(keyOf("Pankow")).toHaveAttribute("data-series", "2");
+    expect(keyOf("Spandau")).toHaveAttribute("data-series", "3");
     // A new Bezirk takes the free slot.
     await user.click(checkbox("Lichtenberg"));
-    expect(keyOf("Lichtenberg")).toHaveClass("bg-series-1");
+    expect(keyOf("Lichtenberg")).toHaveAttribute("data-series", "1");
     expect(window.location.search).toBe("?bezirke=lichtenberg%2Cpankow%2Cspandau");
   });
 

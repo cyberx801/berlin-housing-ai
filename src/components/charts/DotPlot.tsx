@@ -144,6 +144,7 @@ export function DotPlot({ label, provenance, rows, formatValue, formatTick, rang
                       cy={cy}
                       r={active === i ? 6.5 : 5.5}
                       strokeWidth={2}
+                      data-emphasis={r.emphasis ? "" : undefined}
                       className={cx("fill-series-1", r.emphasis ? "stroke-ink" : "stroke-sheet")}
                     />
                   ) : (
