@@ -4,6 +4,7 @@ import { MethodologyContents } from "@/features/methodology/MethodologyContents"
 import { formatPercent } from "@/lib/formatting/number";
 import { GEO_PROVENANCE, getBezirk, getBezirke, getGeoBuildInfo, getOrtsteilBySlug, getOrtsteile } from "@/lib/data/geo";
 import { getDatasetRegistry } from "@/lib/data/registry";
+import { ZENSUS_RENT_META } from "@/lib/data/zensus";
 
 export const metadata: Metadata = {
   title: "Methodology",
@@ -58,6 +59,7 @@ export default function MethodologyPage() {
               areaExample: { name: area.name, areaKm2: area.areaKm2, ownFieldM2: AREA_EXAMPLE.ownFieldM2 },
               simplify: { plate: percentText(build.rules.plateSimplify), map: percentText(build.rules.mapSimplify) },
               registry: getDatasetRegistry(),
+              census: ZENSUS_RENT_META,
             }}
           />
         </div>

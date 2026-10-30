@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Plate } from "@/components/provenance/Plate";
 import { ButtonLink } from "@/components/ui/Button";
-import { formatKm2, formatPercent, formatRingShare } from "@/lib/formatting/number";
+import type { OrtsteilRent } from "@/lib/data/zensus";
+import { formatEURPerM2, formatKm2, formatNumber, formatPercent, formatRingShare } from "@/lib/formatting/number";
 import { RING_INSIDE_MIN, RING_OUTSIDE_MAX } from "@/lib/geo/ring";
 import { RING_STATUS_LABELS, RING_STATUS_SHORT } from "@/lib/property/labels";
 import type { ExplorePlace } from "@/types/geo";
@@ -159,6 +160,67 @@ export function NearbyTable({
           })}
         </tbody>
       </table>
+    </Plate>
+  );
+}
+
+/** What rents were, from the census (official, 2022). Existing contracts, not asking rents. */
+export function CensusRentModule({
+  idPrefix,
+  place,
+  className,
+  provenance,
+  rent,
+  berlinMeanRentPerM2,
+  minDwellings,
+  referenceYear,
+}: PlaceProps & {
+  provenance: Provenance;
+  rent: OrtsteilRent;
+  berlinMeanRentPerM2: number;
+  minDwellings: number;
+  referenceYear: string;
+}) {
+  const figure = rent.meanRentPerM2;
+  return (
+    <Plate
+      id={`${idPrefix}-census-rent`}
+      className={className}
+      title={`What did tenants in ${place.name} pay in ${referenceYear}?`}
+      provenance={provenance}
+      bodyClassName="flex flex-col gap-4"
+      caption={
+        <>
+          Average net cold rent (Nettokaltmiete) per m² of rented flats in residential buildings on 15 May{" "}
+          {referenceYear}, from the census&rsquo;s 100&nbsp;m grid cells whose centre lies in {place.name}, weighted by
+          the number of flats. These are rents in existing contracts, not asking rents, so they are not comparable to a
+          listing today.{" "}
+          <Link href="/methodology#census-rent" className={linkClasses}>
+            How this is calculated
+          </Link>
+        </>
+      }
+    >
+      {figure === null ? (
+        <p className="max-w-[60ch]">
+          Fewer than {minDwellings} rented flats stand behind the census figure here, so none is shown.
+        </p>
+      ) : (
+        <>
+          <p className="flex flex-wrap items-baseline gap-x-3">
+            <span className="type-display-2 tabular">{formatEURPerM2(figure)}</span>
+            <span className="text-ink-2">
+              average net cold rent, {formatNumber(rent.dwellings)} rented flats
+            </span>
+          </p>
+          <p className="max-w-[60ch] text-ink-2">
+            All of Berlin: <span className="tabular">{formatEURPerM2(berlinMeanRentPerM2)}</span>.
+            {rent.flaggedShare > 0
+              ? ` ${formatPercent(rent.flaggedShare)} of these flats lie in cells that the statistical offices mark as statistically uncertain.`
+              : ""}
+          </p>
+        </>
+      )}
     </Plate>
   );
 }

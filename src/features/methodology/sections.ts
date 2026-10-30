@@ -2,7 +2,7 @@
  * The sections of /methodology, in page order: the PRD §3 rows in their order, then limitations
  * and the dataset registry. Links across the site point at these ids,
  * and a unit test fails on any `/methodology#…` link that isn't listed here (D-052).
- * `sources`, `your-data`, `market-data`, `predictions`, `in-development`, `neighborhood-content`
+ * `sources`, `census-rent`, `your-data`, `market-data`, `predictions`, `in-development`, `neighborhood-content`
  * and `ring` are fixed by the provenance bands and page links; don't rename them.
  */
 export interface MethodologySection {
@@ -23,6 +23,7 @@ export const METHODOLOGY_SECTIONS = [
       { id: "drawing", title: "Simplified drawing, full-detail facts" },
     ],
   },
+  { id: "census-rent", title: "Rents in 2022: official census data" },
   {
     id: "market-data",
     title: "Market figures: demo data",

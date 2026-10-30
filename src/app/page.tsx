@@ -37,7 +37,7 @@ const PAGES = [
   { href: "/analyze", name: "Analyze", summary: rentModelConnected ? "Describe a flat and try the demo rent model." : "Describe a flat and prepare it for the rent model." },
   { href: "/explore", name: "Explore", summary: "Map of the 97 Ortsteile and the S-Bahn ring." },
   { href: "/market", name: "Market", summary: "Charts of rents by district. Generated data." },
-  { href: "/neighborhoods", name: "Neighborhoods", summary: "Facts about each Ortsteil, from official boundaries." },
+  { href: "/neighborhoods", name: "Neighborhoods", summary: "Boundaries and 2022 census rents for each Ortsteil." },
   { href: "/compare", name: "Compare", summary: "Set up to three listings side by side." },
   { href: "/methodology", name: "Methodology", summary: "Where every number comes from." },
 ] as const;

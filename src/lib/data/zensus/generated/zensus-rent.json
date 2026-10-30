@@ -1,0 +1,793 @@
+{
+ "sourceId": "zensus-2022-rent-grid",
+ "label": "Zensus 2022, durchschnittliche Nettokaltmiete in Gitterzellen (100 m)",
+ "attribution": "Ergebnisse des Zensus 2022, Statistische Ämter des Bundes und der Länder",
+ "license": "dl-de/by-2.0",
+ "referenceDate": "2022-05-15",
+ "retrieved": "2026-10-30",
+ "fileSha256": "824a0e4992c808086b394cb82bacdc4732768ebc69ba25da610151c8619c11eb",
+ "minDwellings": 100,
+ "berlin": {
+  "meanRentPerM2": 7.66,
+  "dwellings": 1568217,
+  "cells": 28463
+ },
+ "ortsteile": [
+  {
+   "code": "0101",
+   "name": "Mitte",
+   "cells": 652,
+   "dwellings": 49136,
+   "flaggedShare": 0,
+   "meanRentPerM2": 9.09
+  },
+  {
+   "code": "0102",
+   "name": "Moabit",
+   "cells": 380,
+   "dwellings": 40047,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.49
+  },
+  {
+   "code": "0103",
+   "name": "Hansaviertel",
+   "cells": 40,
+   "dwellings": 2076,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.69
+  },
+  {
+   "code": "0104",
+   "name": "Tiergarten",
+   "cells": 120,
+   "dwellings": 6970,
+   "flaggedShare": 0,
+   "meanRentPerM2": 9.17
+  },
+  {
+   "code": "0105",
+   "name": "Wedding",
+   "cells": 435,
+   "dwellings": 41258,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.46
+  },
+  {
+   "code": "0106",
+   "name": "Gesundbrunnen",
+   "cells": 415,
+   "dwellings": 40894,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.82
+  },
+  {
+   "code": "0201",
+   "name": "Friedrichshain",
+   "cells": 596,
+   "dwellings": 66567,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.61
+  },
+  {
+   "code": "0202",
+   "name": "Kreuzberg",
+   "cells": 720,
+   "dwellings": 68379,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.77
+  },
+  {
+   "code": "0301",
+   "name": "Prenzlauer Berg",
+   "cells": 777,
+   "dwellings": 82492,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.41
+  },
+  {
+   "code": "0302",
+   "name": "Weißensee",
+   "cells": 420,
+   "dwellings": 27413,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.55
+  },
+  {
+   "code": "0303",
+   "name": "Blankenburg",
+   "cells": 54,
+   "dwellings": 278,
+   "flaggedShare": 0.01,
+   "meanRentPerM2": 7.84
+  },
+  {
+   "code": "0304",
+   "name": "Heinersdorf",
+   "cells": 77,
+   "dwellings": 1601,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.92
+  },
+  {
+   "code": "0305",
+   "name": "Karow",
+   "cells": 183,
+   "dwellings": 5229,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.14
+  },
+  {
+   "code": "0306",
+   "name": "Stadtrandsiedlung Malchow",
+   "cells": 3,
+   "dwellings": 9,
+   "flaggedShare": 0.33,
+   "meanRentPerM2": null
+  },
+  {
+   "code": "0307",
+   "name": "Pankow",
+   "cells": 424,
+   "dwellings": 32840,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.58
+  },
+  {
+   "code": "0308",
+   "name": "Blankenfelde",
+   "cells": 26,
+   "dwellings": 168,
+   "flaggedShare": 0.04,
+   "meanRentPerM2": 7.79
+  },
+  {
+   "code": "0309",
+   "name": "Buch",
+   "cells": 151,
+   "dwellings": 6017,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.35
+  },
+  {
+   "code": "0310",
+   "name": "Französisch Buchholz",
+   "cells": 216,
+   "dwellings": 5009,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.09
+  },
+  {
+   "code": "0311",
+   "name": "Niederschönhausen",
+   "cells": 337,
+   "dwellings": 11679,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.1
+  },
+  {
+   "code": "0312",
+   "name": "Rosenthal",
+   "cells": 118,
+   "dwellings": 1917,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.88
+  },
+  {
+   "code": "0313",
+   "name": "Wilhelmsruh",
+   "cells": 83,
+   "dwellings": 3328,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.53
+  },
+  {
+   "code": "0401",
+   "name": "Charlottenburg",
+   "cells": 651,
+   "dwellings": 59362,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.57
+  },
+  {
+   "code": "0402",
+   "name": "Wilmersdorf",
+   "cells": 579,
+   "dwellings": 46018,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.31
+  },
+  {
+   "code": "0403",
+   "name": "Schmargendorf",
+   "cells": 235,
+   "dwellings": 9507,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.52
+  },
+  {
+   "code": "0404",
+   "name": "Grunewald",
+   "cells": 250,
+   "dwellings": 3061,
+   "flaggedShare": 0,
+   "meanRentPerM2": 9.61
+  },
+  {
+   "code": "0405",
+   "name": "Westend",
+   "cells": 451,
+   "dwellings": 15276,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.12
+  },
+  {
+   "code": "0406",
+   "name": "Charlottenburg-Nord",
+   "cells": 140,
+   "dwellings": 7840,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.03
+  },
+  {
+   "code": "0407",
+   "name": "Halensee",
+   "cells": 89,
+   "dwellings": 7160,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.72
+  },
+  {
+   "code": "0501",
+   "name": "Spandau",
+   "cells": 286,
+   "dwellings": 18301,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.27
+  },
+  {
+   "code": "0502",
+   "name": "Haselhorst",
+   "cells": 125,
+   "dwellings": 8072,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.48
+  },
+  {
+   "code": "0503",
+   "name": "Siemensstadt",
+   "cells": 99,
+   "dwellings": 5585,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.16
+  },
+  {
+   "code": "0504",
+   "name": "Staaken",
+   "cells": 424,
+   "dwellings": 15421,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.73
+  },
+  {
+   "code": "0505",
+   "name": "Gatow",
+   "cells": 55,
+   "dwellings": 406,
+   "flaggedShare": 0.01,
+   "meanRentPerM2": 7.97
+  },
+  {
+   "code": "0506",
+   "name": "Kladow",
+   "cells": 235,
+   "dwellings": 2100,
+   "flaggedShare": 0.01,
+   "meanRentPerM2": 8.94
+  },
+  {
+   "code": "0507",
+   "name": "Hakenfelde",
+   "cells": 251,
+   "dwellings": 13140,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.37
+  },
+  {
+   "code": "0508",
+   "name": "Falkenhagener Feld",
+   "cells": 274,
+   "dwellings": 17446,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.68
+  },
+  {
+   "code": "0509",
+   "name": "Wilhelmstadt",
+   "cells": 364,
+   "dwellings": 17445,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.16
+  },
+  {
+   "code": "0601",
+   "name": "Steglitz",
+   "cells": 539,
+   "dwellings": 34635,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.77
+  },
+  {
+   "code": "0602",
+   "name": "Lichterfelde",
+   "cells": 1039,
+   "dwellings": 26891,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.11
+  },
+  {
+   "code": "0603",
+   "name": "Lankwitz",
+   "cells": 467,
+   "dwellings": 18182,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.35
+  },
+  {
+   "code": "0604",
+   "name": "Zehlendorf",
+   "cells": 808,
+   "dwellings": 17898,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.34
+  },
+  {
+   "code": "0605",
+   "name": "Dahlem",
+   "cells": 294,
+   "dwellings": 3882,
+   "flaggedShare": 0,
+   "meanRentPerM2": 9.57
+  },
+  {
+   "code": "0606",
+   "name": "Nikolassee",
+   "cells": 208,
+   "dwellings": 2924,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.37
+  },
+  {
+   "code": "0607",
+   "name": "Wannsee",
+   "cells": 203,
+   "dwellings": 1948,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.98
+  },
+  {
+   "code": "0608",
+   "name": "Schlachtensee",
+   "cells": 184,
+   "dwellings": 2098,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.81
+  },
+  {
+   "code": "0701",
+   "name": "Schöneberg",
+   "cells": 637,
+   "dwellings": 56455,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.83
+  },
+  {
+   "code": "0702",
+   "name": "Friedenau",
+   "cells": 156,
+   "dwellings": 12104,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.27
+  },
+  {
+   "code": "0703",
+   "name": "Tempelhof",
+   "cells": 438,
+   "dwellings": 27668,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.28
+  },
+  {
+   "code": "0704",
+   "name": "Mariendorf",
+   "cells": 489,
+   "dwellings": 22449,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.6
+  },
+  {
+   "code": "0705",
+   "name": "Marienfelde",
+   "cells": 285,
+   "dwellings": 12144,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.7
+  },
+  {
+   "code": "0706",
+   "name": "Lichtenrade",
+   "cells": 679,
+   "dwellings": 15250,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.22
+  },
+  {
+   "code": "0801",
+   "name": "Neukölln",
+   "cells": 674,
+   "dwellings": 76919,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.64
+  },
+  {
+   "code": "0802",
+   "name": "Britz",
+   "cells": 398,
+   "dwellings": 18382,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.27
+  },
+  {
+   "code": "0803",
+   "name": "Buckow",
+   "cells": 417,
+   "dwellings": 12695,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.05
+  },
+  {
+   "code": "0804",
+   "name": "Rudow",
+   "cells": 500,
+   "dwellings": 8848,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.35
+  },
+  {
+   "code": "0805",
+   "name": "Gropiusstadt",
+   "cells": 190,
+   "dwellings": 17746,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.64
+  },
+  {
+   "code": "0901",
+   "name": "Alt-Treptow",
+   "cells": 73,
+   "dwellings": 6588,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.51
+  },
+  {
+   "code": "0902",
+   "name": "Plänterwald",
+   "cells": 106,
+   "dwellings": 6558,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.88
+  },
+  {
+   "code": "0903",
+   "name": "Baumschulenweg",
+   "cells": 157,
+   "dwellings": 9106,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.23
+  },
+  {
+   "code": "0904",
+   "name": "Johannisthal",
+   "cells": 196,
+   "dwellings": 8564,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.15
+  },
+  {
+   "code": "0905",
+   "name": "Niederschöneweide",
+   "cells": 107,
+   "dwellings": 5748,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.66
+  },
+  {
+   "code": "0906",
+   "name": "Altglienicke",
+   "cells": 278,
+   "dwellings": 9192,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.95
+  },
+  {
+   "code": "0907",
+   "name": "Adlershof",
+   "cells": 167,
+   "dwellings": 9111,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.98
+  },
+  {
+   "code": "0908",
+   "name": "Bohnsdorf",
+   "cells": 168,
+   "dwellings": 2397,
+   "flaggedShare": 0.01,
+   "meanRentPerM2": 8.39
+  },
+  {
+   "code": "0909",
+   "name": "Oberschöneweide",
+   "cells": 174,
+   "dwellings": 12894,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.28
+  },
+  {
+   "code": "0910",
+   "name": "Köpenick",
+   "cells": 662,
+   "dwellings": 30780,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.15
+  },
+  {
+   "code": "0911",
+   "name": "Friedrichshagen",
+   "cells": 227,
+   "dwellings": 8218,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.02
+  },
+  {
+   "code": "0912",
+   "name": "Rahnsdorf",
+   "cells": 185,
+   "dwellings": 1584,
+   "flaggedShare": 0.02,
+   "meanRentPerM2": 9.45
+  },
+  {
+   "code": "0913",
+   "name": "Grünau",
+   "cells": 97,
+   "dwellings": 3148,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.03
+  },
+  {
+   "code": "0914",
+   "name": "Müggelheim",
+   "cells": 77,
+   "dwellings": 684,
+   "flaggedShare": 0.02,
+   "meanRentPerM2": 8.86
+  },
+  {
+   "code": "0915",
+   "name": "Schmöckwitz",
+   "cells": 74,
+   "dwellings": 494,
+   "flaggedShare": 0.01,
+   "meanRentPerM2": 8.26
+  },
+  {
+   "code": "1001",
+   "name": "Marzahn",
+   "cells": 621,
+   "dwellings": 55811,
+   "flaggedShare": 0,
+   "meanRentPerM2": 5.94
+  },
+  {
+   "code": "1002",
+   "name": "Biesdorf",
+   "cells": 297,
+   "dwellings": 6217,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.98
+  },
+  {
+   "code": "1003",
+   "name": "Kaulsdorf",
+   "cells": 219,
+   "dwellings": 2532,
+   "flaggedShare": 0.01,
+   "meanRentPerM2": 7.4
+  },
+  {
+   "code": "1004",
+   "name": "Mahlsdorf",
+   "cells": 346,
+   "dwellings": 2877,
+   "flaggedShare": 0.01,
+   "meanRentPerM2": 8.69
+  },
+  {
+   "code": "1005",
+   "name": "Hellersdorf",
+   "cells": 494,
+   "dwellings": 41949,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.26
+  },
+  {
+   "code": "1101",
+   "name": "Friedrichsfelde",
+   "cells": 297,
+   "dwellings": 25434,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.03
+  },
+  {
+   "code": "1102",
+   "name": "Karlshorst",
+   "cells": 274,
+   "dwellings": 9212,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8
+  },
+  {
+   "code": "1103",
+   "name": "Lichtenberg",
+   "cells": 221,
+   "dwellings": 15420,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.73
+  },
+  {
+   "code": "1104",
+   "name": "Falkenberg",
+   "cells": 29,
+   "dwellings": 682,
+   "flaggedShare": 0.01,
+   "meanRentPerM2": 8.39
+  },
+  {
+   "code": "1106",
+   "name": "Malchow",
+   "cells": 16,
+   "dwellings": 144,
+   "flaggedShare": 0.06,
+   "meanRentPerM2": 6.6
+  },
+  {
+   "code": "1107",
+   "name": "Wartenberg",
+   "cells": 22,
+   "dwellings": 261,
+   "flaggedShare": 0.02,
+   "meanRentPerM2": 6.81
+  },
+  {
+   "code": "1109",
+   "name": "Neu-Hohenschönhausen",
+   "cells": 229,
+   "dwellings": 23159,
+   "flaggedShare": 0,
+   "meanRentPerM2": 5.97
+  },
+  {
+   "code": "1110",
+   "name": "Alt-Hohenschönhausen",
+   "cells": 310,
+   "dwellings": 17971,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.44
+  },
+  {
+   "code": "1111",
+   "name": "Fennpfuhl",
+   "cells": 131,
+   "dwellings": 15396,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.67
+  },
+  {
+   "code": "1112",
+   "name": "Rummelsburg",
+   "cells": 168,
+   "dwellings": 12161,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.98
+  },
+  {
+   "code": "1201",
+   "name": "Reinickendorf",
+   "cells": 587,
+   "dwellings": 38500,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.16
+  },
+  {
+   "code": "1202",
+   "name": "Tegel",
+   "cells": 395,
+   "dwellings": 15705,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.29
+  },
+  {
+   "code": "1203",
+   "name": "Konradshöhe",
+   "cells": 100,
+   "dwellings": 848,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.39
+  },
+  {
+   "code": "1204",
+   "name": "Heiligensee",
+   "cells": 261,
+   "dwellings": 2193,
+   "flaggedShare": 0.01,
+   "meanRentPerM2": 8.77
+  },
+  {
+   "code": "1205",
+   "name": "Frohnau",
+   "cells": 324,
+   "dwellings": 2684,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.25
+  },
+  {
+   "code": "1206",
+   "name": "Hermsdorf",
+   "cells": 298,
+   "dwellings": 3355,
+   "flaggedShare": 0,
+   "meanRentPerM2": 8.86
+  },
+  {
+   "code": "1207",
+   "name": "Waidmannslust",
+   "cells": 122,
+   "dwellings": 3837,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.53
+  },
+  {
+   "code": "1208",
+   "name": "Lübars",
+   "cells": 62,
+   "dwellings": 609,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.42
+  },
+  {
+   "code": "1209",
+   "name": "Wittenau",
+   "cells": 299,
+   "dwellings": 8390,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.99
+  },
+  {
+   "code": "1210",
+   "name": "Märkisches Viertel",
+   "cells": 181,
+   "dwellings": 15964,
+   "flaggedShare": 0,
+   "meanRentPerM2": 6.12
+  },
+  {
+   "code": "1211",
+   "name": "Borsigwalde",
+   "cells": 72,
+   "dwellings": 3275,
+   "flaggedShare": 0,
+   "meanRentPerM2": 7.37
+  }
+ ]
+}

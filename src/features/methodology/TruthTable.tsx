@@ -30,6 +30,13 @@ export function TruthTable({ retrieved }: { retrieved: string }) {
       ),
     },
     {
+      capability: "Average rent per Ortsteil in 2022 (existing contracts)",
+      section: "census-rent",
+      kind: "official",
+      state: "Official data",
+      backing: "Zensus 2022 grid cells, dl-de/by-2.0, aggregated by us to the Ortsteile. Shown on each profile.",
+    },
+    {
       capability: "Market figures: rent trends, €/m² by Bezirk, price spreads and property types",
       section: "market-data",
       kind: "demo",

@@ -8,7 +8,7 @@ The spec docs in `docs/` are the source of truth. Read the relevant one before c
 - Every data-bearing component takes a typed `provenance` prop and shows its legend band (`Plate` or `ProvenanceLabel`).
 - `src/lib/model/rent-model.ts` is the real trained model evaluated in-process (a port of `services/rent-api`, D-061), not simulated inference. It reads the artifact JSON, answers `synthetic: true`, and is tested against the Python service. Don't add formulas or hand-set coefficients there.
 - Demo fixtures (`src/lib/fixtures/demo/`) are imported only by `src/lib/data/market/demo-source.ts`. Contract fixtures (`tests/contracts/fixtures/`) are never imported by `src/`.
-- Neighborhood facts come from the geodata derivations only. No ratings, indices or unsourced prose.
+- Neighborhood facts come from the geodata derivations and the Zensus 2022 rent aggregate (D-062, official, "existing contracts, not asking rents") only. No ratings, indices or unsourced prose.
 - Kaggle CSVs aren't used by any screen until they pass the intake protocol (DATA_BOUNDARIES §4).
 - Don't compute areas from ALKIS `gdf` (it's unreliable). Don't group Ortsteile by `bezeich`. Use `sch`.
 

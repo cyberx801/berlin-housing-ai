@@ -59,6 +59,7 @@ test.describe("/methodology", () => {
     const table = page.getByRole("table", { name: /What exists in this phase/ });
     await expect(table.getByRole("rowheader")).toHaveText([
       "Bezirk and Ortsteil boundaries, names, areas, neighbors and ring status",
+      "Average rent per Ortsteil in 2022 (existing contracts)",
       "Market figures: rent trends, €/m² by Bezirk, price spreads and property types",
       "The Kaggle dataset (5 CSV files)",
       "Rent prediction",
@@ -73,6 +74,7 @@ test.describe("/methodology", () => {
       "ALKIS Berlin Bezirke",
       "ALKIS Berlin Ortsteile",
       "Umweltzone Berlin",
+      "Zensus 2022, average net cold rent in grid cells",
       "Kaggle dataset (5 CSV files)",
       "Demo market fixtures",
     ]);

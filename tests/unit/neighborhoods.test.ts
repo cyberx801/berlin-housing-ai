@@ -53,7 +53,12 @@ describe("neighborhood profiles", () => {
     expect(html).toContain('href="/market?bezirke=mitte"');
     expect(html).toContain('href="/analyze?bezirk=mitte&amp;ortsteil=moabit"');
     expect(html).toContain('href="/explore?o=moabit"');
-    expect(html).not.toMatch(/€|\/m²/);
+    // The one real figure is the census rent, labeled as such. No demo market or model figure appears.
+    expect(html).toContain("What did tenants in Moabit pay in 2022?");
+    expect(html).toContain("not asking rents");
+    expect(html).not.toContain("Demo model");
+    const euroFigures = html.match(/€[\d.,]+/g) ?? [];
+    expect(euroFigures).toHaveLength(2); // Moabit and all of Berlin, both from the census
   });
 
   it("knows when the ring crosses a locator plate", () => {

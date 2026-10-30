@@ -116,6 +116,16 @@ The dashboard reaches the source through `GET /api/market/*` (one route per meth
 - No ratings, scores, safety or "vibe" indices, or rankings of neighborhoods.
 - Character or description text is either (a) sourced, with each claim linked to a citable source, or (b) absent, and the module then shows "Not written yet". There is no unlabeled sample prose about real places (D-019).
 
+## 9. Zensus 2022 rent grid (`zensus-2022-rent-grid`): intake outcome `passed` (2026-10-30)
+
+An official source, so the Kaggle steps are adapted rather than skipped (the order follows §4):
+1. **Provenance:** Statistische Ämter des Bundes und der Länder, Zensus 2022, retrieved 2026-10-30 from destatis.de. License `dl-de/by-2.0`, **named in the dataset description file** (the results pages only say "free use with attribution"). Reference date 15 May 2022.
+2. **Schema:** six columns, 1,287,342 rows for Germany (`data/PROVENANCE.md`).
+3. **Join keys:** none needed. Cells carry EPSG:3035 midpoints, which `scripts/lib/laea.mjs` converts (checked against proj4 to 0.1 m) and `scripts/build-zensus-rent.mjs` places in the 97 Ortsteile by point-in-polygon. 28,463 cells land in an Ortsteil. Cells straddling a boundary belong to the Ortsteil of their centre, so border figures are approximate.
+4. **Plausibility against an independent reference:** the flat-weighted mean over all Berlin cells is 7.66 €/m²; the statistical offices publish 7.67 €/m² for Berlin. The build fails if the two differ by 0.25 or more. The lowest Ortsteile are the large estates (Marzahn 5.94, Neu-Hohenschönhausen 5.97, Märkisches Viertel 6.12) and the highest the villa districts (Grunewald 9.61, Dahlem 9.57).
+5. **Synthetic-data signals:** not applicable, it is a census. The perturbation of the cell key method is documented by the publisher.
+6. **Decision:** `passed`. It is **official** data with these rules: the figure is always shown as "existing contracts on 15 May 2022, not asking rents", never next to a listing's asking rent as a comparison, never mixed with the demo market charts or the demo model. An Ortsteil with fewer than 100 rented flats behind it shows no figure. We state that we aggregated it (the license requires a note on changes). Registered in `data/PROVENANCE.md`; D-062.
+
 ## 8. Candidate sources (not yet verified; listed only to plan)
 
 | Candidate | Would provide | Check before use |

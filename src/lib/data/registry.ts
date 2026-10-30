@@ -10,6 +10,8 @@ import { getGeoBuildInfo } from "./geo";
 
 const DL_ZERO = { name: "Datenlizenz Deutschland – Zero – 2.0", id: "dl-de/zero-2.0", href: "https://www.govdata.de/dl-de/zero-2-0" };
 
+const DL_BY = { name: "Datenlizenz Deutschland – Namensnennung – 2.0", id: "dl-de/by-2.0", href: "https://www.govdata.de/dl-de/by-2-0" };
+
 export function getDatasetRegistry(): DatasetEntry[] {
   const build = getGeoBuildInfo();
   const sha = (id: string) => {
@@ -63,6 +65,25 @@ export function getDatasetRegistry(): DatasetEntry[] {
       sha256: sha("umweltzone"),
       notes: ["It is an area, not the railway line. The site calls it the area within the S-Bahn ring."],
       use: "Whether an Ortsteil lies inside, partly inside or outside the ring.",
+    },
+    {
+      id: "zensus-2022-rent-grid",
+      name: "Zensus 2022, average net cold rent in grid cells",
+      mark: "official",
+      status: "Official data",
+      publisher: "Statistische Ämter des Bundes und der Länder, Zensus 2022",
+      service: "https://www.destatis.de/zensus2022",
+      license: DL_BY,
+      retrieved: "2026-10-30",
+      contents:
+        "The average net cold rent per m² of rented flats on 15 May 2022 and the number of flats, for 100 m cells across Germany.",
+      sha256: null,
+      notes: [
+        "Existing rents, not asking rents. The cell key method perturbs values to protect privacy, and cells without flats are missing.",
+        "The site assigns each cell to the Ortsteil that holds its centre and weights by the number of flats. Cells with the mark “statistically uncertain” are counted and their share is shown.",
+        "The file is 73 MB and is not in the project. Its checksum is in data/PROVENANCE.md.",
+      ],
+      use: "The rent figure on each Ortsteil profile.",
     },
     {
       id: "kaggle-berlin-5csv",

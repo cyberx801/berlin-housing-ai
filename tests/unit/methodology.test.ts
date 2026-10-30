@@ -69,7 +69,12 @@ describe("dataset registry", () => {
       if (entry.retrieved) expect(section, entry.id).toContain(entry.retrieved);
       if (entry.license) {
         // The licence is named the way the section writes it: "dl-de/zero-2.0", "Apache 2.0".
-        const written = entry.license.id === "Apache-2.0" ? /Apache 2\.0/ : /dl-de\/zero-2[.-]0/;
+        const written =
+          entry.license.id === "Apache-2.0"
+            ? /Apache 2\.0/
+            : entry.license.id === "dl-de/by-2.0"
+              ? /dl-de\/by-2[.-]0/
+              : /dl-de\/zero-2[.-]0/;
         expect(section, entry.id).toMatch(written);
       }
       if (entry.service) expect(section, entry.id).toContain(entry.service);

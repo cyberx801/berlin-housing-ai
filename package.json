@@ -18,6 +18,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "geo:build": "node scripts/build-geo.mjs",
+    "zensus:build": "node scripts/build-zensus-rent.mjs",
     "fixtures:build": "node scripts/build-demo-fixtures.mjs",
     "check": "npm run typecheck && npm run lint && npm run test && npm run build"
   },

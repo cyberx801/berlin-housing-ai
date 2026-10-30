@@ -5,6 +5,7 @@ import { LocatorPlate, locatorShowsRing } from "@/components/maps/LocatorPlate";
 import { ProvenanceLabel } from "@/components/provenance/ProvenanceLabel";
 import { ButtonLink } from "@/components/ui/Button";
 import {
+  CensusRentModule,
   CharacterModule,
   FactsLedger,
   MarketModule,
@@ -21,6 +22,7 @@ import {
   getPlates,
 } from "@/lib/data/geo";
 import { getMarketSource } from "@/lib/data/market";
+import { getOrtsteilRent, ZENSUS_PROVENANCE, ZENSUS_RENT_META } from "@/lib/data/zensus";
 import { createBezirkSlugs, defaultFilter, marketQuery } from "@/lib/market/query";
 
 interface ProfilePageProps {
@@ -50,6 +52,7 @@ export default async function NeighborhoodProfilePage({ params }: ProfilePagePro
   const plates = getPlates();
   const showsRing = locatorShowsRing(plates, [place.code, ...neighbors.map((n) => n.code)]);
 
+  const rent = getOrtsteilRent(place.code);
   const market = getMarketSource();
   const marketHref = `/market${marketQuery(
     { ...defaultFilter(market.coverage), bezirke: [place.bezirkCode] },
@@ -117,6 +120,18 @@ export default async function NeighborhoodProfilePage({ params }: ProfilePagePro
           provenance={GEO_PROVENANCE}
           className="col-span-4 md:col-span-8 lg:col-span-12"
         />
+        {rent ? (
+          <CensusRentModule
+            idPrefix={id}
+            place={place}
+            provenance={ZENSUS_PROVENANCE}
+            rent={rent}
+            berlinMeanRentPerM2={ZENSUS_RENT_META.berlinMeanRentPerM2}
+            minDwellings={ZENSUS_RENT_META.minDwellings}
+            referenceYear={ZENSUS_RENT_META.referenceDate.slice(0, 4)}
+            className="col-span-4 md:col-span-8 lg:col-span-12"
+          />
+        ) : null}
         <section aria-labelledby={`${id}-more-title`} className="col-span-4 flex flex-col gap-4 pt-6 md:col-span-8 lg:col-span-12">
           <h2 id={`${id}-more-title`} className="type-title-2 stretch-wide">
             What this page can&rsquo;t tell you yet

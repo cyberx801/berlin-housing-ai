@@ -33,6 +33,7 @@ export function SiteFooter() {
           <ul className="flex flex-col gap-2 type-small text-ink-2">
             <li>District and Ortsteil boundaries: ALKIS Berlin, Geoportal Berlin, <span className="whitespace-nowrap">dl-de/zero-2.0</span></li>
             <li>Umweltzone (area within the S-Bahn ring): Geoportal Berlin, <span className="whitespace-nowrap">dl-de/zero-2.0</span></li>
+            <li>Rents per Ortsteil: Zensus 2022, Statistische Ämter des Bundes und der Länder, <span className="whitespace-nowrap">dl-de/by-2.0</span></li>
             <li>
               <Link href="/methodology#sources" className="text-ink-2 hover:text-ink">
                 Full dataset registry

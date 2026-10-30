@@ -50,6 +50,26 @@ Every dataset in this repository has an entry here before any code reads it. Rul
 | SHA-256 | `f9f059264096737e95353f4d01cf5a93119955d44ff5ecf65993cc70aa0e78c4` |
 | Use | Defines "inside / partly / outside the Ring". Labeled "Umweltzone (area within the S-Bahn ring)". It is not track geometry. |
 
+## zensus-2022-rent-grid
+
+| | |
+|---|---|
+| File | `raw/zensus/Zensus2022_Durchschn_Nettokaltmiete_Anzahl_der_Wohnungen_100m-Gitter.csv` (73 MB, git-ignored; the build output is `src/lib/data/zensus/generated/zensus-rent.json`, which is committed) |
+| Publisher | Statistische Ämter des Bundes und der Länder, Zensus 2022 (Statistisches Bundesamt) |
+| Service | https://www.destatis.de/zensus2022 |
+| Download | `https://www.destatis.de/static/DE/zensus/gitterdaten/Durchschnittliche_Nettokaltmiete_und_Anzahl_der_Wohnungen.zip` (11 MB; also holds the 1 km and 10 km grids and the dataset description) |
+| License | **Datenlizenz Deutschland – Namensnennung – Version 2.0** (`dl-de/by-2.0`, http://www.govdata.de/dl-de/by-2-0). Stated in the dataset description (`Datensatzbeschreibung_Durchschn_Nettokaltmiete_und_Anzahl_der_Wohnungen.xlsx`, section "Zeichenerklärung"), verified 2026-10-30. The results pages of zensus2022.de say only "free use with attribution (OpenData)" and do not name the license. |
+| Attribution | "Ergebnisse des Zensus 2022, Statistische Ämter des Bundes und der Länder". The site shows it on every figure and states that it aggregated the cells (the license requires a note on changes). |
+| Retrieved | 2026-10-30 |
+| Reference date | 2022-05-15 (Zensus Stichtag) |
+| CRS | ETRS89-LAEA Europe (EPSG:3035), cell midpoints in `x_mp_100m`, `y_mp_100m` |
+| Columns | `GITTER_ID_100m`, `x_mp_100m`, `y_mp_100m`, `durchschnMieteQM` (comma decimal), `AnzahlWohnungen`, `werterlaeuternde_Zeichen` (`KLAMMERN` = statistically uncertain) |
+| Rows | 1,287,342 cells for Germany. 38,975 fall in a box around Berlin, 28,463 of them inside an Ortsteil (the rest are Brandenburg). |
+| Definition | Ratio of the sum of the per-m² rents to the number of flats, for rented flats in residential buildings (no dormitories). Flats let rent-free are left out. Cells without people or flats are not in the file, which can also come from the confidentiality method (cell key: values are perturbed, sums deviate). |
+| SHA-256 | `824a0e4992c808086b394cb82bacdc4732768ebc69ba25da610151c8619c11eb` (the 100 m file) |
+| Intake (DATA_BOUNDARIES §9) | `passed` as an official source: license named in the dataset description, stated definition and reference date, Berlin weighted mean 7.66 €/m² against the published 7.67 €/m², plausible order across Ortsteile (lowest Marzahn, highest Grunewald and Dahlem). Decision D-062. |
+| Use | The Ortsteil profile module "What did tenants in X pay in 2022?" only. Existing contracts, not asking rents. It is not mixed with the demo market figures or the demo model. |
+
 ## kaggle-berlin-5csv — SYNTHETIC (intake finished 2026-10-30), not in the repository
 
 | | |

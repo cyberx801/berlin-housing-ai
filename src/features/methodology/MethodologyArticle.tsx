@@ -25,13 +25,15 @@ export interface MethodologyFacts {
   areaExample: { name: string; areaKm2: number; ownFieldM2: number };
   simplify: { plate: string; map: string };
   registry: readonly DatasetEntry[];
+  /** Zensus 2022 rent aggregate: the all-Berlin figure our weighted average gives. */
+  census: { berlinMeanRentPerM2: number; berlinDwellings: number };
 }
 
 const linkClass = "underline decoration-line-strong underline-offset-4 hover:decoration-ink";
 const listClass = "type-prose flex flex-col gap-2 pl-6";
 
 export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
-  const { keyExample: key, ringCounts } = facts;
+  const { keyExample: key, ringCounts, census } = facts;
   const retrieved = formatIsoDate(facts.retrieved);
 
   return (
@@ -124,6 +126,37 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
             are always computed from the full-detail geometry, never from the drawing.
           </p>
         </Subsection>
+      </Section>
+
+      <Section id="census-rent">
+        <p className="type-prose">
+          Each Ortsteil profile shows one real rent figure: the average net cold rent (Nettokaltmiete) per m² that
+          tenants paid on 15 May 2022. It comes from the 2022 census (Zensus 2022), which the statistical offices of the
+          federal government and the Länder publish for 100&nbsp;m grid cells. It is official data, licensed{" "}
+          <span className="whitespace-nowrap">dl-de/by-2.0</span>, with the source line &ldquo;Ergebnisse des Zensus
+          2022, Statistische Ämter des Bundes und der Länder&rdquo;.
+        </p>
+        <p className="type-prose">
+          <strong className="font-[600]">What it is not.</strong> These are rents in contracts that already existed,
+          including many signed years ago. They are not asking rents, so they are lower than what a flat costs to rent
+          today and can&rsquo;t be compared with a listing on Compare or with anything on Analyze.
+        </p>
+        <p className="type-prose">
+          <strong className="font-[600]">What we did to it.</strong> For every cell the census gives the average rent per
+          m² and the number of rented flats. We put each cell in the Ortsteil that contains its centre point, then
+          averaged the cells&rsquo; rents weighted by their number of flats. That is a change to the published data and
+          is ours, not the statistical offices&rsquo;. A cell on a border belongs to one Ortsteil only, so figures near
+          a boundary are approximate. The statistical offices perturb the values slightly to protect privacy and leave
+          out cells without flats. They mark some cells as statistically uncertain; those flats are counted, and their
+          share is shown where it isn&rsquo;t zero. An Ortsteil with fewer than 100 rented flats behind it shows no figure.
+        </p>
+        <p className="type-prose">
+          <strong className="font-[600]">Does it agree with the official total?</strong> Our weighted average for all of
+          Berlin is {census.berlinMeanRentPerM2.toFixed(2)}&nbsp;€/m² over {census.berlinDwellings.toLocaleString("en")}{" "}
+          rented flats. The statistical offices publish 7.67&nbsp;€/m² for Berlin. The Ortsteile with the lowest averages
+          are large 1970s and 1980s estates (Marzahn, Neu-Hohenschönhausen, Märkisches Viertel) and the highest are
+          villa districts (Grunewald, Dahlem).
+        </p>
       </Section>
 
       <Section id="market-data">

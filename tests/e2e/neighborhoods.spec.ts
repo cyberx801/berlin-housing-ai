@@ -153,6 +153,18 @@ test.describe("/neighborhoods", () => {
     await expect(rows(page)).toHaveText(["Moabit"]);
   });
 
+  test("a profile shows the census rent as official data, and says it is not an asking rent", async ({ page }) => {
+    await page.goto("/neighborhoods/marzahn");
+    const plate = page.getByRole("region", { name: "What did tenants in Marzahn pay in 2022?" });
+    await expect(plate).toContainText(/€5.94/);
+    await expect(plate).toContainText("Official data");
+    await expect(plate).toContainText("Zensus 2022");
+    await expect(plate).toContainText("not asking rents");
+    await expect(plate.getByRole("link", { name: "How this is calculated" })).toHaveAttribute("href", "/methodology#census-rent");
+    await page.goto("/neighborhoods/stadtrandsiedlung-malchow");
+    await expect(page.getByRole("region", { name: /What did tenants in Stadtrandsiedlung Malchow pay/ })).toContainText("Fewer than 100 rented flats");
+  });
+
   test("the directory and profiles have no horizontal scroll or axe violations", async ({ page }) => {
     for (const path of ["/neighborhoods", "/neighborhoods/moabit", "/neighborhoods/mitte", "/neighborhoods/koepenick"]) {
       await page.goto(path);

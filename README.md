@@ -71,7 +71,7 @@ Browser ── Next.js 16 (App Router, TypeScript strict)
 - **Contract:** [`PREDICTION_API.md`](docs/contracts/PREDICTION_API.md). A response that does not say `synthetic: true` is never shown as an estimate.
 - **Model:** `src/lib/model/rent-model.ts` runs the demo model inside the site's server (`NEXT_PUBLIC_PREDICTION_MODE=embedded`, what the live site uses). It is a port of the Python service and is tested against answers the service gave.
 - **Service:** `services/rent-api`: model card, health, schema and prediction endpoints, one error envelope. No pickle and no scikit-learn at run time.
-- **Tests:** 345 unit, component and contract tests (Vitest), Playwright journeys at 375, 768 and 1440 px, axe on every route, and an end-to-end suite against the real service.
+- **Tests:** 360 unit, component and contract tests (Vitest), Playwright journeys at 375, 768 and 1440 px, axe on every route, and an end-to-end suite against the real service.
 
 ## Run it
 
@@ -119,12 +119,13 @@ Then set `NEXT_PUBLIC_PREDICTION_MODE=proxy` and `PREDICTION_API_BASE_URL=http:/
 
 - No screen-reader pass yet (no NVDA, Firefox or VoiceOver on the development machine).
 - First-load JS is over the original 150 kB budget on form and chart routes, under the restated one ([D-057](docs/implementation/DECISIONS.md)).
-- No real market data and no real listing data: nothing free and redistributable is available at listing level. Candidates for official aggregates (Zensus 2022, Mietspiegel 2024) have not passed intake yet.
+- No real listing data and no real market time series: nothing free and redistributable exists at listing level. The one real rent figure is the Zensus 2022 average per Ortsteil (existing contracts, May 2022). The Mietspiegel 2024 has not passed intake.
 - The live site's rent model is the demo trained on synthetic data. It answers on Analyze only, under the demo band, and says nothing about real Berlin rents.
-- The MIT licence covers this repository's own files. The geodata and the Kaggle dataset keep their licences, listed below.
+- The MIT licence covers this repository's own files. The geodata, the census data and the Kaggle dataset keep their licences, listed below.
 
 ## Licenses
 
 - The code, the documentation and the model files in this repository: [MIT](LICENSE).
 - Boundaries: ALKIS Berlin (Geoportal Berlin), Datenlizenz Deutschland – Zero – Version 2.0. Umweltzone: Geoportal Berlin, dl-de/zero-2.0.
+- Rents per Ortsteil: Zensus 2022, "Ergebnisse des Zensus 2022, Statistische Ämter des Bundes und der Länder", Datenlizenz Deutschland – Namensnennung – Version 2.0. Aggregated to Ortsteile by this project (`npm run zensus:build`).
 - Kaggle dataset used to train the demo model: Apache 2.0, Sergey Nefedov. The files are not in this repository.

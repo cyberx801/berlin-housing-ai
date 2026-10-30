@@ -17,8 +17,9 @@ const ROWS: TruthRow[] = [
     kind: "official",
     label: "Official data",
     covers:
-      "Bezirk and Ortsteil boundaries, their areas, which Ortsteile border each other, and how much of each lies inside the S-Bahn ring.",
-    limits: "Geography only. It says nothing about rents, prices or what a place is like to live in.",
+      "Bezirk and Ortsteil boundaries, their areas, which Ortsteile border each other, and how much of each lies inside the S-Bahn ring. Also the average rent in each Ortsteil on 15 May 2022, from the census.",
+    limits:
+      "The census rents are rents in existing contracts, not what a flat costs to rent today. Nothing here says what a place is like to live in.",
   },
   {
     kind: "user",
