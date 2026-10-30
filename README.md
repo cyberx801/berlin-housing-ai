@@ -1,6 +1,6 @@
 # Berlin Housing AI
 
-A portfolio project: a Berlin housing tool built around one rule, **nothing is shown as fact unless its source says it is**. You can explore the 12 Bezirke and 97 Ortsteile on official geometry, compare listings you have found, and prepare a flat for a rent-prediction model. The model that exists is a **demo trained on synthetic data**, and the site says so wherever it answers.
+A Berlin housing tool built around one rule, **nothing is shown as fact unless its source says it is**. You can explore the 12 Bezirke and 97 Ortsteile on official geometry, compare listings you have found, and prepare a flat for a rent-prediction model. The model that exists is a **demo trained on synthetic data**, and the site says so wherever it answers.
 
 ![Home: the 97 Ortsteile and the short form that starts an analysis](docs/screenshots/home.png)
 
@@ -91,8 +91,10 @@ Then set `NEXT_PUBLIC_PREDICTION_MODE=proxy` and `PREDICTION_API_BASE_URL=http:/
 - First-load JS is over the original 150 kB budget on form and chart routes, under the restated one ([D-057](docs/implementation/DECISIONS.md)).
 - No real market data and no real listing data: nothing free and redistributable is available at listing level. Candidates for official aggregates (Zensus 2022, Mietspiegel 2024) have not passed intake yet.
 - Nothing is deployed.
+- The MIT licence covers this repository's own files. The geodata and the Kaggle dataset keep their licences, listed below.
 
 ## Licenses
 
+- The code, the documentation and the model files in this repository: [MIT](LICENSE).
 - Boundaries: ALKIS Berlin (Geoportal Berlin), Datenlizenz Deutschland – Zero – Version 2.0. Umweltzone: Geoportal Berlin, dl-de/zero-2.0.
 - Kaggle dataset used to train the demo model: Apache 2.0, Sergey Nefedov. The files are not in this repository.

@@ -1,5 +1,6 @@
 ---
 language: en
+license: mit
 library_name: other
 pipeline_tag: tabular-regression
 tags:
@@ -16,7 +17,7 @@ tags:
 
 > **This model does not estimate Berlin rents.** It was trained on a dataset whose author states that the listing-level apartment characteristics are *generated from a hedonic pricing model*. The model learned to reproduce that generator. Its figures must not be used as a market estimate, a "fair rent" or advice of any kind.
 
-A log-linear regression for the monthly **cold rent** (Nettokaltmiete) of a flat in Berlin, with an 80 % split-conformal interval. It is the demo model of the [Berlin Housing AI](https://github.com/cyberx801/berlin-housing-ai) portfolio project, where it runs behind a FastAPI service (`services/rent-api`) and is always shown under a demo label.
+A log-linear regression for the monthly **cold rent** (Nettokaltmiete) of a flat in Berlin, with an 80 % split-conformal interval. It is the demo model of the [Berlin Housing AI](https://github.com/cyberx801/berlin-housing-ai) project, where it runs behind a FastAPI service (`services/rent-api`) and is always shown under a demo label.
 
 | | |
 |---|---|
@@ -80,6 +81,6 @@ The service, the contract and its tests are in the [repository](https://github.c
 
 ## Before publishing this card on the Hugging Face Hub
 
-- Choose a licence for the model files and add it to the front matter (`license:`). The repository has no `LICENSE` file yet.
+- The files are MIT-licensed like the rest of the repository. The training data keeps its own licence (Apache 2.0, Sergey Nefedov).
 - Upload the five files in `artifacts/rent_v1/` together with this file renamed to `README.md`.
 - Keep the first paragraph. It is the point of the card.
