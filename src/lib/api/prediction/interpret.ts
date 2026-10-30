@@ -39,10 +39,13 @@ export function interpretPredictionResponse(
         false,
       );
     }
-    // D-058: a client that cannot see the flag must not read its absence as "observed".
-    const synthetic = parsed.data.model.training_data?.synthetic;
-    if (synthetic === undefined) return { status: "not_connected", reason: "unverified_data", requestId };
-    return { status: "ok", data: parsed.data, trainedOn: synthetic ? "synthetic" : "observed", requestId };
+    // D-058: only an answer that says it comes from synthetic training data is shown, and always
+    // labelled as such. A missing flag is not read as "observed", and neither is `false`: lifting
+    // the label for a model trained on observed data is a separate decision (none qualifies today).
+    if (parsed.data.model.training_data?.synthetic !== true) {
+      return { status: "not_connected", reason: "unverified_data", requestId };
+    }
+    return { status: "ok", data: parsed.data, trainedOn: "synthetic", requestId };
   }
 
   const envelope = errorEnvelopeV1.safeParse(body);

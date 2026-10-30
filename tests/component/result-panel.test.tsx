@@ -63,12 +63,14 @@ describe("ResultPanel", () => {
     expect(panel).not.toHaveTextContent("Nothing was sent anywhere.");
   });
 
-  it("not connected because the model did not say what it was trained on shows no figure", () => {
-    const outcome = outcomeFrom(200, "rent.v1.ok-no-flag.json");
-    const panel = renderPanel(outcome);
-    expect(panel).toHaveTextContent("did not say what data it was trained on");
-    expect(panel.textContent).not.toMatch(/€|EUR/);
-  });
+  it.each(["rent.v1.ok-no-flag.json", "rent.v1.ok-observed.json"])(
+    "not connected because %s does not say it was trained on synthetic data: no figure",
+    (name) => {
+      const panel = renderPanel(outcomeFrom(200, name));
+      expect(panel).toHaveTextContent("did not say that it was trained on synthetic data");
+      expect(panel.textContent).not.toMatch(/€|EUR/);
+    },
+  );
 
   it("ok, synthetic: the estimate sits under the demo band with the fixed words", () => {
     const panel = renderPanel(outcomeFrom(200, "rent.v1.ok.json"));
@@ -78,8 +80,10 @@ describe("ResultPanel", () => {
     expect(panel.querySelector(".band-hatch")).not.toBeNull();
   });
 
-  it("ok, observed: no demo wording and the solid band", () => {
-    const panel = renderPanel(outcomeFrom(200, "rent.v1.ok-observed.json"));
+  it("ok, observed (not reachable today, see interpret.ts): no demo wording and the solid band", () => {
+    // Built by hand: the interpreter never returns `observed` yet, but the panel must already draw it right.
+    const data = JSON.parse(fixture("rent.v1.ok-observed.json"));
+    const panel = renderPanel({ status: "ok", data, trainedOn: "observed", requestId: "req-1" });
     expect(within(panel).getByRole("heading", { name: "Estimated cold rent" })).toHaveFocus();
     expect(panel).toHaveTextContent("Model estimate");
     expect(panel).not.toHaveTextContent("synthetic");

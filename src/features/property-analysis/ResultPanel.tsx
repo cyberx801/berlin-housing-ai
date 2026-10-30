@@ -83,7 +83,7 @@ export function ResultPanel({ id, outcome, input, payload, place, stale = false,
             {outcome.reason === "disabled"
               ? "Your description is valid and ready. The rent model is still being built, so no estimate is shown. Nothing was sent anywhere."
               : outcome.reason === "unverified_data"
-                ? "Your description is valid and ready. A model answered, but it did not say what data it was trained on, so no estimate is shown."
+                ? "Your description is valid and ready. A model answered, but it did not say that it was trained on synthetic data, which is the only kind this site can label, so no estimate is shown."
                 : "Your description is valid and ready. This site's server accepted it, but no rent model is configured behind it yet, so no estimate is shown."}
           </p>
         </>

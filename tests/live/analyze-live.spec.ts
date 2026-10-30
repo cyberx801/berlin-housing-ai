@@ -38,7 +38,11 @@ test("Analyze → the real demo model answers under the demo band", async ({ pag
 
   await result.getByText("What moved the estimate").click();
   await expect(result).toContainText("Location (Ortsteil)");
-  if (process.env.LIVE_SHOT) await result.screenshot({ path: process.env.LIVE_SHOT });
+  // LIVE_SHOT_DIR=<folder> keeps one full-panel screenshot per width for the design review.
+  if (process.env.LIVE_SHOT_DIR) {
+    await result.screenshot({ path: `${process.env.LIVE_SHOT_DIR}/live-result-${test.info().project.name}.png` });
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
   // The figure stays out of anything a crawler or a share preview reads.
   await expect(page).not.toHaveTitle(/€/);

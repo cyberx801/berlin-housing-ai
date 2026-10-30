@@ -60,7 +60,7 @@ test.describe("/methodology", () => {
     await expect(table.getByRole("rowheader")).toHaveText([
       "Bezirk and Ortsteil boundaries, names, areas, neighbors and ring status",
       "Market figures: rent trends, €/m² by Bezirk, price spreads and property types",
-      "The Kaggle research dataset (5 CSV files)",
+      "The Kaggle dataset (5 CSV files)",
       "Rent prediction",
       "Transit access for each Ortsteil",
       "Listings you compare and flats you describe",
@@ -73,7 +73,7 @@ test.describe("/methodology", () => {
       "ALKIS Berlin Bezirke",
       "ALKIS Berlin Ortsteile",
       "Umweltzone Berlin",
-      "Kaggle research dataset (5 CSV files)",
+      "Kaggle dataset (5 CSV files)",
       "Demo market fixtures",
     ]);
     await expect(sources.getByText(/^[0-9a-f]{64}$/)).toHaveCount(3);

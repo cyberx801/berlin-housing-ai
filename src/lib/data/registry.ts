@@ -66,7 +66,7 @@ export function getDatasetRegistry(): DatasetEntry[] {
     },
     {
       id: "kaggle-berlin-5csv",
-      name: "Kaggle research dataset (5 CSV files)",
+      name: "Kaggle dataset (5 CSV files)",
       mark: "demo",
       status: "Synthetic, demo only",
       publisher: "Sergey Nefedov, on Kaggle",

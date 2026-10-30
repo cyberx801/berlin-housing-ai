@@ -219,8 +219,8 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
             fields Analyze sends and the answer it gets back. This build isn&rsquo;t connected to one, so Analyze ends
             at &ldquo;Prediction engine not connected&rdquo;. When a service is connected, Analyze shows its answer. A
             figure from the demo model never appears in a page title, a preview, the home page or a neighborhood
-            profile, and never next to a real figure as a comparison. If a service answers without saying what its model
-            was trained on, the site shows no figure at all.
+            profile, and never next to a real figure as a comparison. If a service does not say that its model was
+            trained on synthetic data, the site shows no figure at all.
           </p>
           <p className="type-prose">
             The site doesn&rsquo;t work out a rent in any other way: there is no formula and no simulated answer. The

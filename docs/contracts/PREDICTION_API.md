@@ -158,7 +158,7 @@ The example values are **sentinels** (1234.56, 2000-01, `0.0.0-example`), chosen
 | warning `TRAINING_DATA_UNVERIFIED` | Always present for this model. |
 | warning `STALE_MODEL` | Present when the data reference date is more than 180 days before the request. |
 
-The Zod response schema ignores unknown keys. As of slice 10 it reads `synthetic`, `inputs.ignored` and `explanation`. `interpretPredictionResponse` maps `synthetic: true` to `trainedOn: "synthetic"` and `false` to `"observed"`. A 2xx answer without the flag becomes `not_connected` with reason `unverified_data` (D-058, D-059).
+The Zod response schema ignores unknown keys. As of slice 10 it reads `synthetic`, `inputs.ignored` and `explanation`. `interpretPredictionResponse` shows an answer only when `synthetic` is `true` (`trainedOn: "synthetic"`). A 2xx answer with the flag missing or `false` becomes `not_connected` with reason `unverified_data`: lifting the demo label for a model trained on observed data is a separate decision (D-058, D-059).
 
 ## 4. Error envelope — any non-2xx
 

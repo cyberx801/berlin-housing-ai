@@ -114,18 +114,16 @@ describe("interpretPredictionResponse", () => {
     if (outcome.status === "ok") expect(outcome.data.estimate.interval?.level).toBe(0.8);
   });
 
-  it("reads synthetic: true as a demo model and synthetic: false as observed (D-058)", () => {
+  it("reads synthetic: true as a demo model (D-058)", () => {
     expect(interpret(200, "rent.v1.ok.json")).toMatchObject({ status: "ok", trainedOn: "synthetic" });
-    expect(interpret(200, "rent.v1.ok-observed.json")).toMatchObject({ status: "ok", trainedOn: "observed" });
   });
 
-  it("treats an answer that does not say what the model was trained on as not connected, never as observed", () => {
-    expect(interpret(200, "rent.v1.ok-no-flag.json")).toEqual({
-      status: "not_connected",
-      reason: "unverified_data",
-      requestId: RID,
-    });
-  });
+  it.each(["rent.v1.ok-no-flag.json", "rent.v1.ok-observed.json"])(
+    "shows no figure for %s: only synthetic: true is shown, a missing flag or false is not read as observed",
+    (name) => {
+      expect(interpret(200, name)).toEqual({ status: "not_connected", reason: "unverified_data", requestId: RID });
+    },
+  );
 
   it("accepts a newer minor version and a missing interval", () => {
     const outcome = interpret(200, "rent.v1.ok-no-interval.json");
