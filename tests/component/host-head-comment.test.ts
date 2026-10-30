@@ -1,6 +1,6 @@
 import { hostHeadCommentScript } from "@/components/layout/host-head-comment";
 
-// What Netlify serves after <meta charset> on *.netlify.app, followed by a line break.
+// What Netlify serves on *.netlify.app: `<meta charset>`, a line break, the comment, then the next tag.
 const NETLIFY_COMMENT =
   " This site is hosted on Netlify. Anyone can build and deploy a site\n     like this one for free: https://netlify.new/ ";
 
@@ -13,25 +13,26 @@ const meta = (name: string) => {
   return el;
 };
 const run = () => new Function(hostHeadCommentScript)();
+const names = () => [...document.head.childNodes].map((n) => n.nodeName);
 
 afterEach(() => document.head.replaceChildren());
 
 describe("hostHeadCommentScript", () => {
-  it("removes the Netlify comment and the line break after it, and nothing else", () => {
-    headWith(
-      meta("a"),
-      document.createComment(NETLIFY_COMMENT),
-      document.createTextNode("\n"),
-      meta("b"),
-    );
+  it("removes the line break and the Netlify comment as served, and nothing else", () => {
+    headWith(meta("a"), document.createTextNode("\n"), document.createComment(NETLIFY_COMMENT), meta("b"));
     run();
-    expect([...document.head.childNodes].map((n) => n.nodeName)).toEqual(["META", "META"]);
-    expect(document.head.querySelectorAll("meta")).toHaveLength(2);
+    expect(names()).toEqual(["META", "META"]);
+  });
+
+  it("also removes whitespace that follows the comment", () => {
+    headWith(meta("a"), document.createComment(NETLIFY_COMMENT), document.createTextNode("\n"), meta("b"));
+    run();
+    expect(names()).toEqual(["META", "META"]);
   });
 
   it("leaves other comments and text alone", () => {
     const other = document.createComment(" a comment of our own ");
-    headWith(meta("a"), other, document.createTextNode("\n"), meta("b"));
+    headWith(meta("a"), document.createTextNode("\n"), other, meta("b"));
     run();
     expect(document.head.contains(other)).toBe(true);
     expect(document.head.childNodes).toHaveLength(4);
@@ -41,17 +42,23 @@ describe("hostHeadCommentScript", () => {
     headWith(meta("a"), meta("b"));
     run();
     run();
-    expect(document.head.childNodes).toHaveLength(2);
+    expect(names()).toEqual(["META", "META"]);
   });
 
   it("keeps a text node that is not just whitespace", () => {
-    headWith(document.createComment(NETLIFY_COMMENT), document.createTextNode("kept"));
+    headWith(document.createTextNode("kept"), document.createComment(NETLIFY_COMMENT));
     run();
     expect(document.head.textContent).toBe("kept");
   });
 
+  it("copes with two adjacent Netlify comments", () => {
+    headWith(meta("a"), document.createComment(NETLIFY_COMMENT), document.createComment(NETLIFY_COMMENT), meta("b"));
+    run();
+    expect(names()).toEqual(["META", "META"]);
+  });
+
   it("does not leak variables into the page", () => {
-    headWith(document.createComment(NETLIFY_COMMENT), document.createTextNode("\n"));
+    headWith(document.createTextNode("\n"), document.createComment(NETLIFY_COMMENT));
     run();
     expect("r" in globalThis).toBe(false);
     expect("h" in globalThis).toBe(false);

@@ -1,9 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-// Netlify adds a comment and a line break to <head> on *.netlify.app (see host-head-comment.ts).
-// Without the head script, React 19 fails to hydrate (error #418) and renders the page again.
+// Netlify adds a line break and a comment to <head> on *.netlify.app (see host-head-comment.ts):
+// `<meta charset>\n<!-- ... -->`, with the next tag following the comment directly. This is the
+// layout read from the live site. Without the head script, React 19 fails to hydrate (error #418).
 const NETLIFY_COMMENT =
-  "<!-- This site is hosted on Netlify. Anyone can build and deploy a site\n     like this one for free: https://netlify.new/ -->\n";
+  "\n<!-- This site is hosted on Netlify. Anyone can build and deploy a site\n     like this one for free: https://netlify.new/ -->";
 
 test("hydrates without error when the host adds its comment to <head>", async ({ page }) => {
   let injected = 0;
