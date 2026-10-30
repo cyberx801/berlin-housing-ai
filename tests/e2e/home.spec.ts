@@ -14,6 +14,23 @@ test.describe("homepage", () => {
     await expect(page.getByText("Official data").first()).toBeVisible();
   });
 
+  test("lists every page in a menu on the first page and says what the site is", async ({ page }) => {
+    const menu = page.getByRole("navigation", { name: "Pages on this site" });
+    const expected = [
+      ["Analyze", "/analyze"],
+      ["Explore", "/explore"],
+      ["Market", "/market"],
+      ["Neighborhoods", "/neighborhoods"],
+      ["Compare", "/compare"],
+      ["Methodology", "/methodology"],
+    ] as const;
+    await expect(menu.getByRole("link")).toHaveCount(expected.length);
+    for (const [name, href] of expected) {
+      await expect(menu.getByRole("link", { name, exact: true })).toHaveAttribute("href", href);
+    }
+    await expect(page.getByText("A study project.")).toBeVisible();
+  });
+
   test("the select is a keyboard path to every Ortsteil (A2)", async ({ page }) => {
     const select = page.getByLabel("Find an Ortsteil");
     await expect(select.locator("option")).toHaveCount(98); // placeholder + 97

@@ -31,6 +31,16 @@ export const metadata: Metadata = {
 // The example Ortsteil for the explorer preview. Any of the 97 works; Moabit straddles the ring.
 const PREVIEW_SLUG = "moabit";
 
+// The first-page menu: every page, in the header's order, with what it is for.
+const PAGES = [
+  { href: "/analyze", name: "Analyze", summary: "Describe a flat and prepare it for the rent model." },
+  { href: "/explore", name: "Explore", summary: "Map of the 97 Ortsteile and the S-Bahn ring." },
+  { href: "/market", name: "Market", summary: "Charts of rents by district. Generated data." },
+  { href: "/neighborhoods", name: "Neighborhoods", summary: "Facts about each Ortsteil, from official boundaries." },
+  { href: "/compare", name: "Compare", summary: "Set up to three listings side by side." },
+  { href: "/methodology", name: "Methodology", summary: "Where every number comes from." },
+] as const;
+
 export default function HomePage() {
   const plates = getPlates();
   const places = getPlatePlaces();
@@ -66,9 +76,26 @@ export default function HomePage() {
               Read a Berlin flat against its city.
             </h1>
             <p className="type-prose max-w-[40ch] text-ink-2">
-              Map the 97 Ortsteile, compare listings side by side, and prepare an analysis for the rent model in
-              development.
+              A study project. It maps Berlin&rsquo;s 97 Ortsteile from official boundaries and lets you set up to
+              three listings side by side. The market charts and the rent model use generated data, and each page
+              says so.
             </p>
+            <nav aria-label="Pages on this site">
+              <h2 className="type-small font-[640] text-ink-2">Pages</h2>
+              <ul className="mt-2 border-t border-ink">
+                {PAGES.map((page) => (
+                  <li
+                    key={page.href}
+                    className="grid grid-cols-[7.5rem_minmax(0,1fr)] gap-x-4 border-b border-rule py-2 type-small sm:grid-cols-[9rem_minmax(0,1fr)]"
+                  >
+                    <Link href={page.href} className="font-[680] underline-offset-4">
+                      {page.name}
+                    </Link>
+                    <span className="text-ink-2">{page.summary}</span>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
 
           <figure className="col-span-4 -mx-4 flex flex-col gap-4 bg-sheet px-4 pt-4 pb-6 md:col-span-8 md:-mx-6 md:px-6 lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1 lg:mx-0 lg:bleed-right lg:pr-8 lg:pl-8">
@@ -103,7 +130,7 @@ export default function HomePage() {
       <section aria-labelledby="tools-title" className="page-grid gap-y-6 py-16">
         <div className="col-span-4 md:col-span-8 lg:col-span-3">
           <h2 id="tools-title" className="type-title-1">
-            Tools, and what backs them
+            What backs each page
           </h2>
           <p className="mt-3 max-w-[36ch] type-small text-ink-2">
             Each tool says whether its numbers are official, yours, demo, or not connected yet.
