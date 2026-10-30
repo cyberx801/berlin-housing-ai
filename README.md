@@ -31,6 +31,26 @@ What this means for the model:
 - The 80 % interval (split conformal) covered 78.9 % of 2025 and 76.4 % of 2026 on months it was not built from.
 - The label is lifted only if a model trained on observed data replaces it, which is a separate decision ([D-058](docs/implementation/DECISIONS.md)).
 
+### Use the model
+
+The model files and a plain-language model card are public on Hugging Face: **[mfozdil/berlin-rent-demo](https://huggingface.co/mfozdil/berlin-rent-demo)**. With `pip install huggingface_hub numpy pandas`:
+
+```python
+import sys
+from huggingface_hub import snapshot_download
+
+path = snapshot_download("mfozdil/berlin-rent-demo")
+sys.path.insert(0, path)
+from inference import RentModel
+
+status, result = RentModel(path).predict(
+    {"bezirk": "Mitte", "property_type": "apartment", "rooms": 2, "area_m2": 65}
+)
+print(result["estimate"]["monthly_cold_rent"], result["model"]["training_data"]["synthetic"])
+```
+
+Every answer carries `synthetic: True`. The card lists the inputs, the range and the limits.
+
 ![A demo answer: hatched band, the fixed words, an interval and what moved the estimate](docs/screenshots/analyze-demo-result.png)
 
 The full account is on the site's `/methodology` page and in the [model card](services/rent-api/MODEL_CARD.md).

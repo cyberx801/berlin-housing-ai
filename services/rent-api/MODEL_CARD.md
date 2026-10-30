@@ -30,6 +30,49 @@ It is a small, simple model (a linear regression). It exists to show a complete,
 | Newest data it saw | 2026-04-29 |
 | Status | **Demo only.** In the website, prediction is switched off by default. |
 
+## How to use it
+
+You need Python (tested with 3.12) and three packages: `pip install huggingface_hub numpy pandas`. There is nothing to train and no model file to trust: the model is a small JSON file, and `inference.py` (in this repository) reads it with NumPy and pandas.
+
+```python
+import sys
+from huggingface_hub import snapshot_download
+
+path = snapshot_download("mfozdil/berlin-rent-demo")   # downloads the files, under 100 kB
+sys.path.insert(0, path)
+
+from inference import RentModel
+
+model = RentModel(path)
+status, result = model.predict({
+    "bezirk": "Mitte",            # the official district name
+    "ortsteil": "Moabit",         # optional: the neighborhood
+    "property_type": "apartment",
+    "rooms": 2,
+    "area_m2": 65,
+    "floor": 2,                   # optional
+    "total_floors": 5,            # optional
+    "has_balcony": True,          # optional
+})
+
+rent = result["estimate"]["monthly_cold_rent"]["value"]
+low = result["estimate"]["interval"]["lower"]
+high = result["estimate"]["interval"]["upper"]
+print(f"Demo estimate: {rent:.0f} EUR per month (80 % range {low:.0f} to {high:.0f})")
+```
+
+Example output (the model is deterministic, so you get the same numbers):
+
+```
+Demo estimate: 1265 EUR per month (80 % range 924 to 1643)
+```
+
+- `predict` returns two things: an HTTP-style status (`200` is good, `422` means a field was invalid) and the answer. A `422` answer lists which fields to fix, so it never raises an error for bad input.
+- **Required:** `bezirk`, `property_type`, `rooms`, `area_m2`. Everything else is optional: `ortsteil`, `floor`, `total_floors`, `building_era`, `energy_class`, `condition`, `has_lift`, `has_balcony`, `furnishing`. Leave a field out and it is listed under `result["inputs"]["missing"]`, and the range gets wider.
+- Every answer carries `result["model"]["training_data"]["synthetic"] == True` and a warning with the code `TRAINING_DATA_UNVERIFIED`. Keep that label if you show the number anywhere.
+- `result["explanation"]` says how much each factor moved the rent per m² compared with the average training flat.
+- The same model runs as a web service with a documented API in the [GitHub project](https://github.com/cyberx801/berlin-housing-ai/tree/main/services/rent-api), and the project's website can show its answers under a "Demo model" label.
+
 ## What it is good for, and what it is not
 
 - Good for: looking at how the pipeline works, reading the code, testing a website against a real model service.
@@ -81,6 +124,7 @@ If you leave something out, the model averages over how common each value is in 
 
 | File | What it holds |
 |---|---|
+| `inference.py` | The code that reads the files and answers a request (NumPy and pandas) |
 | `linear_model.json` | The model: the numbers it learned. It is evaluated with plain NumPy, so there is no pickle file and nothing to execute. |
 | `residual_quantiles.json` | What the range is built from |
 | `feature_schema.json` | The list of inputs, the neighborhood centres and the allowed values |
