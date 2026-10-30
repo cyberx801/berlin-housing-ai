@@ -2,6 +2,8 @@
 
 > Status: agreed direction with the owner (2026-10-30). Each phase below still needs its own go-ahead before work starts. Phases 2 and 3 also need a cost approval.
 
+> **Update 2026-10-30 (owner decision, D-058).** This is a portfolio (CV) project, not a market product. The only dataset available (`kaggle-berlin-5csv`) turned out to be synthetic by its author's own description, so Phase 1 delivers a **demo model**: a real model behind the real contract, trained on synthetic data and labelled that way wherever it appears. The model plan in §3 is unchanged as a process. Its measured outcome is in §3.1. Phases 2 and 3 stay unapproved.
+
 ## 1. The question the product answers
 
 **"Is this rent fair?"** A renter pastes or enters a listing. They get:
@@ -50,6 +52,18 @@ The frontend (slices 1–9) is the honest shell for this. Prediction stays disab
 - model version and training-data period.
 
 The contract in `PREDICTION_API.md` is frozen to this shape once the feature schema is known.
+
+### 3.1 Measured outcome (Colab, 2026-10-30)
+Protocol: chronological split (train 2020–24 · validation 2025 · test 2026-01..04), target `log(rent per m²)`, contract-feasible features only. Validation MAE in € per month:
+
+| Model | MAE |
+|---|---|
+| Median €/m² | 405 |
+| Linear regression | 144 |
+| CatBoost (3 seeds) | 145 |
+| PyTorch MLP with embeddings (3 seeds) | 144 |
+
+The three families are statistically tied (paired difference CatBoost − linear: +1.1 €, 95 % CI [−1.7, +3.8]). That is expected: the data comes from a log-linear hedonic generator. The log-linear model is therefore the served default (exact per-feature effects, no extra runtime dependency). **LightGBM was not benchmarked**, because CatBoost already showed that boosting adds nothing here. The 80 % interval is split-conformal on the log scale. The forward coverage measured was 0.789 (2025) and 0.764 (2026). On the 2026 test the linear model had a bias of +77 €, because its time trend was extrapolated while the market level flattened. The served artifact is fixed at the last data month instead.
 
 **Data preconditions (DATA_BOUNDARIES §4):**
 - the source URL and licence of the Kaggle data,

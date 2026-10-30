@@ -31,3 +31,9 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Python service
+services/rent-api/.venv/
+services/rent-api/.pytest_cache/
+__pycache__/
+*.pyc

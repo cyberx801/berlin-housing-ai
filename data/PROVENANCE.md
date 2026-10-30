@@ -50,13 +50,20 @@ Every dataset in this repository has an entry here before any code reads it. Rul
 | SHA-256 | `f9f059264096737e95353f4d01cf5a93119955d44ff5ecf65993cc70aa0e78c4` |
 | Use | Defines "inside / partly / outside the Ring". Labeled "Umweltzone (area within the S-Bahn ring)". It is not track geometry. |
 
-## kaggle-berlin-5csv — NOT PRESENT
+## kaggle-berlin-5csv — SYNTHETIC (intake finished 2026-10-30), not in the repository
 
 | | |
 |---|---|
-| Expected files | `raw/kaggle/rentals.csv`, `secondary_sales.csv`, `new_construction.csv`, `kiez_prices_monthly.csv`, `transit_stations.csv` |
-| Status | Not in repository as of 2026-10-29. Kaggle URL, license and author unknown. |
-| Next step | Owner adds the files and the Kaggle URL, then the intake protocol in DATA_BOUNDARIES §4 runs. |
+| URL | https://www.kaggle.com/datasets/sergionefedov/berlin-real-estate-sales-and-rentals-2020-2026 |
+| Author, license | Sergey Nefedov · **Apache 2.0** (Kaggle page, last modified 2026-05-23) |
+| Origin, in the author's words | Ortsteil coordinates, U/S/Stadtbahn stations and the ECB rate timeline are real anchors, with ImmobilienScout24-anchored base prices. "Listing-level apartment characteristics are generated from the hedonic model." The listings are **not observed**. |
+| Files (rows) | `rentals.csv` 30,000 · `secondary_sales.csv` 50,000 · `new_construction.csv` 10,000 · `kiez_prices_monthly.csv` 6,232 · `transit_stations.csv` 135 |
+| SHA-256 | `rentals` `78dd98d5104b19f6db809692e53a7f8ceaf48ae2c2e0281a41917150d3709043` · `secondary_sales` `95a677ba1a7e81254f782e2cf94b7fc7532e6f1fc35e23724e873b211362ce0c` · `new_construction` `8f0d57070ad277cdfd504cea759ef85615e6825440c9f87ce5f3c49cd73bdeb2` · `kiez_prices_monthly` `382d92c96928b91f3b6f5053189597a40b1ebaf64a890fee5b766e0fe552c5e8` · `transit_stations` `da1ca0af40d0d376a175a821e60c42095aa8bbaa27d5a18879fee0e3ad5bc228` |
+| Coverage | 2020-01-01 to 2026-04-29, 82 Ortsteil names (73 identical to ALKIS, 7 as "X (Ort)" for the Ortsteil that shares its Bezirk's name, 2 ambiguous: "Hohenschönhausen", "Treptow"), 15 ALKIS Ortsteile absent |
+| Our own evidence, consistent with the author's statement | no missing values in any file · rents show no round-number heaping (1.1 % multiples of 100) · the market level is a half-yearly step function (calendar year explains 94.8 % of month-level variance) · `transit_distance_min` is the walk to a *named* station that is the nearest one in only 12 % of rows (56.5 % of values exceed 60 min) |
+| Leaking columns | `warmmiete_eur_monthly`, `warmmiete_eur_monthly_usd`, `rent_per_m2_kalt_eur` are exact functions of the target |
+| **Intake decision** | **`demo-only`** (DATA_BOUNDARIES §4 step 5). It never becomes a `research` source, so no figure derived from it is presented as Berlin market data. A model trained on it may be served only with the synthetic-model label (D-058). |
+| Where it lives | Not in the repository. The ML work runs in Colab, which downloads it with `kagglehub`. |
 
 ## demo-market-v1 — DEMO, not a dataset
 

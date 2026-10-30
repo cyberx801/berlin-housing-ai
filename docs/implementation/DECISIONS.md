@@ -325,3 +325,12 @@ Verified on 2026-10-29 with Node 22.16 / npm 10.9:
 
 ### D-057 · JS budget restated as baseline plus route allowance · Accepted (slice 9, owner)
 → The 150 kB per-route budget couldn't be met: the shared baseline alone is 140.3 kB. ARCH §10 now caps the baseline at 145 kB and gives each route an allowance (content +10 kB, `/explore` +15 kB, form and chart routes +65 kB). The form and chart allowance is set from today's sizes (largest: `/analyze` at 204.1 kB). It freezes the current state rather than proving it lean, and its job is to stop further growth. The `zod/mini` migration (about −17 kB on four routes) remains an option and is not done.
+
+### D-058 · A demo model trained on synthetic data may answer through the contract, under a fixed label · Accepted (ML phase, owner)
+→ The owner confirmed this is a portfolio project. The only dataset (`kaggle-berlin-5csv`) is synthetic by its author's description (`data/PROVENANCE.md`). The integrity rule "no rent figure unless it came from a real prediction response" is kept, and a second condition is added for this model:
+- The response carries `model.training_data.synthetic: true`. The client maps it to `Provenance { kind: "model", trainedOn: "synthetic" }`.
+- Every rendering uses the demo band and the words "Demo model, trained on synthetic data. Not a Berlin market estimate."
+- Never in `<title>`, meta text, Open Graph, previews, the homepage ledger or neighborhood ledgers, and never beside real figures as a comparison.
+- A client that cannot see `synthetic: true` must treat the response as `not_connected`. A missing flag is not read as "observed".
+- The label is lifted only when a model trained on observed data (intake `passed`) replaces it, which is a separate decision.
+→ **Why not leave prediction disabled:** the pipeline, contract and UI states are the portfolio value, and the label keeps the number from being mistaken for a market figure. **Cost:** the strongest honest claim is "this recovers a synthetic generator with an MAE of about 144 € per month". It says nothing about real Berlin rents.

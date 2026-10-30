@@ -1,11 +1,10 @@
 # Rent Prediction API — Contract v1
 
-> **Status: DRAFT, not agreed with the ML team.**
-> Every field name and enum value below is a **proposal pending confirmation against the ML feature schema** (PRD Q2). Nothing in this document implies a model exists. The frontend ships with prediction **disabled**.
+> **Status: DRAFT 2.** A first model exists (ML phase, 2026-10-30) and was built against this contract. It is a **demo model trained on synthetic data** (D-058), so the frontend shows its answers only under the demo label. The request shape is unchanged. Draft 2 adds response fields (§3.1) and records how the model reads each request field (§2.1). Prediction stays **disabled** in the frontend until the service is wired up.
 
 | | |
 |---|---|
-| Version | `1.0-draft.1` · 2026-10-29 |
+| Version | `1.0-draft.2` · 2026-10-30 (draft.1: 2026-10-29) |
 | Producer | Future Python/FastAPI service (ML team) |
 | Consumer | Berlin Housing AI frontend (`src/lib/api/prediction`, `src/lib/contracts/rent-prediction.v1.ts`) |
 | Change control | Breaking changes → `/api/v2`. Additive changes → minor `api_version` bump. This doc and the Zod schema change in the same PR. |
@@ -68,6 +67,27 @@ Every request and response is `application/json; charset=utf-8`. The client send
 
 Unknown fields are **rejected** (`VALIDATION_ERROR`). That keeps silent schema drift from going unnoticed.
 
+### 2.1 How the first model reads each field (draft.2)
+
+The training data has coarser categories than the request. The service does the mapping, so the client keeps sending the contract values. Fields the model cannot use are accepted, listed under `inputs.ignored`, and have no effect.
+
+| Request field | In the model | Handling |
+|---|---|---|
+| `bezirk`, `ortsteil`, `ortsteil_code` | Ortsteil level (82 names) | Code or name resolves the Ortsteil. Missing, or one of the 15 ALKIS Ortsteile absent from the data → the Bezirk average, with `LOW_SUPPORT_REGION` (unknown or absent). Alt- and Neu-Hohenschönhausen share one merged level. |
+| `property_type` | **not used** | In the data it is only a room-count label. Required by the schema, ignored. |
+| `rooms` | whole rooms 1–5 | Half rooms are rounded half up, values above 5 are capped, with `OUT_OF_DISTRIBUTION` |
+| `area_m2` | yes | Outside 20–302 m² → `OUT_OF_DISTRIBUTION` |
+| `floor`, `total_floors` | 0–8 and 3–8 | Basement counts as ground floor, higher values are capped, with a warning |
+| `building_era` | 4 bands | `pre_1919` and `1919_1949` → pre-1949 · `1950_1972` and `1973_1990` → 1949–1990 · `1991_2009` → 1990–2010 · `2010_plus` → post-2010 |
+| `energy_class` | 9 classes | Identical |
+| `condition` | 5 German states | `renovated` and `needs_renovation` map. `well_kept` and `first_occupancy` have no counterpart → treated as unknown, with `INPUT_INCONSISTENT` |
+| `furnishing` | yes/no | `partly_furnished` → unknown |
+| `has_lift`, `has_balcony` | yes/no | `null` → unknown |
+| `transit_distance_min` | **not used** | The training field measures the walk to a named station that is rarely the nearest one, so it does not mean this field |
+| `lat`, `lon` | **not used** | Always null in this phase. The model derives distance to the centre from the Ortsteil. |
+
+**Unknown inputs** are not filled with a single guess. The service averages the model over the training distribution of the missing field (the Bezirk's Ortsteile, or the era, energy class, etc.), treating missing fields as independent. The interval widens accordingly. Each such field is listed in `inputs.missing` and `inputs.imputed` with the strategy `train_distribution_marginalised`.
+
 **Compatibility rule.** Strict rejection and additive minor versions can coexist only if:
 1. a new optional request field always ships **server-first**: the server accepts it before any client sends it; and
 2. the client sends only the fields of the `api_version` the server advertises, through `GET /api/v1/health` (`api_version`) or `GET /api/v1/schema/rent`.
@@ -126,6 +146,19 @@ The example values are **sentinels** (1234.56, 2000-01, `0.0.0-example`), chosen
 | `data_reference_date` | ISO date | The period the training data represents. The UI shows "Reflects data up to …". |
 | `inputs.missing` / `inputs.imputed` | arrays | The UI lists them under "What the model had to assume" |
 | `warnings[]` | `{code, message, field?}` | Codes: `LOW_SUPPORT_REGION`, `OUT_OF_DISTRIBUTION`, `EXTRAPOLATION_AREA`, `STALE_MODEL`, `INPUT_INCONSISTENT`. Unknown codes are shown with their message (forward-compatible). |
+
+### 3.1 Additions in draft.2 (all additive, so `api_version` stays `1.x`)
+
+| Field | Meaning |
+|---|---|
+| `model.training_data.synthetic` | `true` when the training data is generated, not observed. **Required for this model.** The client treats a response without the flag as `not_connected` (D-058). |
+| `estimate.interval.method` | `"split_conformal_log"`: split-conformal on the log scale, from in-time out-of-fold residuals of the last 12 data months. `level` is `0.8`. |
+| `inputs.ignored` | Request fields that were sent and are not used (`property_type`, `transit_distance_min`, `lat`, `lon`) |
+| `explanation` | `{ method, baseline_rent_per_m2, factors: [{ feature, effect_pct }] }`. The effect of each factor on rent per m² against the average training listing. For the linear model it is exact (coefficient × deviation). Groups: `location`, `market_period`, and single features. |
+| warning `TRAINING_DATA_UNVERIFIED` | Always present for this model. |
+| warning `STALE_MODEL` | Present when the data reference date is more than 180 days before the request. |
+
+The Zod response schema ignores unknown keys, so these can be added to it one at a time.
 
 ## 4. Error envelope — any non-2xx
 
@@ -211,11 +244,11 @@ export interface PredictionTransport {
 - Tests check that each fixture parses (or fails) as expected, and that each maps to the right `RentEstimateOutcome`.
 - When the ML team publishes an OpenAPI document, a CI step will compare it with this contract. Planned: generate a Zod schema from `openapi.json` and compare it.
 
-## 9. Open questions for the ML team
-1. Final feature names and enums. Can `GET /api/v1/schema/rent` be provided?
-2. Is the target cold rent (Nettokalt), and what is its reference period?
-3. Is the interval calibrated, and at what level? Which method?
-4. How are missing values handled? Native missing, imputation, or an "unknown" category per field?
-5. Does `ortsteil_code` (ALKIS `BBOO`) work as the join key in the training data?
-6. Should `has_balcony` include loggias and terraces?
-7. Public or keyed deployment? This decides `direct` vs `proxy`.
+## 9. Questions for the ML team, and the first model's answers (2026-10-30)
+1. **Final feature names and enums.** The request fields stay as drafted. §2.1 lists how the model reads each one. `GET /api/v1/schema/rent` is served from the artifact's `feature_schema.json`.
+2. **Target and reference period.** Cold rent (Nettokalt), modelled as `log(rent per m²)` and multiplied back by `area_m2`. Reference period 2020-01 to 2026-04-29. The model is served at its last data month, never extrapolated forward.
+3. **Interval.** Calibrated: split conformal, level 0.8. Forward coverage measured on held-out months: 0.789 (2025) and 0.764 (2026), so it under-covers slightly when the market moves.
+4. **Missing values.** Averaged over the training distribution of the missing field, and reported in `inputs`.
+5. **`ortsteil_code` as join key.** Works for 80 of 97 Ortsteile. 15 are absent from the data and two names are ambiguous (§2.1).
+6. **`has_balcony` and loggias.** Not answerable: the training data defines the field no further.
+7. **Public or keyed deployment.** Open. Locally and for the demo, `proxy` mode against a local service.

@@ -13,7 +13,7 @@ type Provenance =
   | { kind: "research"; sourceId: string; label: string; validation: "pending" | "passed" | "failed" }
   | { kind: "demo"; fixtureId: string; note: string }
   | { kind: "user" }                                   // entered by this user, in this browser
-  | { kind: "model"; modelVersion: string; dataReferenceDate: string };
+  | { kind: "model"; modelVersion: string; dataReferenceDate: string; trainedOn: "observed" | "synthetic" };
 ```
 
 | Kind | May render as fact? | Visual (DESIGN_SYSTEM §7) |
@@ -22,7 +22,8 @@ type Provenance =
 | `research` | Only once `validation: "passed"` and documented in DECISIONS. Until then it's treated as **not shown**. | Solid band + "Research dataset" + link to its validation report |
 | `demo` | **Never** as fact | Hatched band, "Demo data, not Berlin market statistics" |
 | `user` | Yes, as *the user's own claim* | "From your entries" |
-| `model` | Yes, as an *estimate with uncertainty*, only from a real contract response | "Model estimate", with version and reference date |
+| `model`, `trainedOn: "observed"` | Yes, as an *estimate with uncertainty*, only from a real contract response | "Model estimate", with version and reference date |
+| `model`, `trainedOn: "synthetic"` | Only from a real contract response, **always** under the demo band and the words "Demo model, trained on synthetic data. Not a Berlin market estimate." The number is never used in titles, meta text, previews or comparisons with real figures. (D-058) | Hatched band, "Demo model" |
 
 Every data-bearing component takes `provenance` as a required prop. The TypeScript types enforce it.
 
@@ -33,7 +34,7 @@ Every data-bearing component takes `provenance` as a required prop. The TypeScri
 | `alkis-bezirke` | ALKIS Berlin Bezirke (12) | official | **Retrieved 2026-10-29** |
 | `alkis-ortsteile` | ALKIS Berlin Ortsteile (97) | official | **Retrieved 2026-10-29** |
 | `umweltzone` | Umweltzone Berlin (area inside the S-Bahn ring) | official | **Retrieved 2026-10-29** |
-| `kaggle-berlin-5csv` | Kaggle: `rentals`, `secondary_sales`, `new_construction`, `kiez_prices_monthly`, `transit_stations` | research | **Not in repository.** Validation not started. |
+| `kaggle-berlin-5csv` | Kaggle: `rentals`, `secondary_sales`, `new_construction`, `kiez_prices_monthly`, `transit_stations` | demo (synthetic) | **Intake finished 2026-10-30: `demo-only`.** The author states the listings are generated from a hedonic model. Not in the repository. Details in `data/PROVENANCE.md`. |
 | `demo-market-v1` | Synthetic market fixtures for UI development | demo | **Generated in slice 5** (seed `20261029`, D-041) |
 
 Full details (URLs, license text, checksums, CRS, quality notes) are in `data/PROVENANCE.md`.
@@ -67,6 +68,8 @@ The files go in `data/raw/kaggle/`, which is gitignored until the license allows
    - duplicate listings
 5. **Synthetic-data signals:** overly smooth or uniform distributions, repeated decimal patterns, impossible combinations (e.g. 1 room at 180 m²), implausible spatial patterns, or round-number excess. If the dataset looks synthetic, it may only be used as **demo**, under the demo label.
 6. **Decision:** `passed` (it becomes `research` with documented caveats), `demo-only`, or `rejected`.
+
+**Outcome for `kaggle-berlin-5csv` (2026-10-30): `demo-only`.** Step 1 settled it: the Kaggle description says "listing-level apartment characteristics are generated from the hedonic model". Steps 2 to 5 were run in Colab and agree (no nulls, no round-number heaping, a half-yearly step market level, a transit field that does not measure the nearest station). Steps 3 and 4 against Mietspiegel or IBB figures were not needed to reach the decision and were not done. A model trained on this data recovers the generator, so its error says nothing about real Berlin listings.
 
 ## 5. Demo fixture rules
 

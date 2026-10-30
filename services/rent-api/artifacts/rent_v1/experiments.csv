@@ -1,0 +1,23 @@
+id,target,features,split_protocol,model,params,eval_on,MAE,RMSE,MAE_m2,R2,bias,secs,note
+E01,eur_m2,none,chrono 2020-24/2025/2026,median EUR/m2 (all train),-,val,405.39,673.06,4.987,0.3469,-319.99,0.0,
+E02,eur_m2,none,chrono 2020-24/2025/2026,median EUR/m2 (last 12 train months),-,val,371.74,608.98,4.629,0.4653,-208.43,0.0,tests how much the market trend alone explains
+E03,log_eur_m2,A+t,chrono 2020-24/2025/2026,LinearRegression,ohe+std,val,143.46,217.12,1.826,0.932,29.42,0.4,
+E04,log_eur_m2,A,chrono 2020-24/2025/2026,LinearRegression,ohe+std,val,222.41,335.75,2.827,0.8375,-208.72,0.3,
+E05,log_eur_m2,A+t,chrono 2020-24/2025/2026,CatBoost,d6 lr.05 it=1019,val,140.34,215.46,1.788,0.9331,-48.26,33.3,t_month as raw feature
+E06,log_eur_m2,A,chrono 2020-24/2025/2026,CatBoost,d6 lr.05 it=280,val,221.91,335.25,2.824,0.838,-209.59,9.3,no time feature
+E07,log_eur_m2 - mu(t),A,chrono 2020-24/2025/2026,CatBoost+market index,d6 lr.05 it=447 mu=flat,val,146.33,229.69,1.865,0.9239,-77.77,18.5,deployable: mu extrapolated from train months only
+E08,log_eur_m2 - mu(t),A,chrono 2020-24/2025/2026,CatBoost+market index,d6 lr.05 it=447 mu=linear,val,147.75,232.21,1.883,0.9223,-82.13,18.5,deployable: mu extrapolated from train months only
+E09,log_eur_m2 - mu(t),A,chrono 2020-24/2025/2026,CatBoost+market index,mu=oracle val-month median,val,137.3,208.93,1.747,0.9371,-11.22,18.5,NOT deployable: diagnostic of how much error is market drift
+E10,log_eur_m2,A+t+lat/lon/position/gate_km (UPPER BOUND),chrono 2020-24/2025/2026,CatBoost,d6 lr.05 it=761,val,133.49,203.64,1.702,0.9402,-51.36,30.4,not contract-feasible in this phase
+E11,log_eur_m2,A+t -transit_distance_min,chrono 2020-24/2025/2026,CatBoost,d6 lr.05 it=691,val,145.34,226.06,1.851,0.9263,-49.82,22.2,tests whether the mismatched transit field carries signal
+E12,log_eur_m2,A+t+kiez_rent_lag1,chrono 2020-24/2025/2026,CatBoost,d6 lr.05 it=467,val,138.3,211.09,1.754,0.9358,-17.78,18.4,research: needs a refreshed monthly Kiez series at serving time
+E13,log_eur_m2,P,chrono 2020-24/2025/2026,LinearRegression,ohe+std,val,144.23,218.8,1.837,0.931,29.21,0.4,
+E14,eur (raw rent),P,chrono 2020-24/2025/2026,CatBoost,d6 lr.05 it=999,val,147.08,229.55,1.872,0.924,-28.86,33.5,"raw target, RMSE"
+E15,log_eur (rent),P,chrono 2020-24/2025/2026,CatBoost,d6 lr.05 it=982,val,145.91,227.87,1.858,0.9251,-47.94,30.1,"log rent, area is only a feature"
+E16,log_eur_m2,P,chrono 2020-24/2025/2026,CatBoost,d6 lr.05 it=592 loss=MAE,val,147.52,228.77,1.883,0.9245,-56.39,23.0,median-targeting loss in log space
+E17,log_eur_m2,P+log_area,chrono 2020-24/2025/2026,LinearRegression,ohe+std,val,144.22,218.83,1.837,0.931,29.25,0.0,adds log(area) so size effect can be non-linear in log space
+E18,log_eur_m2,P,chrono 2020-24/2025/2026,PyTorch MLP+embeddings (mean of 3 seeds),"128-64 LN GELU drop.1 AdamW huber epochs=[23, 18, 28]",val,143.9,225.14,1.83,0.9269,-18.63,59.6,early stopping on val
+F01,log_eur_m2,P,chrono 2020-24/2025/2026,Linear,fit on train 2020-24; val-calibrated conformal,TEST,155.97,236.93,2.028,0.9033,76.95,0.0,SELECTED
+F02,log_eur_m2,P,chrono 2020-24/2025/2026,CatBoost,fit on train 2020-24; val-calibrated conformal,TEST,146.77,231.42,1.93,0.9078,-57.82,0.0,"challenger, report only"
+S01,"log_eur_m2 (sales, price/m2)",sales P,chrono 2020-24/2025/2026,LinearRegression,ohe+std,val,34716.06,54490.69,438.328,0.9612,12344.26,0.0,separate sales model; research only
+S02,"log_eur_m2 (sales, price/m2)",sales P,chrono 2020-24/2025/2026,CatBoost,d6 lr.08 it=866,val,30193.81,50007.17,379.816,0.9674,-11308.49,50.0,separate sales model; research only

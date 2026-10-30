@@ -1,7 +1,7 @@
 # Implementation Tasks
 
 Status legend: `[x]` done · `[~]` in progress · `[ ]` todo · `[!]` blocked (reason given)
-Last updated: 2026-10-29
+Last updated: 2026-10-30
 
 **Definition of done for every slice**
 1. `npm run typecheck`, `npm run lint` and `npm run test` pass. `npm run build` passes from slice 1 onward.
@@ -479,3 +479,14 @@ Findings:
 ## Blocked / external
 - [!] Real market data: waiting for the Kaggle files + URL/license (PRD Q1)
 - [!] Contract v1 freeze: waiting for the ML feature schema (PRD Q2/Q3)
+
+## Slice 10 — Demo model service (ML phase; depends on: 3; owner approved 2026-10-30, D-058)
+- [x] Colab work: five CSVs profiled, intake finished (`demo-only`, synthetic by the author's description), leakage screen, chronological split, linear/CatBoost/MLP comparison, conformal interval, artifacts. The notebook is the owner's; the artifacts are small (linear model, schema, metadata, `inference.py`).
+- [x] Docs: `data/PROVENANCE.md`, DATA_BOUNDARIES (§1, §2, §4), VISION (§3.1), PREDICTION_API draft.2, CLAUDE.md integrity rule, D-058
+- [x] Artifact transfer: the browser download of the zip failed, so the small files (`linear_model.json`, `residual_quantiles.json`, `feature_schema.json`, `metadata.json`, `experiments.csv`) were moved as text and checked by SHA-256 against Colab. The CatBoost challenger (1.7 MB) and the notebook are not in the repository.
+- [x] `services/rent-api/`: FastAPI service (health, `POST /api/v1/predictions/rent`, model card, schema), error envelope for every non-2xx, pinned requirements, README. The model is the log-linear regression evaluated with NumPy from JSON (no pickle, no scikit-learn at run time; max difference to the notebook pipeline 1.3e-15 on 30,000 rows).
+  - Checks: `pytest -q` in `services/rent-api` with scikit-learn and joblib uninstalled: 27 passed (golden values, contract fixture, 422 cases, 404, 503). Real `uvicorn` run on port 8000: health ok; the repo request fixture answered 200 with `synthetic: true`, `TRAINING_DATA_UNVERIFIED`, `X-Request-ID` echoed; `{"bezirk":"Mitte"}` answered 422 in the error envelope; server stopped afterwards.
+  - Python 3.12 is at `%LOCALAPPDATA%\Programs\Python\Python312` (not on PATH).
+- [ ] Frontend: add `synthetic` to the response schema and `trainedOn` to `Provenance`; ResultPanel renders `ok` under the demo band and fixed words; `not_connected` when the flag is missing; contract fixtures for the new fields; E2E against the real local service
+- [ ] `/methodology`: the model section (what was compared, why three families tie, the interval and its measured coverage, what the data is)
+- [ ] Not done and not planned: LightGBM benchmark, SHAP for the challenger, a sales or new-construction model in the product
