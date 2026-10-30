@@ -2,6 +2,8 @@
 
 A Berlin housing tool built around one rule, **nothing is shown as fact unless its source says it is**. You can explore the 12 Bezirke and 97 Ortsteile on official geometry, compare listings you have found, and prepare a flat for a rent-prediction model. The model that exists is a **demo trained on synthetic data**, and the site says so wherever it answers.
 
+**Live: [berlinhouse.netlify.app](https://berlinhouse.netlify.app/)** (prediction is switched off there)
+
 ![Home: the 97 Ortsteile and the short form that starts an analysis](docs/screenshots/home.png)
 
 ## What is real and what is a demo
@@ -110,7 +112,7 @@ Then set `NEXT_PUBLIC_PREDICTION_MODE=proxy` and `PREDICTION_API_BASE_URL=http:/
 - No screen-reader pass yet (no NVDA, Firefox or VoiceOver on the development machine).
 - First-load JS is over the original 150 kB budget on form and chart routes, under the restated one ([D-057](docs/implementation/DECISIONS.md)).
 - No real market data and no real listing data: nothing free and redistributable is available at listing level. Candidates for official aggregates (Zensus 2022, Mietspiegel 2024) have not passed intake yet.
-- Nothing is deployed.
+- The live site runs with prediction switched off. The demo model runs only on a developer's machine, behind `services/rent-api`.
 - The MIT licence covers this repository's own files. The geodata and the Kaggle dataset keep their licences, listed below.
 
 ## Licenses
