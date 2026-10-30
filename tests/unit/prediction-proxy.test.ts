@@ -25,7 +25,7 @@ const json = (body: string, status: number, headers: Record<string, string> = {}
 
 describe("readProxyEnv", () => {
   it("is not configured without a base URL", () => {
-    expect(readProxyEnv({})).toEqual({ baseUrl: null, apiKey: null, timeoutMs: 10_000 });
+    expect(readProxyEnv({})).toEqual({ baseUrl: null, apiKey: null, timeoutMs: 10_000, embedded: false });
   });
 
   it("reads the base URL, key and timeout", () => {
@@ -35,7 +35,7 @@ describe("readProxyEnv", () => {
         PREDICTION_API_KEY: "k",
         PREDICTION_TIMEOUT_MS: "4000",
       }),
-    ).toEqual({ baseUrl: "https://model.example", apiKey: "k", timeoutMs: 4_000 });
+    ).toEqual({ baseUrl: "https://model.example", apiKey: "k", timeoutMs: 4_000, embedded: false });
   });
 
   it("treats a malformed value as not configured rather than guessing", () => {
@@ -172,5 +172,62 @@ describe("POST /api/predictions/rent", () => {
     const id = res.headers.get("x-request-id") ?? "";
     expect(id).not.toBe("<script>");
     expect(id).toMatch(/^[0-9a-f-]{36}$/);
+  });
+});
+
+describe("embedded demo model (D-061)", () => {
+  const embedded: ProxyEnv = { baseUrl: null, apiKey: null, timeoutMs: 5_000, embedded: true };
+  const refuseToFetch = () =>
+    vi.fn<typeof fetch>(async () => {
+      throw new Error("must not call out");
+    });
+
+  it("is switched on only by NEXT_PUBLIC_PREDICTION_MODE=embedded", () => {
+    expect(readProxyEnv({ NEXT_PUBLIC_PREDICTION_MODE: "embedded" }).embedded).toBe(true);
+    expect(readProxyEnv({ NEXT_PUBLIC_PREDICTION_MODE: "proxy" }).embedded).toBe(false);
+    expect(readProxyEnv({}).embedded).toBe(false);
+  });
+
+  it("answers in-process, without any network call, and the client accepts it as a synthetic demo", async () => {
+    const fetchImpl = refuseToFetch();
+    const res = await proxyRentPrediction(post(requestBody, { "X-Request-ID": "req-9" }), embedded, fetchImpl);
+    expect(fetchImpl).not.toHaveBeenCalled();
+    expect(res.status).toBe(200);
+    expect(res.headers.get("x-request-id")).toBe("req-9");
+    const text = await res.text();
+    const outcome = interpretPredictionResponse(res.status, text, "req-9");
+    expect(outcome.status).toBe("ok");
+    if (outcome.status === "ok") {
+      expect(outcome.trainedOn).toBe("synthetic");
+      expect(outcome.data.estimate.monthly_cold_rent.value).toBeGreaterThan(0);
+    }
+  });
+
+  it("still validates against contract v1 first", async () => {
+    const bad = JSON.stringify({ ...JSON.parse(requestBody), area_m2: 5 });
+    const res = await proxyRentPrediction(post(bad), embedded, refuseToFetch());
+    expect(res.status).toBe(422);
+  });
+
+  it("keeps a configured upstream in charge", async () => {
+    const fetchImpl = vi.fn<typeof fetch>(async () => json(fixture("rent.v1.ok.json"), 200));
+    await proxyRentPrediction(post(requestBody), { ...configured, embedded: true }, fetchImpl);
+    expect(fetchImpl).toHaveBeenCalledOnce();
+  });
+
+  it("reports MODEL_UNAVAILABLE instead of crashing when the model throws", async () => {
+    vi.resetModules();
+    vi.doMock("@/lib/model/rent-model", () => ({
+      predictRent: () => {
+        throw new Error("boom");
+      },
+    }));
+    const { proxyRentPrediction: proxy } = await import("@/lib/api/prediction/proxy");
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const res = await proxy(post(requestBody), embedded, refuseToFetch());
+    expect(res.status).toBe(503);
+    expect((await res.json()).error).toMatchObject({ code: "MODEL_UNAVAILABLE", retryable: true });
+    vi.doUnmock("@/lib/model/rent-model");
+    vi.restoreAllMocks();
   });
 });

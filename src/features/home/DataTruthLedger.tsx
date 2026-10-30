@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { rentModelConnected } from "@/lib/api/prediction/connected";
 import { ProvenanceMark } from "@/components/provenance/ProvenanceMark";
 import { PROVENANCE_COPY } from "@/components/provenance/provenance-copy";
 import type { ProvenanceKind } from "@/types/provenance";
@@ -31,12 +32,31 @@ const ROWS: TruthRow[] = [
     covers: "The market charts: rent trends, €/m² by district, price spreads and property types.",
     limits: "Generated so the charts can be built and reviewed. They are not Berlin market statistics.",
   },
-  {
-    kind: "not-connected",
-    label: "Not connected",
-    covers: "Rent estimates, and transit access for each Ortsteil.",
-    limits: "The rent model is still being built. Until it is connected, no estimate or fair-price figure appears anywhere.",
-  },
+  ...(rentModelConnected
+    ? [
+        {
+          kind: "demo" as const,
+          label: "Demo model",
+          covers: "The rent estimate on Analyze.",
+          limits:
+            "Trained on synthetic data, so it says nothing about real Berlin rents. It appears only on Analyze, under the demo band.",
+        },
+        {
+          kind: "not-connected" as const,
+          label: "Not connected",
+          covers: "Transit access for each Ortsteil.",
+          limits: "No transit source has been checked yet, so nothing stands in for it.",
+        },
+      ]
+    : [
+        {
+          kind: "not-connected" as const,
+          label: "Not connected",
+          covers: "Rent estimates, and transit access for each Ortsteil.",
+          limits:
+            "The rent model is still being built. Until it is connected, no estimate or fair-price figure appears anywhere.",
+        },
+      ]),
   {
     kind: "pending",
     label: "Not written yet",

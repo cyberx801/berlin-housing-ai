@@ -227,6 +227,7 @@ export interface PredictionTransport {
 - The proxy route `src/app/api/predictions/rent/route.ts`:
   - validates the body with the same Zod request schema
   - returns `503 PREDICTION_ENGINE_NOT_CONFIGURED` when `PREDICTION_API_BASE_URL` is unset
+  - in `embedded` mode, with no upstream configured, answers with `src/lib/model/rent-model.ts` in the same process (answer and errors use the same envelope; `503 MODEL_UNAVAILABLE` if it throws)
   - otherwise forwards the request with the server-only `PREDICTION_API_KEY` (if set) and a timeout, and passes the envelope through
 - `PropertyAnalysisService.estimateRent(input)` maps `PropertyInput` to the request with `toRentPredictionRequest`, generates the request ID, calls the transport, and returns the outcome.
 
@@ -235,6 +236,7 @@ export interface PredictionTransport {
 |---|---|---|
 | No backend (today) | `disabled` | — |
 | Public FastAPI with CORS and no secret | `direct` | `NEXT_PUBLIC_PREDICTION_MODE=direct`, `NEXT_PUBLIC_API_BASE_URL=https://…` |
+| No separate backend, the demo model runs in the site's own server (D-061) | `embedded` | `NEXT_PUBLIC_PREDICTION_MODE=embedded` (build-time; works where only build variables exist, e.g. Netlify) |
 | Backend needs a key, is private, or CORS is undesirable | `proxy` (**recommended**) | `NEXT_PUBLIC_PREDICTION_MODE=proxy`, `PREDICTION_API_BASE_URL=…`, `PREDICTION_API_KEY=…` (server-only) |
 
 ## 8. Contract tests

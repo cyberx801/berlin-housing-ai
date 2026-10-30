@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ProvenanceLabel } from "@/components/provenance/ProvenanceLabel";
+import { rentModelConnected } from "@/lib/api/prediction/connected";
 import { formatIsoDate } from "@/lib/formatting/date";
 import { formatAreaM2, formatKm2, formatPercent } from "@/lib/formatting/number";
 import { RING_INSIDE_MIN, RING_OUTSIDE_MAX } from "@/lib/geo/ring";
@@ -201,9 +202,9 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
 
       <Section id="in-development">
         <p className="type-prose">
-          Two things the site is built for aren&rsquo;t connected yet: the rent model and transit access. Wherever they
-          would appear, a dashed &ldquo;Not connected&rdquo; frame says what is missing. Nothing fills the space in the
-          meantime.
+          {rentModelConnected
+            ? "One thing the site is built for isn’t connected yet: transit access. Wherever it would appear, a dashed “Not connected” frame says what is missing. Nothing fills the space in the meantime. The rent model is a demo, described below."
+            : "Two things the site is built for aren’t connected yet: the rent model and transit access. Wherever they would appear, a dashed “Not connected” frame says what is missing. Nothing fills the space in the meantime."}
         </p>
 
         <Subsection id="predictions">
@@ -215,9 +216,9 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
             the words &ldquo;Demo model, trained on synthetic data. Not a Berlin market estimate.&rdquo;
           </p>
           <p className="type-prose">
-            The model runs as a separate service, reached through this site&rsquo;s server by a contract that fixes the
-            fields Analyze sends and the answer it gets back. This build isn&rsquo;t connected to one, so Analyze ends
-            at &ldquo;Prediction engine not connected&rdquo;. When a service is connected, Analyze shows its answer. A
+            {rentModelConnected
+              ? "In this build the model runs inside this site’s server. Analyze sends it your description through a contract that fixes the fields sent and the answer that comes back, and shows the answer. The same contract can also point at a separate service. "
+              : "The model runs as a separate service, reached through this site’s server by a contract that fixes the fields Analyze sends and the answer it gets back. This build isn’t connected to one, so Analyze ends at “Prediction engine not connected”. When a service is connected, Analyze shows its answer. "}A
             figure from the demo model never appears in a page title, a preview, the home page or a neighborhood
             profile, and never next to a real figure as a comparison. If a service does not say that its model was
             trained on synthetic data, the site shows no figure at all.
@@ -312,10 +313,9 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
           </li>
         </ul>
         <p className="type-prose">
-          Nothing you enter on Analyze or Compare is sent anywhere in this build. No rent model is connected, so
-          Analyze ends by showing the request it would send instead of sending it. If a model is connected, Analyze
-          sends that request, which holds no address and no coordinates, to this site&rsquo;s server and on to the
-          model. The short form on the home page is the
+          {rentModelConnected
+            ? "Compare entries stay in your browser. When you prepare an analysis, Analyze sends the request, which holds no address and no coordinates, to this site’s server. The demo model runs there and answers. The site doesn’t store the request. "
+            : "Nothing you enter on Analyze or Compare is sent anywhere in this build. No rent model is connected, so Analyze ends by showing the request it would send instead of sending it. If a model is connected, Analyze sends that request, which holds no address and no coordinates, to this site’s server and on to the model. "}The short form on the home page is the
           exception: it opens Analyze with its three values (Bezirk, living area and rooms) in the page address, and
           that address reaches this site&rsquo;s server like any page request. There are no accounts, no cookies and
           no tracking.
@@ -347,8 +347,9 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
             your browser data.
           </li>
           <li>
-            Market figures are demo data. The rent model is a demo trained on synthetic data and isn&rsquo;t connected
-            to this build, and transit access isn&rsquo;t connected. The Kaggle dataset is synthetic and demo only.
+            Market figures are demo data. {rentModelConnected
+              ? "The rent model is a demo trained on synthetic data, and transit access isn’t connected."
+              : "The rent model is a demo trained on synthetic data and isn’t connected to this build, and transit access isn’t connected."} The Kaggle dataset is synthetic and demo only.
           </li>
         </ul>
       </Section>

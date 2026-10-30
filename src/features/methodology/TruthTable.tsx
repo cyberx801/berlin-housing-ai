@@ -1,3 +1,4 @@
+import { rentModelConnected } from "@/lib/api/prediction/connected";
 import type { ReactNode } from "react";
 import { ProvenanceMark } from "@/components/provenance/ProvenanceMark";
 import type { ProvenanceKind } from "@/types/provenance";
@@ -45,9 +46,11 @@ export function TruthTable({ retrieved }: { retrieved: string }) {
     {
       capability: "Rent prediction",
       section: "predictions",
-      kind: "not-connected",
-      state: "Not connected",
-      backing: "A demo model trained on synthetic data exists. This build isn’t connected to it, so no estimate is shown.",
+      kind: rentModelConnected ? "demo" : "not-connected",
+      state: rentModelConnected ? "Demo, synthetic data" : "Not connected",
+      backing: rentModelConnected
+        ? "A demo model trained on synthetic data answers on Analyze only, under the demo band. It says nothing about real Berlin rents."
+        : "A demo model trained on synthetic data exists. This build isn’t connected to it, so no estimate is shown.",
     },
     {
       capability: "Transit access for each Ortsteil",

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ProvenanceMark } from "@/components/provenance/ProvenanceMark";
+import { rentModelConnected } from "@/lib/api/prediction/connected";
 import { NAV_ITEMS } from "./nav-items";
 
 export function SiteFooter() {
@@ -52,8 +53,8 @@ export function SiteFooter() {
               Market figures: demo data
             </li>
             <li className="flex items-center gap-3">
-              <ProvenanceMark kind="not-connected" />
-              Rent model: not connected
+              <ProvenanceMark kind={rentModelConnected ? "demo" : "not-connected"} />
+              {rentModelConnected ? "Rent model: demo, synthetic data" : "Rent model: not connected"}
             </li>
           </ul>
           <p className="mt-4 type-small text-ink-3">No tracking, no cookies. Your entries stay in your browser.</p>

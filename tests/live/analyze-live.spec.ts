@@ -1,14 +1,11 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-// Runs against the real rent service through the proxy (playwright.live.config.ts).
+// Runs against the demo model built into the server, through the proxy route (playwright.live.config.ts).
 // The model is the demo model trained on synthetic data (D-058): every figure must sit under
 // the demo band and the fixed words, and none may leak into the title or the meta text.
 
-test("Analyze → the real demo model answers under the demo band", async ({ page, request }) => {
-  const health = await request.get("http://127.0.0.1:8000/api/v1/health");
-  expect(await health.json()).toMatchObject({ status: "ok", model_loaded: true });
-
+test("Analyze → the demo model answers under the demo band", async ({ page }) => {
   await page.goto("/analyze");
   await page.locator("form#analyze-form[data-hydrated]").waitFor();
 
@@ -76,4 +73,14 @@ test("A flat with most fields left open still gets an answer, with the assumptio
   await expect(page.getByRole("region", { name: "Demo estimate of the cold rent" })).toContainText(
     "Not given, so the model filled them in",
   );
+});
+
+test("The pages say the rent model is a demo, not that it is missing", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("navigation", { name: "Pages on this site" })).toContainText("try the demo rent model");
+  await expect(page.getByText("Demo model, synthetic data").first()).toBeVisible();
+  await expect(page.getByText("Rent model not connected")).toHaveCount(0);
+  await expect(page.getByText("Rent model: not connected")).toHaveCount(0);
+  await page.goto("/methodology");
+  await expect(page.getByText("Prediction engine not connected")).toHaveCount(0);
 });

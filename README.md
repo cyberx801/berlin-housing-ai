@@ -2,7 +2,7 @@
 
 A Berlin housing tool built around one rule, **nothing is shown as fact unless its source says it is**. You can explore the 12 Bezirke and 97 Ortsteile on official geometry, compare listings you have found, and prepare a flat for a rent-prediction model. The model that exists is a **demo trained on synthetic data**, and the site says so wherever it answers.
 
-**Live: [berlinhouse.netlify.app](https://berlinhouse.netlify.app/)** (prediction is switched off there)
+**Live: [berlinhouse.netlify.app](https://berlinhouse.netlify.app/)** (the Analyze page answers with the demo model, trained on synthetic data)
 
 ![Home: the 97 Ortsteile and the short form that starts an analysis](docs/screenshots/home.png)
 
@@ -61,15 +61,17 @@ The full account is on the site's `/methodology` page and in the [model card](se
 
 ```
 Browser ── Next.js 16 (App Router, TypeScript strict)
-              │  /api/predictions/rent  (proxy mode, server-side)
+              │  /api/predictions/rent  (server-side)
               ▼
-           FastAPI service  services/rent-api   ── log-linear model as JSON, NumPy only
+           demo model, in the same server (TypeScript)   ── reads the JSON in services/rent-api/artifacts
+           FastAPI service  services/rent-api            ── the same model in Python, optional (proxy mode)
 ```
 
 - **Frontend:** Next.js, React, Zod contracts, MapLibre kept out of every first-load chunk, an "Atlas" design system with contrast-checked tokens ([`docs/design`](docs/design/DESIGN_SYSTEM.md)).
 - **Contract:** [`PREDICTION_API.md`](docs/contracts/PREDICTION_API.md). A response that does not say `synthetic: true` is never shown as an estimate.
+- **Model:** `src/lib/model/rent-model.ts` runs the demo model inside the site's server (`NEXT_PUBLIC_PREDICTION_MODE=embedded`, what the live site uses). It is a port of the Python service and is tested against answers the service gave.
 - **Service:** `services/rent-api`: model card, health, schema and prediction endpoints, one error envelope. No pickle and no scikit-learn at run time.
-- **Tests:** 310 unit, component and contract tests (Vitest), Playwright journeys at 375, 768 and 1440 px, axe on every route, and an end-to-end suite against the real service.
+- **Tests:** 344 unit, component and contract tests (Vitest), Playwright journeys at 375, 768 and 1440 px, axe on every route, and an end-to-end suite against the real service.
 
 ## Run it
 
@@ -82,7 +84,13 @@ npm run check         # typecheck + lint + unit tests + production build
 npm run test:e2e      # Playwright (first run: npx playwright install chromium)
 ```
 
-To see the demo model answer, run the service and point the proxy at it (Python 3.12):
+To see the demo model answer locally, the simplest way is to build with it inside the server:
+
+```bash
+NEXT_PUBLIC_PREDICTION_MODE=embedded npm run build && npm start     # PowerShell: $env:NEXT_PUBLIC_PREDICTION_MODE="embedded"
+```
+
+Or run the Python service and point the proxy at it (Python 3.12):
 
 ```bash
 cd services/rent-api
@@ -112,7 +120,7 @@ Then set `NEXT_PUBLIC_PREDICTION_MODE=proxy` and `PREDICTION_API_BASE_URL=http:/
 - No screen-reader pass yet (no NVDA, Firefox or VoiceOver on the development machine).
 - First-load JS is over the original 150 kB budget on form and chart routes, under the restated one ([D-057](docs/implementation/DECISIONS.md)).
 - No real market data and no real listing data: nothing free and redistributable is available at listing level. Candidates for official aggregates (Zensus 2022, Mietspiegel 2024) have not passed intake yet.
-- The live site runs with prediction switched off. The demo model runs only on a developer's machine, behind `services/rent-api`.
+- The live site's rent model is the demo trained on synthetic data. It answers on Analyze only, under the demo band, and says nothing about real Berlin rents.
 - The MIT licence covers this repository's own files. The geodata and the Kaggle dataset keep their licences, listed below.
 
 ## Licenses

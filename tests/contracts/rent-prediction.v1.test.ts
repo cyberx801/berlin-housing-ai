@@ -267,6 +267,10 @@ describe("configuration", () => {
   it("uses the same-origin proxy path in proxy mode", () => {
     expect(readPredictionConfig({ mode: "proxy" }).endpoint).toBe("/api/predictions/rent");
   });
+
+  it("embedded mode looks like proxy mode to the browser (the server holds the model)", () => {
+    expect(readPredictionConfig({ mode: "embedded" })).toMatchObject({ mode: "proxy", endpoint: "/api/predictions/rent" });
+  });
 });
 
 describe("PropertyAnalysisService", () => {

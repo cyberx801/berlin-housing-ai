@@ -2,6 +2,7 @@ import "server-only";
 import { z } from "zod";
 import { CONTRACT_VERSION, RENT_PREDICTION_PATH, rentPredictionRequestV1 } from "@/lib/contracts/rent-prediction.v1";
 import { randomId } from "@/lib/id";
+import { predictRent } from "@/lib/model/rent-model";
 import { DEFAULT_TIMEOUT_MS } from "./config";
 
 // Server-side half of `proxy` mode (PREDICTION_API.md §7). The upstream URL and key are read
@@ -15,6 +16,8 @@ export interface ProxyEnv {
   baseUrl: string | null;
   apiKey: string | null;
   timeoutMs: number;
+  /** Answer with the demo model built into this server (D-061) instead of forwarding. */
+  embedded?: boolean;
 }
 
 const envSchema = z.object({
@@ -28,8 +31,10 @@ export function readProxyEnv(
     PREDICTION_API_BASE_URL: process.env.PREDICTION_API_BASE_URL,
     PREDICTION_API_KEY: process.env.PREDICTION_API_KEY,
     PREDICTION_TIMEOUT_MS: process.env.PREDICTION_TIMEOUT_MS,
+    NEXT_PUBLIC_PREDICTION_MODE: process.env.NEXT_PUBLIC_PREDICTION_MODE, // inlined at build, so it also holds on hosts that only set build variables
   },
 ): ProxyEnv {
+  const embedded = env.NEXT_PUBLIC_PREDICTION_MODE === "embedded";
   const parsed = envSchema.safeParse({
     baseUrl: env.PREDICTION_API_BASE_URL || undefined,
     apiKey: env.PREDICTION_API_KEY || undefined,
@@ -40,9 +45,10 @@ export function readProxyEnv(
     console.error(
       `Prediction proxy: ignoring invalid configuration (${parsed.error.issues.map((i) => i.path.join(".")).join(", ")}).`,
     );
-    return { baseUrl: null, apiKey: null, timeoutMs: DEFAULT_TIMEOUT_MS };
+    return { baseUrl: null, apiKey: null, timeoutMs: DEFAULT_TIMEOUT_MS, embedded };
   }
   return {
+    embedded,
     baseUrl: parsed.data.baseUrl ?? null,
     apiKey: parsed.data.apiKey ?? null,
     timeoutMs: parsed.data.timeoutMs ?? DEFAULT_TIMEOUT_MS,
@@ -104,6 +110,20 @@ export async function proxyRentPrediction(
     });
   }
 
+  // A configured upstream wins; otherwise the model built into this server answers, when it is switched on.
+  if (env.baseUrl === null && env.embedded) {
+    try {
+      const { status, body: answer } = predictRent(parsed.data, { requestId });
+      return new Response(JSON.stringify(answer), { status, headers: headersFor(requestId) });
+    } catch (err) {
+      console.error("Embedded rent model failed:", err instanceof Error ? err.message : err);
+      return errorResponse(503, requestId, {
+        code: "MODEL_UNAVAILABLE",
+        message: "The demo model could not produce an answer.",
+        retryable: true,
+      });
+    }
+  }
   if (env.baseUrl === null) {
     return errorResponse(503, requestId, {
       code: "PREDICTION_ENGINE_NOT_CONFIGURED",

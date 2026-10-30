@@ -1,0 +1,1522 @@
+{
+  "full": {
+    "request": {
+      "bezirk": "Mitte",
+      "ortsteil": "Moabit",
+      "ortsteil_code": "0102",
+      "property_type": "apartment",
+      "rooms": 2,
+      "area_m2": 65,
+      "floor": 2,
+      "total_floors": 5,
+      "building_era": "1950_1972",
+      "energy_class": "D",
+      "condition": "renovated",
+      "has_lift": true,
+      "has_balcony": true,
+      "furnishing": "unfurnished",
+      "transit_distance_min": null,
+      "lat": null,
+      "lon": null
+    },
+    "status": 200,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "generated_at": "2026-10-30T12:00:00+00:00",
+      "estimate": {
+        "monthly_cold_rent": {
+          "value": 1204.85,
+          "currency": "EUR"
+        },
+        "rent_per_m2": {
+          "value": 18.54,
+          "currency": "EUR"
+        },
+        "interval": {
+          "lower": 951.42,
+          "upper": 1440.96,
+          "level": 0.8,
+          "method": "split_conformal_log"
+        }
+      },
+      "model": {
+        "name": "rent-model",
+        "version": "0.1.0-research+linear",
+        "trained_at": "2026-10-30T00:34:46+00:00",
+        "training_data": {
+          "source_id": "kaggle-berlin-5csv",
+          "synthetic": true,
+          "reference_period": {
+            "start": "2020-01",
+            "end": "2026-04"
+          }
+        }
+      },
+      "data_reference_date": "2026-04-29",
+      "inputs": {
+        "missing": [],
+        "imputed": [],
+        "ignored": [
+          "property_type"
+        ]
+      },
+      "warnings": [
+        {
+          "code": "STALE_MODEL",
+          "message": "Training data ends 2026-04-29; rents may have moved since."
+        },
+        {
+          "code": "TRAINING_DATA_UNVERIFIED",
+          "message": "Demo model: the training data is synthetic. Not a Berlin market estimate."
+        }
+      ],
+      "explanation": {
+        "method": "log-linear coefficients",
+        "baseline_rent_per_m2": 11.06,
+        "factors": [
+          {
+            "feature": "location",
+            "effect_pct": 39.6
+          },
+          {
+            "feature": "market_period",
+            "effect_pct": 24.7
+          },
+          {
+            "feature": "building_era",
+            "effect_pct": -11.7
+          },
+          {
+            "feature": "energy_class",
+            "effect_pct": 5.5
+          },
+          {
+            "feature": "has_lift",
+            "effect_pct": 2.3
+          },
+          {
+            "feature": "has_balcony",
+            "effect_pct": 1.1
+          },
+          {
+            "feature": "rooms",
+            "effect_pct": 0.2
+          },
+          {
+            "feature": "area_m2",
+            "effect_pct": -0.1
+          }
+        ]
+      }
+    }
+  },
+  "sparse": {
+    "request": {
+      "bezirk": "Neukölln",
+      "property_type": "apartment",
+      "rooms": 2.5,
+      "area_m2": 65
+    },
+    "status": 200,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "generated_at": "2026-10-30T12:00:00+00:00",
+      "estimate": {
+        "monthly_cold_rent": {
+          "value": 780.63,
+          "currency": "EUR"
+        },
+        "rent_per_m2": {
+          "value": 12.01,
+          "currency": "EUR"
+        },
+        "interval": {
+          "lower": 539.78,
+          "upper": 1083.23,
+          "level": 0.8,
+          "method": "split_conformal_log"
+        }
+      },
+      "model": {
+        "name": "rent-model",
+        "version": "0.1.0-research+linear",
+        "trained_at": "2026-10-30T00:34:46+00:00",
+        "training_data": {
+          "source_id": "kaggle-berlin-5csv",
+          "synthetic": true,
+          "reference_period": {
+            "start": "2020-01",
+            "end": "2026-04"
+          }
+        }
+      },
+      "data_reference_date": "2026-04-29",
+      "inputs": {
+        "missing": [
+          "building_era",
+          "condition",
+          "energy_class",
+          "floor",
+          "furnishing",
+          "has_balcony",
+          "has_lift",
+          "ortsteil",
+          "total_floors"
+        ],
+        "imputed": [
+          {
+            "field": "ortsteil",
+            "strategy": "bezirk_distribution"
+          },
+          {
+            "field": "building_era",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "energy_class",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "condition",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "has_lift",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "has_balcony",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "furnishing",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "floor",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "total_floors",
+            "strategy": "train_distribution_marginalised"
+          }
+        ],
+        "ignored": [
+          "property_type"
+        ]
+      },
+      "warnings": [
+        {
+          "code": "OUT_OF_DISTRIBUTION",
+          "field": "rooms",
+          "message": "The model knows whole rooms 1-5; the value was adjusted."
+        },
+        {
+          "code": "STALE_MODEL",
+          "message": "Training data ends 2026-04-29; rents may have moved since."
+        },
+        {
+          "code": "TRAINING_DATA_UNVERIFIED",
+          "message": "Demo model: the training data is synthetic. Not a Berlin market estimate."
+        }
+      ],
+      "explanation": {
+        "method": "log-linear coefficients",
+        "baseline_rent_per_m2": 11.06,
+        "factors": [
+          {
+            "feature": "market_period",
+            "effect_pct": 24.7
+          },
+          {
+            "feature": "location",
+            "effect_pct": -12.8
+          },
+          {
+            "feature": "rooms",
+            "effect_pct": -0.1
+          },
+          {
+            "feature": "area_m2",
+            "effect_pct": -0.1
+          },
+          {
+            "feature": "has_lift",
+            "effect_pct": 0.1
+          },
+          {
+            "feature": "energy_class",
+            "effect_pct": 0.1
+          },
+          {
+            "feature": "floor",
+            "effect_pct": 0.0
+          },
+          {
+            "feature": "total_floors",
+            "effect_pct": 0.0
+          }
+        ]
+      }
+    }
+  },
+  "large_flat": {
+    "request": {
+      "bezirk": "Mitte",
+      "ortsteil": "Moabit",
+      "ortsteil_code": "0102",
+      "property_type": "apartment",
+      "rooms": 4,
+      "area_m2": 130,
+      "floor": 2,
+      "total_floors": 5,
+      "building_era": "1950_1972",
+      "energy_class": "D",
+      "condition": "renovated",
+      "has_lift": true,
+      "has_balcony": true,
+      "furnishing": "unfurnished",
+      "transit_distance_min": null,
+      "lat": null,
+      "lon": null
+    },
+    "status": 200,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "generated_at": "2026-10-30T12:00:00+00:00",
+      "estimate": {
+        "monthly_cold_rent": {
+          "value": 2411.04,
+          "currency": "EUR"
+        },
+        "rent_per_m2": {
+          "value": 18.55,
+          "currency": "EUR"
+        },
+        "interval": {
+          "lower": 1903.91,
+          "upper": 2883.53,
+          "level": 0.8,
+          "method": "split_conformal_log"
+        }
+      },
+      "model": {
+        "name": "rent-model",
+        "version": "0.1.0-research+linear",
+        "trained_at": "2026-10-30T00:34:46+00:00",
+        "training_data": {
+          "source_id": "kaggle-berlin-5csv",
+          "synthetic": true,
+          "reference_period": {
+            "start": "2020-01",
+            "end": "2026-04"
+          }
+        }
+      },
+      "data_reference_date": "2026-04-29",
+      "inputs": {
+        "missing": [],
+        "imputed": [],
+        "ignored": [
+          "property_type"
+        ]
+      },
+      "warnings": [
+        {
+          "code": "STALE_MODEL",
+          "message": "Training data ends 2026-04-29; rents may have moved since."
+        },
+        {
+          "code": "TRAINING_DATA_UNVERIFIED",
+          "message": "Demo model: the training data is synthetic. Not a Berlin market estimate."
+        }
+      ],
+      "explanation": {
+        "method": "log-linear coefficients",
+        "baseline_rent_per_m2": 11.06,
+        "factors": [
+          {
+            "feature": "location",
+            "effect_pct": 39.6
+          },
+          {
+            "feature": "market_period",
+            "effect_pct": 24.7
+          },
+          {
+            "feature": "building_era",
+            "effect_pct": -11.7
+          },
+          {
+            "feature": "energy_class",
+            "effect_pct": 5.5
+          },
+          {
+            "feature": "has_lift",
+            "effect_pct": 2.3
+          },
+          {
+            "feature": "has_balcony",
+            "effect_pct": 1.1
+          },
+          {
+            "feature": "area_m2",
+            "effect_pct": 0.5
+          },
+          {
+            "feature": "rooms",
+            "effect_pct": -0.4
+          }
+        ]
+      }
+    }
+  },
+  "old_building_far_out": {
+    "request": {
+      "bezirk": "Spandau",
+      "property_type": "apartment",
+      "rooms": 3,
+      "area_m2": 82,
+      "floor": 0,
+      "total_floors": 4,
+      "building_era": "pre_1919",
+      "energy_class": "H",
+      "condition": "needs_renovation"
+    },
+    "status": 200,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "generated_at": "2026-10-30T12:00:00+00:00",
+      "estimate": {
+        "monthly_cold_rent": {
+          "value": 715.69,
+          "currency": "EUR"
+        },
+        "rent_per_m2": {
+          "value": 8.73,
+          "currency": "EUR"
+        },
+        "interval": {
+          "lower": 545.71,
+          "upper": 891.83,
+          "level": 0.8,
+          "method": "split_conformal_log"
+        }
+      },
+      "model": {
+        "name": "rent-model",
+        "version": "0.1.0-research+linear",
+        "trained_at": "2026-10-30T00:34:46+00:00",
+        "training_data": {
+          "source_id": "kaggle-berlin-5csv",
+          "synthetic": true,
+          "reference_period": {
+            "start": "2020-01",
+            "end": "2026-04"
+          }
+        }
+      },
+      "data_reference_date": "2026-04-29",
+      "inputs": {
+        "missing": [
+          "furnishing",
+          "has_balcony",
+          "has_lift",
+          "ortsteil"
+        ],
+        "imputed": [
+          {
+            "field": "ortsteil",
+            "strategy": "bezirk_distribution"
+          },
+          {
+            "field": "has_lift",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "has_balcony",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "furnishing",
+            "strategy": "train_distribution_marginalised"
+          }
+        ],
+        "ignored": [
+          "property_type"
+        ]
+      },
+      "warnings": [
+        {
+          "code": "STALE_MODEL",
+          "message": "Training data ends 2026-04-29; rents may have moved since."
+        },
+        {
+          "code": "TRAINING_DATA_UNVERIFIED",
+          "message": "Demo model: the training data is synthetic. Not a Berlin market estimate."
+        }
+      ],
+      "explanation": {
+        "method": "log-linear coefficients",
+        "baseline_rent_per_m2": 11.06,
+        "factors": [
+          {
+            "feature": "location",
+            "effect_pct": -26.8
+          },
+          {
+            "feature": "market_period",
+            "effect_pct": 24.7
+          },
+          {
+            "feature": "energy_class",
+            "effect_pct": -20.6
+          },
+          {
+            "feature": "building_era",
+            "effect_pct": 9.4
+          },
+          {
+            "feature": "condition",
+            "effect_pct": -0.3
+          },
+          {
+            "feature": "rooms",
+            "effect_pct": -0.1
+          },
+          {
+            "feature": "area_m2",
+            "effect_pct": 0.1
+          },
+          {
+            "feature": "floor",
+            "effect_pct": -0.1
+          }
+        ]
+      }
+    }
+  },
+  "floor_only": {
+    "request": {
+      "bezirk": "Pankow",
+      "property_type": "apartment",
+      "rooms": 1,
+      "area_m2": 32,
+      "floor": 3
+    },
+    "status": 200,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "generated_at": "2026-10-30T12:00:00+00:00",
+      "estimate": {
+        "monthly_cold_rent": {
+          "value": 439.62,
+          "currency": "EUR"
+        },
+        "rent_per_m2": {
+          "value": 13.74,
+          "currency": "EUR"
+        },
+        "interval": {
+          "lower": 282.87,
+          "upper": 658.43,
+          "level": 0.8,
+          "method": "split_conformal_log"
+        }
+      },
+      "model": {
+        "name": "rent-model",
+        "version": "0.1.0-research+linear",
+        "trained_at": "2026-10-30T00:34:46+00:00",
+        "training_data": {
+          "source_id": "kaggle-berlin-5csv",
+          "synthetic": true,
+          "reference_period": {
+            "start": "2020-01",
+            "end": "2026-04"
+          }
+        }
+      },
+      "data_reference_date": "2026-04-29",
+      "inputs": {
+        "missing": [
+          "building_era",
+          "condition",
+          "energy_class",
+          "furnishing",
+          "has_balcony",
+          "has_lift",
+          "ortsteil",
+          "total_floors"
+        ],
+        "imputed": [
+          {
+            "field": "ortsteil",
+            "strategy": "bezirk_distribution"
+          },
+          {
+            "field": "building_era",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "energy_class",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "condition",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "has_lift",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "has_balcony",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "furnishing",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "total_floors",
+            "strategy": "train_distribution_marginalised"
+          }
+        ],
+        "ignored": [
+          "property_type"
+        ]
+      },
+      "warnings": [
+        {
+          "code": "STALE_MODEL",
+          "message": "Training data ends 2026-04-29; rents may have moved since."
+        },
+        {
+          "code": "TRAINING_DATA_UNVERIFIED",
+          "message": "Demo model: the training data is synthetic. Not a Berlin market estimate."
+        }
+      ],
+      "explanation": {
+        "method": "log-linear coefficients",
+        "baseline_rent_per_m2": 11.06,
+        "factors": [
+          {
+            "feature": "market_period",
+            "effect_pct": 24.7
+          },
+          {
+            "feature": "rooms",
+            "effect_pct": 0.5
+          },
+          {
+            "feature": "location",
+            "effect_pct": -0.5
+          },
+          {
+            "feature": "area_m2",
+            "effect_pct": -0.4
+          },
+          {
+            "feature": "has_lift",
+            "effect_pct": 0.1
+          },
+          {
+            "feature": "energy_class",
+            "effect_pct": 0.1
+          },
+          {
+            "feature": "floor",
+            "effect_pct": 0.0
+          },
+          {
+            "feature": "total_floors",
+            "effect_pct": -0.0
+          }
+        ]
+      }
+    }
+  },
+  "ortsteil_not_trained": {
+    "request": {
+      "bezirk": "Steglitz-Zehlendorf",
+      "ortsteil": "Schlachtensee",
+      "property_type": "apartment",
+      "rooms": 3,
+      "area_m2": 80
+    },
+    "status": 200,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "generated_at": "2026-10-30T12:00:00+00:00",
+      "estimate": {
+        "monthly_cold_rent": {
+          "value": 1602.61,
+          "currency": "EUR"
+        },
+        "rent_per_m2": {
+          "value": 20.03,
+          "currency": "EUR"
+        },
+        "interval": {
+          "lower": 1077.49,
+          "upper": 2233.92,
+          "level": 0.8,
+          "method": "split_conformal_log"
+        }
+      },
+      "model": {
+        "name": "rent-model",
+        "version": "0.1.0-research+linear",
+        "trained_at": "2026-10-30T00:34:46+00:00",
+        "training_data": {
+          "source_id": "kaggle-berlin-5csv",
+          "synthetic": true,
+          "reference_period": {
+            "start": "2020-01",
+            "end": "2026-04"
+          }
+        }
+      },
+      "data_reference_date": "2026-04-29",
+      "inputs": {
+        "missing": [
+          "building_era",
+          "condition",
+          "energy_class",
+          "floor",
+          "furnishing",
+          "has_balcony",
+          "has_lift",
+          "ortsteil",
+          "total_floors"
+        ],
+        "imputed": [
+          {
+            "field": "ortsteil",
+            "strategy": "bezirk_distribution"
+          },
+          {
+            "field": "building_era",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "energy_class",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "condition",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "has_lift",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "has_balcony",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "furnishing",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "floor",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "total_floors",
+            "strategy": "train_distribution_marginalised"
+          }
+        ],
+        "ignored": [
+          "property_type"
+        ]
+      },
+      "warnings": [
+        {
+          "code": "LOW_SUPPORT_REGION",
+          "field": "ortsteil",
+          "message": "This Ortsteil is not in the training data; the estimate uses the Bezirk average."
+        },
+        {
+          "code": "STALE_MODEL",
+          "message": "Training data ends 2026-04-29; rents may have moved since."
+        },
+        {
+          "code": "TRAINING_DATA_UNVERIFIED",
+          "message": "Demo model: the training data is synthetic. Not a Berlin market estimate."
+        }
+      ],
+      "explanation": {
+        "method": "log-linear coefficients",
+        "baseline_rent_per_m2": 11.06,
+        "factors": [
+          {
+            "feature": "location",
+            "effect_pct": 45.2
+          },
+          {
+            "feature": "market_period",
+            "effect_pct": 24.7
+          },
+          {
+            "feature": "rooms",
+            "effect_pct": -0.1
+          },
+          {
+            "feature": "has_lift",
+            "effect_pct": 0.1
+          },
+          {
+            "feature": "energy_class",
+            "effect_pct": 0.1
+          },
+          {
+            "feature": "area_m2",
+            "effect_pct": 0.0
+          },
+          {
+            "feature": "floor",
+            "effect_pct": 0.0
+          },
+          {
+            "feature": "total_floors",
+            "effect_pct": 0.0
+          }
+        ]
+      }
+    }
+  },
+  "merged_ortsteil": {
+    "request": {
+      "bezirk": "Lichtenberg",
+      "ortsteil": "Alt-Hohenschönhausen",
+      "property_type": "apartment",
+      "rooms": 3,
+      "area_m2": 80,
+      "has_lift": false
+    },
+    "status": 200,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "generated_at": "2026-10-30T12:00:00+00:00",
+      "estimate": {
+        "monthly_cold_rent": {
+          "value": 791.72,
+          "currency": "EUR"
+        },
+        "rent_per_m2": {
+          "value": 9.9,
+          "currency": "EUR"
+        },
+        "interval": {
+          "lower": 578.45,
+          "upper": 1024.39,
+          "level": 0.8,
+          "method": "split_conformal_log"
+        }
+      },
+      "model": {
+        "name": "rent-model",
+        "version": "0.1.0-research+linear",
+        "trained_at": "2026-10-30T00:34:46+00:00",
+        "training_data": {
+          "source_id": "kaggle-berlin-5csv",
+          "synthetic": true,
+          "reference_period": {
+            "start": "2020-01",
+            "end": "2026-04"
+          }
+        }
+      },
+      "data_reference_date": "2026-04-29",
+      "inputs": {
+        "missing": [
+          "building_era",
+          "condition",
+          "energy_class",
+          "floor",
+          "furnishing",
+          "has_balcony",
+          "total_floors"
+        ],
+        "imputed": [
+          {
+            "field": "building_era",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "energy_class",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "condition",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "has_balcony",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "furnishing",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "floor",
+            "strategy": "train_distribution_marginalised"
+          },
+          {
+            "field": "total_floors",
+            "strategy": "train_distribution_marginalised"
+          }
+        ],
+        "ignored": [
+          "property_type"
+        ]
+      },
+      "warnings": [
+        {
+          "code": "LOW_SUPPORT_REGION",
+          "field": "ortsteil",
+          "message": "Training data merges Alt- and Neu-Hohenschoenhausen; the merged level is used."
+        },
+        {
+          "code": "STALE_MODEL",
+          "message": "Training data ends 2026-04-29; rents may have moved since."
+        },
+        {
+          "code": "TRAINING_DATA_UNVERIFIED",
+          "message": "Demo model: the training data is synthetic. Not a Berlin market estimate."
+        }
+      ],
+      "explanation": {
+        "method": "log-linear coefficients",
+        "baseline_rent_per_m2": 11.06,
+        "factors": [
+          {
+            "feature": "location",
+            "effect_pct": -26.9
+          },
+          {
+            "feature": "market_period",
+            "effect_pct": 24.7
+          },
+          {
+            "feature": "has_lift",
+            "effect_pct": -1.8
+          },
+          {
+            "feature": "rooms",
+            "effect_pct": -0.1
+          },
+          {
+            "feature": "building_era",
+            "effect_pct": 0.1
+          },
+          {
+            "feature": "energy_class",
+            "effect_pct": -0.1
+          },
+          {
+            "feature": "area_m2",
+            "effect_pct": 0.0
+          },
+          {
+            "feature": "floor",
+            "effect_pct": -0.0
+          }
+        ]
+      }
+    }
+  },
+  "tall_basement": {
+    "request": {
+      "bezirk": "Mitte",
+      "ortsteil": "Moabit",
+      "ortsteil_code": "0102",
+      "property_type": "apartment",
+      "rooms": 2,
+      "area_m2": 120,
+      "floor": -1,
+      "total_floors": 12,
+      "building_era": "1950_1972",
+      "energy_class": "D",
+      "condition": "renovated",
+      "has_lift": true,
+      "has_balcony": true,
+      "furnishing": "unfurnished",
+      "transit_distance_min": null,
+      "lat": null,
+      "lon": null
+    },
+    "status": 200,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "generated_at": "2026-10-30T12:00:00+00:00",
+      "estimate": {
+        "monthly_cold_rent": {
+          "value": 2238.84,
+          "currency": "EUR"
+        },
+        "rent_per_m2": {
+          "value": 18.66,
+          "currency": "EUR"
+        },
+        "interval": {
+          "lower": 1767.93,
+          "upper": 2677.59,
+          "level": 0.8,
+          "method": "split_conformal_log"
+        }
+      },
+      "model": {
+        "name": "rent-model",
+        "version": "0.1.0-research+linear",
+        "trained_at": "2026-10-30T00:34:46+00:00",
+        "training_data": {
+          "source_id": "kaggle-berlin-5csv",
+          "synthetic": true,
+          "reference_period": {
+            "start": "2020-01",
+            "end": "2026-04"
+          }
+        }
+      },
+      "data_reference_date": "2026-04-29",
+      "inputs": {
+        "missing": [],
+        "imputed": [],
+        "ignored": [
+          "property_type"
+        ]
+      },
+      "warnings": [
+        {
+          "code": "OUT_OF_DISTRIBUTION",
+          "field": "floor",
+          "message": "Basement floors are not in the training data; treated as ground floor."
+        },
+        {
+          "code": "OUT_OF_DISTRIBUTION",
+          "field": "floor",
+          "message": "Floor counts above 8 are not in the training data; the value was capped."
+        },
+        {
+          "code": "STALE_MODEL",
+          "message": "Training data ends 2026-04-29; rents may have moved since."
+        },
+        {
+          "code": "TRAINING_DATA_UNVERIFIED",
+          "message": "Demo model: the training data is synthetic. Not a Berlin market estimate."
+        }
+      ],
+      "explanation": {
+        "method": "log-linear coefficients",
+        "baseline_rent_per_m2": 11.06,
+        "factors": [
+          {
+            "feature": "location",
+            "effect_pct": 39.6
+          },
+          {
+            "feature": "market_period",
+            "effect_pct": 24.7
+          },
+          {
+            "feature": "building_era",
+            "effect_pct": -11.7
+          },
+          {
+            "feature": "energy_class",
+            "effect_pct": 5.5
+          },
+          {
+            "feature": "has_lift",
+            "effect_pct": 2.3
+          },
+          {
+            "feature": "has_balcony",
+            "effect_pct": 1.1
+          },
+          {
+            "feature": "area_m2",
+            "effect_pct": 0.4
+          },
+          {
+            "feature": "rooms",
+            "effect_pct": 0.2
+          }
+        ]
+      }
+    }
+  },
+  "furnished_new_build": {
+    "request": {
+      "bezirk": "Mitte",
+      "ortsteil": "Moabit",
+      "ortsteil_code": "0102",
+      "property_type": "apartment",
+      "rooms": 2,
+      "area_m2": 65,
+      "floor": 2,
+      "total_floors": 5,
+      "building_era": "2010_plus",
+      "energy_class": "A_plus",
+      "condition": "first_occupancy",
+      "has_lift": true,
+      "has_balcony": true,
+      "furnishing": "furnished",
+      "transit_distance_min": null,
+      "lat": null,
+      "lon": null
+    },
+    "status": 200,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "generated_at": "2026-10-30T12:00:00+00:00",
+      "estimate": {
+        "monthly_cold_rent": {
+          "value": 1885.8,
+          "currency": "EUR"
+        },
+        "rent_per_m2": {
+          "value": 29.01,
+          "currency": "EUR"
+        },
+        "interval": {
+          "lower": 1492.65,
+          "upper": 2262.61,
+          "level": 0.8,
+          "method": "split_conformal_log"
+        }
+      },
+      "model": {
+        "name": "rent-model",
+        "version": "0.1.0-research+linear",
+        "trained_at": "2026-10-30T00:34:46+00:00",
+        "training_data": {
+          "source_id": "kaggle-berlin-5csv",
+          "synthetic": true,
+          "reference_period": {
+            "start": "2020-01",
+            "end": "2026-04"
+          }
+        }
+      },
+      "data_reference_date": "2026-04-29",
+      "inputs": {
+        "missing": [
+          "condition"
+        ],
+        "imputed": [
+          {
+            "field": "condition",
+            "strategy": "train_distribution_marginalised"
+          }
+        ],
+        "ignored": [
+          "property_type"
+        ]
+      },
+      "warnings": [
+        {
+          "code": "INPUT_INCONSISTENT",
+          "field": "condition",
+          "message": "'first_occupancy' has no counterpart in the training data and was treated as unknown."
+        },
+        {
+          "code": "STALE_MODEL",
+          "message": "Training data ends 2026-04-29; rents may have moved since."
+        },
+        {
+          "code": "TRAINING_DATA_UNVERIFIED",
+          "message": "Demo model: the training data is synthetic. Not a Berlin market estimate."
+        }
+      ],
+      "explanation": {
+        "method": "log-linear coefficients",
+        "baseline_rent_per_m2": 11.06,
+        "factors": [
+          {
+            "feature": "location",
+            "effect_pct": 39.6
+          },
+          {
+            "feature": "market_period",
+            "effect_pct": 24.7
+          },
+          {
+            "feature": "energy_class",
+            "effect_pct": 21.9
+          },
+          {
+            "feature": "building_era",
+            "effect_pct": 19.5
+          },
+          {
+            "feature": "has_lift",
+            "effect_pct": 2.3
+          },
+          {
+            "feature": "has_balcony",
+            "effect_pct": 1.1
+          },
+          {
+            "feature": "rooms",
+            "effect_pct": 0.2
+          },
+          {
+            "feature": "area_m2",
+            "effect_pct": -0.1
+          }
+        ]
+      }
+    }
+  },
+  "ignored_fields": {
+    "request": {
+      "bezirk": "Mitte",
+      "ortsteil": "Moabit",
+      "ortsteil_code": "0102",
+      "property_type": "loft",
+      "rooms": 2,
+      "area_m2": 65,
+      "floor": 2,
+      "total_floors": 5,
+      "building_era": "1950_1972",
+      "energy_class": "D",
+      "condition": "renovated",
+      "has_lift": true,
+      "has_balcony": true,
+      "furnishing": "unfurnished",
+      "transit_distance_min": 7,
+      "lat": null,
+      "lon": null
+    },
+    "status": 200,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "generated_at": "2026-10-30T12:00:00+00:00",
+      "estimate": {
+        "monthly_cold_rent": {
+          "value": 1204.85,
+          "currency": "EUR"
+        },
+        "rent_per_m2": {
+          "value": 18.54,
+          "currency": "EUR"
+        },
+        "interval": {
+          "lower": 951.42,
+          "upper": 1440.96,
+          "level": 0.8,
+          "method": "split_conformal_log"
+        }
+      },
+      "model": {
+        "name": "rent-model",
+        "version": "0.1.0-research+linear",
+        "trained_at": "2026-10-30T00:34:46+00:00",
+        "training_data": {
+          "source_id": "kaggle-berlin-5csv",
+          "synthetic": true,
+          "reference_period": {
+            "start": "2020-01",
+            "end": "2026-04"
+          }
+        }
+      },
+      "data_reference_date": "2026-04-29",
+      "inputs": {
+        "missing": [],
+        "imputed": [],
+        "ignored": [
+          "property_type",
+          "transit_distance_min"
+        ]
+      },
+      "warnings": [
+        {
+          "code": "STALE_MODEL",
+          "message": "Training data ends 2026-04-29; rents may have moved since."
+        },
+        {
+          "code": "TRAINING_DATA_UNVERIFIED",
+          "message": "Demo model: the training data is synthetic. Not a Berlin market estimate."
+        }
+      ],
+      "explanation": {
+        "method": "log-linear coefficients",
+        "baseline_rent_per_m2": 11.06,
+        "factors": [
+          {
+            "feature": "location",
+            "effect_pct": 39.6
+          },
+          {
+            "feature": "market_period",
+            "effect_pct": 24.7
+          },
+          {
+            "feature": "building_era",
+            "effect_pct": -11.7
+          },
+          {
+            "feature": "energy_class",
+            "effect_pct": 5.5
+          },
+          {
+            "feature": "has_lift",
+            "effect_pct": 2.3
+          },
+          {
+            "feature": "has_balcony",
+            "effect_pct": 1.1
+          },
+          {
+            "feature": "rooms",
+            "effect_pct": 0.2
+          },
+          {
+            "feature": "area_m2",
+            "effect_pct": -0.1
+          }
+        ]
+      }
+    }
+  },
+  "invalid_area": {
+    "request": {
+      "bezirk": "Mitte",
+      "ortsteil": "Moabit",
+      "ortsteil_code": "0102",
+      "property_type": "apartment",
+      "rooms": 2,
+      "area_m2": 5,
+      "floor": 2,
+      "total_floors": 5,
+      "building_era": "1950_1972",
+      "energy_class": "D",
+      "condition": "renovated",
+      "has_lift": true,
+      "has_balcony": true,
+      "furnishing": "unfurnished",
+      "transit_distance_min": null,
+      "lat": null,
+      "lon": null
+    },
+    "status": 422,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request has 1 invalid field(s).",
+        "details": [
+          {
+            "field": "area_m2",
+            "issue": "must be between 10 and 500"
+          }
+        ],
+        "retryable": false
+      }
+    }
+  },
+  "invalid_rooms": {
+    "request": {
+      "bezirk": "Mitte",
+      "ortsteil": "Moabit",
+      "ortsteil_code": "0102",
+      "property_type": "apartment",
+      "rooms": 2.3,
+      "area_m2": 65,
+      "floor": 2,
+      "total_floors": 5,
+      "building_era": "1950_1972",
+      "energy_class": "D",
+      "condition": "renovated",
+      "has_lift": true,
+      "has_balcony": true,
+      "furnishing": "unfurnished",
+      "transit_distance_min": null,
+      "lat": null,
+      "lon": null
+    },
+    "status": 422,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request has 1 invalid field(s).",
+        "details": [
+          {
+            "field": "rooms",
+            "issue": "must be a multiple of 0.5"
+          }
+        ],
+        "retryable": false
+      }
+    }
+  },
+  "wrong_bezirk": {
+    "request": {
+      "bezirk": "Spandau",
+      "ortsteil": "Moabit",
+      "ortsteil_code": "0102",
+      "property_type": "apartment",
+      "rooms": 2,
+      "area_m2": 65,
+      "floor": 2,
+      "total_floors": 5,
+      "building_era": "1950_1972",
+      "energy_class": "D",
+      "condition": "renovated",
+      "has_lift": true,
+      "has_balcony": true,
+      "furnishing": "unfurnished",
+      "transit_distance_min": null,
+      "lat": null,
+      "lon": null
+    },
+    "status": 422,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request has 1 invalid field.",
+        "details": [
+          {
+            "field": "ortsteil",
+            "issue": "does not belong to bezirk"
+          }
+        ],
+        "retryable": false
+      }
+    }
+  },
+  "code_mismatch": {
+    "request": {
+      "bezirk": "Mitte",
+      "ortsteil": "Moabit",
+      "ortsteil_code": "0101",
+      "property_type": "apartment",
+      "rooms": 2,
+      "area_m2": 65,
+      "floor": 2,
+      "total_floors": 5,
+      "building_era": "1950_1972",
+      "energy_class": "D",
+      "condition": "renovated",
+      "has_lift": true,
+      "has_balcony": true,
+      "furnishing": "unfurnished",
+      "transit_distance_min": null,
+      "lat": null,
+      "lon": null
+    },
+    "status": 422,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request has 1 invalid field.",
+        "details": [
+          {
+            "field": "ortsteil",
+            "issue": "does not match ortsteil_code"
+          }
+        ],
+        "retryable": false
+      }
+    }
+  },
+  "unknown_code": {
+    "request": {
+      "bezirk": "Mitte",
+      "ortsteil": "Moabit",
+      "ortsteil_code": "9999",
+      "property_type": "apartment",
+      "rooms": 2,
+      "area_m2": 65,
+      "floor": 2,
+      "total_floors": 5,
+      "building_era": "1950_1972",
+      "energy_class": "D",
+      "condition": "renovated",
+      "has_lift": true,
+      "has_balcony": true,
+      "furnishing": "unfurnished",
+      "transit_distance_min": null,
+      "lat": null,
+      "lon": null
+    },
+    "status": 422,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request has 1 invalid field.",
+        "details": [
+          {
+            "field": "ortsteil_code",
+            "issue": "unknown ALKIS Ortsteil code"
+          }
+        ],
+        "retryable": false
+      }
+    }
+  },
+  "unknown_field": {
+    "request": {
+      "bezirk": "Mitte",
+      "ortsteil": "Moabit",
+      "ortsteil_code": "0102",
+      "property_type": "apartment",
+      "rooms": 2,
+      "area_m2": 65,
+      "floor": 2,
+      "total_floors": 5,
+      "building_era": "1950_1972",
+      "energy_class": "D",
+      "condition": "renovated",
+      "has_lift": true,
+      "has_balcony": true,
+      "furnishing": "unfurnished",
+      "transit_distance_min": null,
+      "lat": null,
+      "lon": null,
+      "color": "red"
+    },
+    "status": 422,
+    "body": {
+      "api_version": "1.0",
+      "request_id": "golden",
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request has 1 invalid field(s).",
+        "details": [
+          {
+            "field": "color",
+            "issue": "unknown field"
+          }
+        ],
+        "retryable": false
+      }
+    }
+  }
+}

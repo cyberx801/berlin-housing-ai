@@ -21,6 +21,7 @@ import {
   getPlatePlaces,
   getPlates,
 } from "@/lib/data/geo";
+import { rentModelConnected } from "@/lib/api/prediction/connected";
 import { formatKm2, formatRingShare } from "@/lib/formatting/number";
 import { RING_STATUS_LABELS } from "@/lib/property/labels";
 
@@ -33,7 +34,7 @@ const PREVIEW_SLUG = "moabit";
 
 // The first-page menu: every page, in the header's order, with what it is for.
 const PAGES = [
-  { href: "/analyze", name: "Analyze", summary: "Describe a flat and prepare it for the rent model." },
+  { href: "/analyze", name: "Analyze", summary: rentModelConnected ? "Describe a flat and try the demo rent model." : "Describe a flat and prepare it for the rent model." },
   { href: "/explore", name: "Explore", summary: "Map of the 97 Ortsteile and the S-Bahn ring." },
   { href: "/market", name: "Market", summary: "Charts of rents by district. Generated data." },
   { href: "/neighborhoods", name: "Neighborhoods", summary: "Facts about each Ortsteil, from official boundaries." },

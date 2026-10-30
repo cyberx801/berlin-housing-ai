@@ -19,6 +19,7 @@ import { ProvenanceLabel } from "@/components/provenance/ProvenanceLabel";
 import { ProvenanceMark } from "@/components/provenance/ProvenanceMark";
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
+import { rentModelConnected } from "@/lib/api/prediction/connected";
 import { createTransport, PropertyAnalysisService, type PreparedRequest } from "@/lib/api/prediction/service";
 import type { FieldIssue, RentEstimateOutcome } from "@/lib/api/prediction/types";
 import { SearchParamsReader } from "@/lib/url-state/SearchParamsReader";
@@ -350,10 +351,14 @@ export function PropertyAnalysisForm({
             </div>
             <div className="flex flex-col gap-1.5 border-t border-rule pt-4 type-small text-ink-2">
               <p className="flex items-center gap-2 font-[620] text-ink">
-                <ProvenanceMark kind="not-connected" className="shrink-0" />
-                Rent model: not connected
+                <ProvenanceMark kind={rentModelConnected ? "demo" : "not-connected"} className="shrink-0" />
+                {rentModelConnected ? "Rent model: demo, synthetic data" : "Rent model: not connected"}
               </p>
-              <p>Preparing an analysis checks your description and shows the request a model would receive.</p>
+              <p>
+                {rentModelConnected
+                  ? "Preparing an analysis sends your description to the demo model and shows its answer under the demo band."
+                  : "Preparing an analysis checks your description and shows the request a model would receive."}
+              </p>
               <Link href="/methodology#in-development" className={linkClass}>
                 What this means
               </Link>

@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { chartPatternsScript } from "@/components/charts/chart-patterns";
 import { ringDrawScript } from "@/components/maps/ring-draw";
+import { rentModelConnected } from "@/lib/api/prediction/connected";
 import { getPlates } from "@/lib/data/geo";
 import { fitProjection, svgPath } from "@/lib/geo/svg";
 import "@/styles/globals.css";
@@ -32,8 +33,9 @@ export const metadata: Metadata = {
     default: "Berlin Housing AI",
     template: "%s | Berlin Housing AI",
   },
-  description:
-    "Read a Berlin flat against its city: explore the 97 Ortsteile, compare listings side by side, and prepare an analysis for a rent model in development.",
+  description: rentModelConnected
+    ? "Read a Berlin flat against its city: explore the 97 Ortsteile, compare listings side by side, and try a demo rent model trained on synthetic data."
+    : "Read a Berlin flat against its city: explore the 97 Ortsteile, compare listings side by side, and prepare an analysis for a rent model in development.",
 };
 
 export const viewport: Viewport = {

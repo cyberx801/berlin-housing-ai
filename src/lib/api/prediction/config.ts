@@ -13,7 +13,7 @@ export interface PredictionConfig {
 }
 
 const envSchema = z.object({
-  mode: z.enum(["disabled", "direct", "proxy"]).default("disabled"),
+  mode: z.enum(["disabled", "direct", "proxy", "embedded"]).default("disabled"),
   baseUrl: z.url().optional(),
 });
 
@@ -47,6 +47,7 @@ export function readPredictionConfig(
       timeoutMs: DEFAULT_TIMEOUT_MS,
     };
   }
-  if (mode === "proxy") return { mode, endpoint: PROXY_ENDPOINT, timeoutMs: DEFAULT_TIMEOUT_MS };
+  // `embedded`: the browser talks to our own route, which answers with the demo model built into the server (D-061).
+  if (mode === "proxy" || mode === "embedded") return { mode: "proxy", endpoint: PROXY_ENDPOINT, timeoutMs: DEFAULT_TIMEOUT_MS };
   return { mode: "disabled", endpoint: null, timeoutMs: DEFAULT_TIMEOUT_MS };
 }

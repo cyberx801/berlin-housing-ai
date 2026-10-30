@@ -1,8 +1,11 @@
-# Netlify detects Next.js by itself. This file only pins what the project was developed and tested with.
-# Prediction stays disabled: no NEXT_PUBLIC_PREDICTION_MODE is set here (see .env.example).
+# Netlify detects Next.js by itself. This file pins what the project was developed and tested with.
+# NEXT_PUBLIC_PREDICTION_MODE=embedded: Analyze is answered by the demo rent model that runs inside the
+# site's own server (D-061). It is trained on synthetic data and every answer says so. The value is
+# inlined at build time, which is why it is set here and not as a runtime variable.
 
 [build]
   command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "22"
+  NEXT_PUBLIC_PREDICTION_MODE = "embedded"

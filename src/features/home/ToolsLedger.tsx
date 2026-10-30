@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { rentModelConnected } from "@/lib/api/prediction/connected";
 import { ProvenanceMark } from "@/components/provenance/ProvenanceMark";
 import type { ProvenanceKind } from "@/types/provenance";
 
@@ -14,8 +15,12 @@ const TOOLS: ToolRow[] = [
   {
     href: "/analyze",
     name: "Analyze",
-    question: "Describe a flat and prepare it for the rent model.",
-    state: { kind: "not-connected", label: "Rent model not connected" },
+    question: rentModelConnected
+      ? "Describe a flat and see what the demo rent model says."
+      : "Describe a flat and prepare it for the rent model.",
+    state: rentModelConnected
+      ? { kind: "demo", label: "Demo model, synthetic data" }
+      : { kind: "not-connected", label: "Rent model not connected" },
   },
   {
     href: "/explore",
