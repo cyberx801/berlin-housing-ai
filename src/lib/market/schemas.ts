@@ -27,7 +27,12 @@ export const provenanceSchema = z.discriminatedUnion("kind", [
   }),
   z.object({ kind: z.literal("demo"), fixtureId: z.string(), note: z.string() }),
   z.object({ kind: z.literal("user") }),
-  z.object({ kind: z.literal("model"), modelVersion: z.string(), dataReferenceDate: z.string() }),
+  z.object({
+    kind: z.literal("model"),
+    modelVersion: z.string(),
+    dataReferenceDate: z.string(),
+    trainedOn: z.enum(["observed", "synthetic"]),
+  }),
   z.object({ kind: z.literal("not-connected"), missing: z.string() }),
   z.object({ kind: z.literal("pending"), reason: z.string() }),
 ]) satisfies z.ZodType<Provenance>;

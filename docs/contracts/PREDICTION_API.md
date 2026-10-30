@@ -158,7 +158,7 @@ The example values are **sentinels** (1234.56, 2000-01, `0.0.0-example`), chosen
 | warning `TRAINING_DATA_UNVERIFIED` | Always present for this model. |
 | warning `STALE_MODEL` | Present when the data reference date is more than 180 days before the request. |
 
-The Zod response schema ignores unknown keys, so these can be added to it one at a time.
+The Zod response schema ignores unknown keys. As of slice 10 it reads `synthetic`, `inputs.ignored` and `explanation`. `interpretPredictionResponse` maps `synthetic: true` to `trainedOn: "synthetic"` and `false` to `"observed"`. A 2xx answer without the flag becomes `not_connected` with reason `unverified_data` (D-058, D-059).
 
 ## 4. Error envelope — any non-2xx
 
@@ -212,7 +212,7 @@ Frontend-only codes, which the client produces and the server never sends:
 // src/lib/api/prediction/types.ts (planned)
 export type RentEstimateOutcome =
   | { status: "ok"; data: RentPredictionResponseV1 }
-  | { status: "not_connected"; reason: "disabled" | "not_configured" }
+  | { status: "not_connected"; reason: "disabled" | "not_configured" | "unverified_data" }
   | { status: "invalid_input"; issues: { field: string; issue: string }[] }
   | { status: "rejected"; code: "OUT_OF_SUPPORT"; message: string }
   | { status: "unavailable"; code: string; retryable: boolean; retryAfterMs?: number };
@@ -239,7 +239,7 @@ export interface PredictionTransport {
 
 ## 8. Contract tests
 
-- Fixtures live in `tests/contracts/fixtures/` (`rent.v1.ok.json`, `rent.v1.ok-no-interval.json`, `rent.v1.error-validation.json`, `rent.v1.fastapi-default-422.json`, `rent.v1.error-unavailable.json`, `rent.v1.malformed.json`).
+- Fixtures live in `tests/contracts/fixtures/` (`rent.v1.ok.json`, `rent.v1.ok-no-interval.json`, `rent.v1.ok-observed.json`, `rent.v1.ok-no-flag.json`, `rent.v1.error-validation.json`, `rent.v1.fastapi-default-422.json`, `rent.v1.error-unavailable.json`, `rent.v1.malformed.json`).
 - These fixtures are **never** imported by `src/`. An ESLint rule and a boundary test enforce this.
 - Tests check that each fixture parses (or fails) as expected, and that each maps to the right `RentEstimateOutcome`.
 - When the ML team publishes an OpenAPI document, a CI step will compare it with this contract. Planned: generate a Zod schema from `openapi.json` and compare it.

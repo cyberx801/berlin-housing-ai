@@ -38,16 +38,16 @@ export function TruthTable({ retrieved }: { retrieved: string }) {
     {
       capability: "The Kaggle research dataset (5 CSV files)",
       section: "research-data",
-      kind: "not-connected",
-      state: "Not available",
-      backing: "The files aren’t in the project yet. No page uses them until they pass the intake checks.",
+      kind: "demo",
+      state: "Synthetic, demo only",
+      backing: "Its author says the listings are generated. It only trained the demo model, and no page shows its figures.",
     },
     {
       capability: "Rent prediction",
       section: "predictions",
       kind: "not-connected",
       state: "Not connected",
-      backing: "A draft contract only. No model answers yet, so no estimate is shown anywhere.",
+      backing: "A demo model trained on synthetic data exists. This build isn’t connected to it, so no estimate is shown.",
     },
     {
       capability: "Transit access for each Ortsteil",

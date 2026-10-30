@@ -67,7 +67,11 @@ describe("dataset registry", () => {
     for (const entry of registry) {
       const section = sections.get(entry.id)!;
       if (entry.retrieved) expect(section, entry.id).toContain(entry.retrieved);
-      if (entry.license) expect(section, entry.id).toMatch(/dl-de\/zero-2[.-]0/);
+      if (entry.license) {
+        // The licence is named the way the section writes it: "dl-de/zero-2.0", "Apache 2.0".
+        const written = entry.license.id === "Apache-2.0" ? /Apache 2\.0/ : /dl-de\/zero-2[.-]0/;
+        expect(section, entry.id).toMatch(written);
+      }
       if (entry.service) expect(section, entry.id).toContain(entry.service);
       if (entry.mark === "official") expect(entry.retrieved, entry.id).not.toBeNull();
     }

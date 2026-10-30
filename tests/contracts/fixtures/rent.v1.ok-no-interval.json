@@ -6,7 +6,11 @@
     "monthly_cold_rent": { "value": 1234.56, "currency": "EUR" },
     "interval": null
   },
-  "model": { "name": "rent-model", "version": "0.0.0-example" },
+  "model": {
+    "name": "rent-model",
+    "version": "0.0.0-example",
+    "training_data": { "source_id": "example-source", "synthetic": true }
+  },
   "data_reference_date": "2000-12-31",
   "inputs": { "missing": [], "imputed": [] },
   "warnings": []

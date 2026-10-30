@@ -2,7 +2,7 @@ import Link from "next/link";
 import { cx } from "@/lib/cx";
 import type { Provenance } from "@/types/provenance";
 import { ProvenanceMark } from "./ProvenanceMark";
-import { PROVENANCE_COPY, provenanceDetail } from "./provenance-copy";
+import { isDemoBand, provenanceCopy, provenanceDetail } from "./provenance-copy";
 
 /** "Official data / Demo data / Not connected…" in words, with its methodology link. */
 export function ProvenanceLabel({
@@ -14,12 +14,12 @@ export function ProvenanceLabel({
   showDetail?: boolean;
   className?: string;
 }) {
-  const copy = PROVENANCE_COPY[provenance.kind];
+  const copy = provenanceCopy(provenance);
   const detail = showDetail ? provenanceDetail(provenance) : null;
   return (
     <p className={cx("flex flex-wrap items-center gap-x-3 gap-y-1 type-small text-ink-2", className)}>
       <span className="inline-flex items-center gap-2 font-[620] text-ink">
-        <ProvenanceMark kind={provenance.kind} className="shrink-0" />
+        <ProvenanceMark kind={isDemoBand(provenance) ? "demo" : provenance.kind} className="shrink-0" />
         {copy.label}
       </span>
       {provenance.kind === "official" && showDetail ? (

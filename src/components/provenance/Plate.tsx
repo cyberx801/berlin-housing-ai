@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { cx } from "@/lib/cx";
 import type { Provenance } from "@/types/provenance";
 import { ProvenanceLabel } from "./ProvenanceLabel";
+import { isDemoBand } from "./provenance-copy";
 
 interface PlateProps {
   /** The question this module answers, phrased for the reader. */
@@ -33,20 +34,21 @@ export function Plate({
   bodyClassName,
 }: PlateProps) {
   const kind = provenance.kind;
+  const demoBand = isDemoBand(provenance);
   return (
     <section
       id={id}
       aria-labelledby={id ? `${id}-title` : undefined}
       className={cx(
         "relative flex min-w-0 flex-col bg-sheet",
-        (kind === "official" || kind === "model") && "border-t-[3px] border-ink",
+        (kind === "official" || (kind === "model" && !demoBand)) && "border-t-[3px] border-ink",
         (kind === "user" || kind === "research") && "border-t-[3px] border-ink-2",
         kind === "not-connected" && "frame-not-connected",
         kind === "pending" && "border border-rule bg-paper",
         className,
       )}
     >
-      {kind === "demo" ? <div aria-hidden="true" className="band-hatch h-3 border-b border-line-strong" /> : null}
+      {demoBand ? <div aria-hidden="true" className="band-hatch h-3 border-b border-line-strong" /> : null}
       <header className="flex flex-col gap-2 px-4 pt-4 md:px-5">
         <ProvenanceLabel provenance={provenance} />
         <div className="flex flex-wrap items-end justify-between gap-3">

@@ -7,6 +7,9 @@ import type { NextConfig } from "next";
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
+  // The live-service E2E (playwright.live.config.ts) builds into its own folder, so it never
+  // overwrites the default build the other E2E projects run against.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   cacheComponents: true,
   partialPrefetching: true,
   outputFileTracingRoot: projectRoot,

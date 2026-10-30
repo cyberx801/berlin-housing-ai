@@ -9,8 +9,13 @@ export interface FieldIssue {
 
 /** Every possible result of asking for a rent estimate. The UI renders all of them. */
 export type RentEstimateOutcome =
-  | { status: "ok"; data: RentPredictionResponseV1; requestId: string }
-  | { status: "not_connected"; reason: "disabled" | "not_configured"; requestId: string }
+  | { status: "ok"; data: RentPredictionResponseV1; trainedOn: "observed" | "synthetic"; requestId: string }
+  | {
+      status: "not_connected";
+      /** `unverified_data`: the service answered but did not say what its model was trained on (D-058). */
+      reason: "disabled" | "not_configured" | "unverified_data";
+      requestId: string;
+    }
   | { status: "invalid_input"; issues: FieldIssue[]; requestId: string }
   | { status: "rejected"; code: string; message: string; requestId: string }
   | {

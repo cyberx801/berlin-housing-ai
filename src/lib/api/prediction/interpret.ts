@@ -39,7 +39,10 @@ export function interpretPredictionResponse(
         false,
       );
     }
-    return { status: "ok", data: parsed.data, requestId };
+    // D-058: a client that cannot see the flag must not read its absence as "observed".
+    const synthetic = parsed.data.model.training_data?.synthetic;
+    if (synthetic === undefined) return { status: "not_connected", reason: "unverified_data", requestId };
+    return { status: "ok", data: parsed.data, trainedOn: synthetic ? "synthetic" : "observed", requestId };
   }
 
   const envelope = errorEnvelopeV1.safeParse(body);

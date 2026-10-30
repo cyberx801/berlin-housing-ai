@@ -1,7 +1,8 @@
 /**
- * Rent prediction API — contract v1, DRAFT (docs/contracts/PREDICTION_API.md).
- * Every field name and enum value is a proposal pending the ML feature schema.
- * Nothing here implies a model exists; the frontend ships with prediction disabled.
+ * Rent prediction API — contract v1, DRAFT 2 (docs/contracts/PREDICTION_API.md).
+ * The first model is a demo trained on synthetic data (D-058): a response without
+ * `model.training_data.synthetic` is never shown as an estimate (see interpret.ts).
+ * The frontend ships with prediction disabled.
  */
 import { z } from "zod";
 import {
@@ -15,7 +16,7 @@ import {
 } from "@/lib/property/enums";
 import type { PropertyInput } from "@/lib/validation/property";
 
-export const CONTRACT_VERSION = "1.0-draft.1";
+export const CONTRACT_VERSION = "1.0-draft.2";
 export const API_MAJOR = 1;
 export const RENT_PREDICTION_PATH = "/api/v1/predictions/rent";
 
@@ -85,6 +86,8 @@ export const rentPredictionResponseV1 = z.object({
     training_data: z
       .object({
         source_id: z.string(),
+        /** `true`: generated data. Absent: unknown, which the client treats as not connected (D-058). */
+        synthetic: z.boolean().optional(),
         reference_period: z.object({ start: z.string(), end: z.string() }).optional(),
       })
       .optional(),
@@ -93,8 +96,18 @@ export const rentPredictionResponseV1 = z.object({
   inputs: z.object({
     missing: z.array(z.string()),
     imputed: z.array(z.object({ field: z.string(), strategy: z.string() })),
+    /** Fields that were sent and have no effect on this model. */
+    ignored: z.array(z.string()).optional(),
   }),
   warnings: z.array(z.object({ code: z.string(), message: z.string(), field: z.string().optional() })),
+  explanation: z
+    .object({
+      method: z.string(),
+      baseline_rent_per_m2: z.number().positive(),
+      /** Effect on rent per m² against the average training listing, in percent. */
+      factors: z.array(z.object({ feature: z.string(), effect_pct: z.number() })),
+    })
+    .optional(),
 });
 export type RentPredictionResponseV1 = z.infer<typeof rentPredictionResponseV1>;
 

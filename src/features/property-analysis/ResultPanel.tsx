@@ -12,7 +12,7 @@ import type { RentEstimateOutcome } from "@/lib/api/prediction/types";
 import type { RentPredictionRequestV1, RentPredictionResponseV1 } from "@/lib/contracts/rent-prediction.v1";
 import { cx } from "@/lib/cx";
 import { formatIsoDate } from "@/lib/formatting/date";
-import { formatEUR, formatEURPerM2, formatPercent } from "@/lib/formatting/number";
+import { formatEUR, formatEURPerM2, formatPercent, formatSignedPercentPoints } from "@/lib/formatting/number";
 import type { PropertyInput } from "@/lib/validation/property";
 import { FIELD_LABELS, formFieldForWire } from "./fields";
 import { InputSummary, type ResultPlace } from "./InputSummary";
@@ -64,11 +64,14 @@ export function ResultPanel({ id, outcome, input, payload, place, stale = false,
       className={cx(
         "flex flex-col gap-4 bg-sheet p-5 md:p-6",
         status === "not_connected" && "frame-not-connected",
-        status === "ok" && "border-t-[3px] border-ink",
+        status === "ok" && outcome.trainedOn === "observed" && "border-t-[3px] border-ink",
         (status === "rejected" || status === "unavailable" || status === "invalid_input") &&
           "border-l-4 border-critical",
       )}
     >
+      {status === "ok" && outcome.trainedOn === "synthetic" ? (
+        <div aria-hidden="true" className="band-hatch -mx-5 -mt-5 h-3 border-b border-line-strong md:-mx-6 md:-mt-6" />
+      ) : null}
       {status === "not_connected" ? (
         <>
           <ProvenanceLabel provenance={{ kind: "not-connected", missing: "Rent prediction model" }} />
@@ -79,11 +82,13 @@ export function ResultPanel({ id, outcome, input, payload, place, stale = false,
           <p className="max-w-[68ch] text-ink-2">
             {outcome.reason === "disabled"
               ? "Your description is valid and ready. The rent model is still being built, so no estimate is shown. Nothing was sent anywhere."
-              : "Your description is valid and ready. This site's server accepted it, but no rent model is configured behind it yet, so no estimate is shown."}
+              : outcome.reason === "unverified_data"
+                ? "Your description is valid and ready. A model answered, but it did not say what data it was trained on, so no estimate is shown."
+                : "Your description is valid and ready. This site's server accepted it, but no rent model is configured behind it yet, so no estimate is shown."}
           </p>
         </>
       ) : status === "ok" ? (
-        <EstimateView data={outcome.data} titleId={titleId} titleClass={titleClass} />
+        <EstimateView data={outcome.data} trainedOn={outcome.trainedOn} titleId={titleId} titleClass={titleClass} />
       ) : (
         <>
           <h2 id={titleId} tabIndex={-1} className={titleClass}>
@@ -163,17 +168,30 @@ export function ResultPanel({ id, outcome, input, payload, place, stale = false,
   );
 }
 
+/** Fixed wording for a model trained on synthetic data (D-058). Never reworded. */
+export const DEMO_MODEL_NOTICE = "Demo model, trained on synthetic data. Not a Berlin market estimate.";
+
+const FACTOR_LABELS: Record<string, string> = {
+  location: "Location (Ortsteil)",
+  market_period: "Market period",
+};
+const factorLabel = (feature: string) => FACTOR_LABELS[feature] ?? wireLabel(feature);
+
 function EstimateView({
   data,
+  trainedOn,
   titleId,
   titleClass,
 }: {
   data: RentPredictionResponseV1;
+  trainedOn: "observed" | "synthetic";
   titleId: string;
   titleClass: string;
 }) {
-  const { estimate, model, inputs, warnings } = data;
+  const { estimate, model, inputs, warnings, explanation } = data;
+  const demo = trainedOn === "synthetic";
   const filledIn = [...new Set([...inputs.missing, ...inputs.imputed.map((i) => i.field)])];
+  const ignored = inputs.ignored ?? [];
   const period = model.training_data?.reference_period;
 
   return (
@@ -183,11 +201,13 @@ function EstimateView({
           kind: "model",
           modelVersion: `${model.name} ${model.version}`,
           dataReferenceDate: formatIsoDate(data.data_reference_date),
+          trainedOn,
         }}
       />
       <h2 id={titleId} tabIndex={-1} className={titleClass}>
-        Estimated cold rent
+        {demo ? "Demo estimate of the cold rent" : "Estimated cold rent"}
       </h2>
+      {demo ? <p className="border-l-4 border-ink pl-3 font-[620]">{DEMO_MODEL_NOTICE}</p> : null}
       <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span className="type-figure">{formatEUR(nearest10(estimate.monthly_cold_rent.value))}</span>
         <span className="text-ink-2">per month, before heating and service charges</span>
@@ -231,6 +251,7 @@ function EstimateView({
             <dt className="text-ink-2">Training data</dt>
             <dd className="font-[560]">
               {model.training_data.source_id}
+              {model.training_data.synthetic ? " (synthetic)" : ""}
               {period ? `, ${formatIsoDate(period.start)} to ${formatIsoDate(period.end)}` : ""}
             </dd>
           </div>
@@ -240,6 +261,27 @@ function EstimateView({
         <p className="max-w-[68ch] text-ink-2">
           Not given, so the model filled them in: {filledIn.map(wireLabel).join(", ")}.
         </p>
+      ) : null}
+      {ignored.length > 0 ? (
+        <p className="max-w-[68ch] text-ink-2">
+          Sent, but this model does not use them: {ignored.map(wireLabel).join(", ")}.
+        </p>
+      ) : null}
+      {explanation && explanation.factors.length > 0 ? (
+        <Disclosure summary="What moved the estimate">
+          <p className="max-w-[68ch] text-ink-2">
+            Effect of each factor on the rent per m² against the average listing the model was trained on (
+            {formatEURPerM2(explanation.baseline_rent_per_m2)}). It describes this model, not Berlin.
+          </p>
+          <ul className="mt-2 flex flex-col gap-1">
+            {explanation.factors.map((f) => (
+              <li key={f.feature} className="flex flex-wrap justify-between gap-x-6 md:max-w-[28rem]">
+                <span>{factorLabel(f.feature)}</span>
+                <span className="font-[560]">{formatSignedPercentPoints(f.effect_pct)}</span>
+              </li>
+            ))}
+          </ul>
+        </Disclosure>
       ) : null}
       {warnings.length > 0 ? (
         <div className="flex flex-col gap-1">

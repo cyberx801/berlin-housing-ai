@@ -18,7 +18,7 @@ export type Provenance =
     }
   | { kind: "demo"; fixtureId: string; note: string }
   | { kind: "user" }
-  | { kind: "model"; modelVersion: string; dataReferenceDate: string }
+  | { kind: "model"; modelVersion: string; dataReferenceDate: string; trainedOn: "observed" | "synthetic" }
   | { kind: "not-connected"; missing: string }
   | { kind: "pending"; reason: string };
 

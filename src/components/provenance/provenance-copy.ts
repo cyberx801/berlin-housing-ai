@@ -11,6 +11,15 @@ export const PROVENANCE_COPY: Record<ProvenanceKind, { label: string; href: stri
   pending: { label: "Not written yet", href: "/methodology#neighborhood-content" },
 };
 
+/** The label for one provenance value. A model trained on synthetic data reads "Demo model" (D-058). */
+export function provenanceCopy(p: Provenance): { label: string; href: string } {
+  if (p.kind === "model" && p.trainedOn === "synthetic") return { label: "Demo model", href: "/methodology#predictions" };
+  return PROVENANCE_COPY[p.kind];
+}
+
+/** True for the provenance that is drawn with the hatched demo band. */
+export const isDemoBand = (p: Provenance) => p.kind === "demo" || (p.kind === "model" && p.trainedOn === "synthetic");
+
 export function provenanceDetail(p: Provenance): string | null {
   switch (p.kind) {
     case "official":
@@ -20,7 +29,9 @@ export function provenanceDetail(p: Provenance): string | null {
     case "demo":
       return p.note;
     case "model":
-      return `Model ${p.modelVersion}, data up to ${p.dataReferenceDate}`;
+      return p.trainedOn === "synthetic"
+        ? `Trained on synthetic data. Model ${p.modelVersion}, data up to ${p.dataReferenceDate}`
+        : `Model ${p.modelVersion}, data up to ${p.dataReferenceDate}`;
     case "not-connected":
       return p.missing;
     case "pending":

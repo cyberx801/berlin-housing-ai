@@ -158,17 +158,26 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
           <p className="type-prose">
             Market figures and predictions answer different questions. A market figure summarizes many listings, for
             example the median €/m² in a Bezirk over a year. A prediction would estimate the cold rent of the one flat
-            you describe, from a model trained on past listings. Neither exists here as real data yet: the market
-            figures are demo data, and the model isn&rsquo;t connected.
+            you describe, from a model trained on past listings. Neither is real Berlin data: the market
+            figures are demo data, and the only model is a demo trained on synthetic data that this build
+            isn&rsquo;t connected to.
           </p>
         </Subsection>
       </Section>
 
       <Section id="research-data">
         <p className="type-prose">
-          A Kaggle dataset of five CSV files is planned as research data: rentals, secondary sales, new construction,
-          monthly prices by Kiez, and transit stations. It isn&rsquo;t in the project yet, and its web address, author
-          and license are unknown. Before any page uses it, it has to pass these checks:
+          A Kaggle dataset of five CSV files (rentals, secondary sales, new construction, monthly prices by Kiez, and
+          transit stations; author Sergey Nefedov, Apache 2.0) went through the intake checks on 30 October 2026. It
+          failed the one that matters, so it is <strong className="font-[600]">synthetic and demo only</strong>. Its
+          author writes that the listing-level apartment characteristics are generated from a pricing model. Only the
+          Ortsteil coordinates, the stations and the interest-rate timeline are real. The checks here agree: no missing
+          values anywhere, almost no round-number rents, a market level that moves in half-year steps, and a
+          station-distance field that rarely names the nearest station.
+        </p>
+        <p className="type-prose">
+          So no page shows a figure from it, and it is not research data. It was used for one thing: to train the demo
+          model described below. Before any dataset is used as research data, it has to pass these checks:
         </p>
         <ol className={`${listClass} list-decimal`}>
           <li>Where it comes from: the author, the license, the version, and the original source it names.</li>
@@ -185,7 +194,8 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
         </ol>
         <p className="type-prose">
           The result is one of three: it becomes research data with its caveats written down, it may be used only as
-          demo data under the demo label, or it is rejected.
+          demo data under the demo label, or it is rejected. The Kaggle dataset ended as the second. The author&rsquo;s
+          statement settled it, so the comparison with independent published figures was not needed and was not made.
         </p>
       </Section>
 
@@ -198,20 +208,58 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
 
         <Subsection id="predictions">
           <p className="type-prose">
-            A separate team is building a model to estimate the monthly cold rent (Nettokaltmiete) of a flat from its
-            description. The site has a draft contract for it: the fields Analyze would send and the answer it expects.
-            The contract hasn&rsquo;t been agreed yet and prediction is switched off, so Analyze ends at &ldquo;Prediction
-            engine not connected&rdquo;.
+            The site has a model that estimates the monthly cold rent (Nettokaltmiete) of a flat from its description.{" "}
+            <strong className="font-[600]">It is a demo.</strong> It was trained on the synthetic Kaggle dataset above,
+            so it learned to reproduce the pricing model that generated that data. What it says about real flats in Berlin
+            is nothing. Wherever it answers, the page carries the hatched demo band, the label &ldquo;Demo model&rdquo; and
+            the words &ldquo;Demo model, trained on synthetic data. Not a Berlin market estimate.&rdquo;
           </p>
           <p className="type-prose">
-            Until a real model answers, no estimate, fair price or rent-like number appears anywhere, and the site
-            doesn&rsquo;t work one out in any other way: there is no formula behind the scenes. The &ldquo;AI&rdquo; in
-            the name refers to that model. Nothing on the site uses one today.
+            The model runs as a separate service, reached through this site&rsquo;s server by a contract that fixes the
+            fields Analyze sends and the answer it gets back. This build isn&rsquo;t connected to one, so Analyze ends
+            at &ldquo;Prediction engine not connected&rdquo;. When a service is connected, Analyze shows its answer. A
+            figure from the demo model never appears in a page title, a preview, the home page or a neighborhood
+            profile, and never next to a real figure as a comparison. If a service answers without saying what its model
+            was trained on, the site shows no figure at all.
           </p>
           <p className="type-prose">
-            The draft contract asks the model to return, with each estimate, the model&rsquo;s version, the date its data
-            reaches, what it had to assume for fields you left out, and warnings such as &ldquo;few examples for this
-            Ortsteil&rdquo;. The site will show all of them with the estimate.
+            The site doesn&rsquo;t work out a rent in any other way: there is no formula and no simulated answer. The
+            &ldquo;AI&rdquo; in the name refers to this model. With each estimate the model returns its version, the date
+            its data reaches, what it had to assume for fields you left out, the fields it ignored, what moved the
+            estimate, and warnings such as &ldquo;few examples for this Ortsteil&rdquo;. The page shows all of them.
+          </p>
+          <p className="type-prose">
+            Two request fields have no effect. The property type is, in the data, only a label for the number of rooms.
+            The walk to the station in the data is the walk to a named station that is rarely the nearest one, so it does
+            not mean what the field on Analyze means. Half rooms are rounded and values outside the data&rsquo;s range
+            are capped, with a warning.
+          </p>
+        </Subsection>
+
+        <Subsection id="model-comparison">
+          <p className="type-prose">
+            Three kinds of model were compared on the same split, in time order: training on 2020 to 2024, validation
+            on 2025, and a test on January to April 2026. A random split would let a model see the months it is judged
+            on. The target is the log of the rent per m². The mean error on 2025, in € per month:
+          </p>
+          <ul className={`${listClass} list-disc`}>
+            <li>Median €/m² of the training data: 405 €.</li>
+            <li>Linear regression: 144 €.</li>
+            <li>CatBoost, a tree-based model (3 runs): 145 €.</li>
+            <li>A small neural network with embeddings (3 runs): 144 €.</li>
+          </ul>
+          <p className="type-prose">
+            The three tie. The difference between CatBoost and the linear model is +1.1 € with a 95 % interval from
+            &minus;1.7 to +3.8 €. That is what a log-linear pricing model behind the data would produce, so the tie is a
+            fact about the data, not about the models. The linear model is the one served: its effects on the rent are
+            exact, and it needs no extra software at run time. LightGBM was not tried, because CatBoost had already shown
+            that boosting adds nothing here.
+          </p>
+          <p className="type-prose">
+            On the 2026 test the linear model was too high by 77 € on average, because its time trend kept rising while
+            the level of the data flattened. The served model is therefore fixed at the last month of the data (April
+            2026), and the page warns when a request is more than 180 days later. An error of about 144 € measures how
+            well the model recovers a synthetic generator. It is not an accuracy figure for Berlin.
           </p>
         </Subsection>
 
@@ -222,10 +270,13 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
             have to be assumed. And its data ends at a date, while rents move on.
           </p>
           <p className="type-prose">
-            So an estimate will be shown together with a range: the span the model expects the rent to fall in, at a
-            stated level. If the model has no calibrated range, the page will say &ldquo;No uncertainty range
-            available&rdquo; rather than make one up. Which method gives the range, and at what level, is still an open
-            question for the model team.
+            So an estimate is shown together with a range: the span the model expects the rent to fall in, at a stated
+            level. The demo model&rsquo;s range is an 80 % range from the split-conformal method: it takes the errors the
+            model made on its last 12 months of data and widens the estimate by their spread. It was checked on months
+            the range was not built from: 78.9 % of 2025 and 76.4 % of 2026 fell inside, a little under 80 %, because the
+            market moved. When you leave a field open, the model averages over how common each value is in its data,
+            treating the open fields as independent, and the range widens. If a model has no calibrated range, the page
+            says &ldquo;No uncertainty range available&rdquo; rather than make one up.
           </p>
         </Subsection>
 
@@ -261,8 +312,10 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
           </li>
         </ul>
         <p className="type-prose">
-          Nothing you enter on Analyze or Compare is sent anywhere. The rent model isn&rsquo;t connected, so Analyze
-          ends by showing the request it would send instead of sending it. The short form on the home page is the
+          Nothing you enter on Analyze or Compare is sent anywhere in this build. No rent model is connected, so
+          Analyze ends by showing the request it would send instead of sending it. If a model is connected, Analyze
+          sends that request, which holds no address and no coordinates, to this site&rsquo;s server and on to the
+          model. The short form on the home page is the
           exception: it opens Analyze with its three values (Bezirk, living area and rooms) in the page address, and
           that address reaches this site&rsquo;s server like any page request. There are no accounts, no cookies and
           no tracking.
@@ -293,7 +346,10 @@ export function MethodologyArticle({ facts }: { facts: MethodologyFacts }) {
             Your entries live in one browser. They don&rsquo;t follow you to another device and are gone if you clear
             your browser data.
           </li>
-          <li>Market figures are demo data, and the rent model, transit access and the research dataset aren&rsquo;t connected.</li>
+          <li>
+            Market figures are demo data. The rent model is a demo trained on synthetic data and isn&rsquo;t connected
+            to this build, and transit access isn&rsquo;t connected. The Kaggle dataset is synthetic and demo only.
+          </li>
         </ul>
       </Section>
 

@@ -1,0 +1,17 @@
+{
+  "api_version": "1.2",
+  "request_id": "6f1c2a7e-0d4b-4c51-9a3e-1b2c3d4e5f60",
+  "generated_at": "2026-11-15T10:15:00Z",
+  "estimate": {
+    "monthly_cold_rent": { "value": 1234.56, "currency": "EUR" },
+    "interval": null
+  },
+  "model": {
+    "name": "rent-model",
+    "version": "0.0.0-example",
+    "training_data": { "source_id": "example-source", "synthetic": false }
+  },
+  "data_reference_date": "2000-12-31",
+  "inputs": { "missing": [], "imputed": [] },
+  "warnings": []
+}

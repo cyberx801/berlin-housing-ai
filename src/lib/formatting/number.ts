@@ -42,6 +42,13 @@ export function formatPercent(share: number, fractionDigits: 0 | 1 = 0): string 
   return `${(fractionDigits === 0 ? n0 : n1).format(share * 100)}${NNBSP}%`;
 }
 
+/** A change already in percent ("+39.6 %", "−0.1 %"), with a real minus sign. */
+export function formatSignedPercentPoints(percent: number): string {
+  const rounded = Math.round(percent * 10) / 10;
+  const sign = rounded > 0 ? "+" : rounded < 0 ? "−" : "";
+  return `${sign}${n1.format(Math.abs(rounded))}${NNBSP}%`;
+}
+
 /**
  * Share of an Ortsteil inside the ring. Whole percent, except where rounding would cross a
  * status threshold (e.g. 94.6 % shown as "95 %" next to "Partly inside").

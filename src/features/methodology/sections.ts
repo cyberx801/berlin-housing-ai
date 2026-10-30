@@ -28,12 +28,13 @@ export const METHODOLOGY_SECTIONS = [
     title: "Market figures: demo data",
     children: [{ id: "market-vs-predictions", title: "Market figures and predictions" }],
   },
-  { id: "research-data", title: "The research dataset: not available yet" },
+  { id: "research-data", title: "The Kaggle dataset: synthetic, demo only" },
   {
     id: "in-development",
     title: "In development",
     children: [
       { id: "predictions", title: "The rent model" },
+      { id: "model-comparison", title: "What was compared" },
       { id: "uncertainty", title: "Why an estimate carries uncertainty" },
       { id: "transit", title: "Transit access" },
     ],
