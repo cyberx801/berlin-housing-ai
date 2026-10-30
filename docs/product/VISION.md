@@ -2,7 +2,7 @@
 
 > Status: agreed direction with the owner (2026-10-30). Each phase below still needs its own go-ahead before work starts. Phases 2 and 3 also need a cost approval.
 
-> **Update 2026-10-30 (owner decision, D-058).** This is a portfolio (CV) project, not a market product. The only dataset available (`kaggle-berlin-5csv`) turned out to be synthetic by its author's own description, so Phase 1 delivers a **demo model**: a real model behind the real contract, trained on synthetic data and labelled that way wherever it appears. The model plan in §3 is unchanged as a process. Its measured outcome is in §3.1. Phases 2 and 3 stay unapproved.
+> **Update 2026-10-30 (owner decision, D-058).** This is a demonstration project, not a market product. The only dataset available (`kaggle-berlin-5csv`) turned out to be synthetic by its author's own description, so Phase 1 delivers a **demo model**: a real model behind the real contract, trained on synthetic data and labelled that way wherever it appears. The model plan in §3 is unchanged as a process. Its measured outcome is in §3.1. Phases 2 and 3 stay unapproved.
 
 ## 1. The question the product answers
 
@@ -43,7 +43,7 @@ The frontend (slices 1–9) is the honest shell for this. Prediction stays disab
 | 1 | Linear regression on `log(rent per m²)` | Baseline. Coefficients are the explanation. |
 | 2 | LightGBM (gradient boosting) | Usually the strongest on tabular data. Explained with SHAP. |
 | 3 | Comparison | Same held-out split, MAE in €/m². The winner is served. The comparison is published on `/methodology`. |
-| 4 | Neural network (optional, later) | For learning or portfolio, or once unstructured inputs (listing text, photos) exist. Not expected to beat step 2 on tabular data. |
+| 4 | Neural network (optional, later) | For learning, or once unstructured inputs (listing text, photos) exist. Not expected to beat step 2 on tabular data. |
 
 **The service must return:**
 - a point estimate,
