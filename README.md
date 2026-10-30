@@ -71,7 +71,7 @@ Browser ── Next.js 16 (App Router, TypeScript strict)
 - **Contract:** [`PREDICTION_API.md`](docs/contracts/PREDICTION_API.md). A response that does not say `synthetic: true` is never shown as an estimate.
 - **Model:** `src/lib/model/rent-model.ts` runs the demo model inside the site's server (`NEXT_PUBLIC_PREDICTION_MODE=embedded`, what the live site uses). It is a port of the Python service and is tested against answers the service gave.
 - **Service:** `services/rent-api`: model card, health, schema and prediction endpoints, one error envelope. No pickle and no scikit-learn at run time.
-- **Tests:** 344 unit, component and contract tests (Vitest), Playwright journeys at 375, 768 and 1440 px, axe on every route, and an end-to-end suite against the real service.
+- **Tests:** 345 unit, component and contract tests (Vitest), Playwright journeys at 375, 768 and 1440 px, axe on every route, and an end-to-end suite against the real service.
 
 ## Run it
 

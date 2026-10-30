@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
 import { ProvenanceMark } from "@/components/provenance/ProvenanceMark";
 import { Button } from "@/components/ui/Button";
+import { rentModelConnected } from "@/lib/api/prediction/connected";
 import { cx } from "@/lib/cx";
 import { ATTRIBUTE_ROWS, DETAIL_ROWS, formatRent, formatRentPerM2, listingHost, type PlaceNames } from "./rows";
 import type { CompareItem } from "./store";
@@ -189,7 +190,7 @@ export function CompareTable({ idPrefix, items, names, onEdit, onRemove }: Compa
               <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <span className="inline-flex items-center gap-2 font-[620] text-ink">
                   <ProvenanceMark kind="not-connected" className="shrink-0" />
-                  Model not connected
+                  {rentModelConnected ? "Not run on Compare" : "Model not connected"}
                 </span>
                 <Link href="/methodology#in-development" className={cx(linkClass, "type-small text-ink-2")}>
                   What this means

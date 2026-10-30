@@ -14,6 +14,7 @@ import { FIELD_ORDER } from "@/features/property-analysis/fields";
 import { randomId } from "@/lib/id";
 import { isAnswered } from "@/lib/validation/property";
 import type { BezirkOption, OrtsteilOption } from "@/types/geo";
+import { rentModelConnected } from "@/lib/api/prediction/connected";
 import type { AddDraft, EditorMode, SaveResult } from "./CompareEditor";
 import { columnId, CompareTable } from "./CompareTable";
 import type { PlaceNames } from "./rows";
@@ -158,9 +159,13 @@ export function CompareView({
       <LegendBlock title="Predicted rent">
         <p className="flex items-center gap-2 font-[620] text-ink">
           <ProvenanceMark kind="not-connected" className="shrink-0" />
-          Not connected
+          {rentModelConnected ? "Not run here" : "Not connected"}
         </p>
-        <p>The rent model is still being built, so no property has a predicted rent.</p>
+        <p>
+          {rentModelConnected
+            ? "Compare does not run the rent model, so no property here has a predicted rent. The demo model answers on Analyze only."
+            : "The rent model is still being built, so no property has a predicted rent."}
+        </p>
         <Link href="/methodology#in-development" className={linkClass}>
           What this means
         </Link>

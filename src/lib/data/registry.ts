@@ -79,7 +79,7 @@ export function getDatasetRegistry(): DatasetEntry[] {
         "The author states that the listing-level characteristics are generated from a pricing model. Only coordinates, stations and interest rates are real.",
         "The files are not in the project. Their checksums are in data/PROVENANCE.md.",
       ],
-      use: "Training the demo rent model. No page shows a figure from it.",
+      use: "Training the demo rent model. No page shows a row or figure from the dataset itself.",
     },
     {
       id: "demo-market-v1",

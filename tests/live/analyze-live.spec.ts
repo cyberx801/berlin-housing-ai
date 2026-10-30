@@ -83,4 +83,8 @@ test("The pages say the rent model is a demo, not that it is missing", async ({ 
   await expect(page.getByText("Rent model: not connected")).toHaveCount(0);
   await page.goto("/methodology");
   await expect(page.getByText("Prediction engine not connected")).toHaveCount(0);
+  await expect(page.getByText("No rent model is connected")).toHaveCount(0);
+  await page.goto("/compare");
+  await expect(page.getByText("still being built")).toHaveCount(0);
+  await expect(page.getByText("Model not connected")).toHaveCount(0);
 });
